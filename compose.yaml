@@ -1,0 +1,25 @@
+services:
+  relay:
+    build: .
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      RELAY_BIND: 0.0.0.0:8080
+      DATABASE_URL: sqlite:///app/data/relay.db
+      RELAY_ADMIN_TOKEN: ${RELAY_ADMIN_TOKEN:?Run python3 scripts/init_env.py first}
+      RELAY_MASTER_KEY: ${RELAY_MASTER_KEY:?Run python3 scripts/init_env.py first}
+      RELAY_PUBLIC_URL: ${RELAY_PUBLIC_URL:-http://localhost:8080}
+      RUST_LOG: ${RUST_LOG:-webhook_relay=info}
+    volumes:
+      - relay-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+volumes:
+  relay-data:

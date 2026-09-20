@@ -1,0 +1,13 @@
+/target
+/web/node_modules
+/web/dist
+/data
+.env
+/reports
+*.db
+*.db-shm
+*.db-wal
+.DS_Store
+*.tsbuildinfo
+*.db.lock
+__pycache__/

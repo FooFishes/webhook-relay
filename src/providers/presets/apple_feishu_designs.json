@@ -1,0 +1,647 @@
+[
+  {
+    "id": "apple-feishu",
+    "name": "Apple × 飞书",
+    "description": "覆盖所有 Apple 事件的完整飞书通知预设，包含消息内容、字段映射、操作链接与卡片布局。",
+    "source_provider": "apple_app_store_connect",
+    "destination_provider": "feishu",
+    "events": {
+      "webhookPingCreated": {
+        "content": {
+          "title": "{{ event.source_name }} · 连通性测试",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "连接测试成功。Relay 已收到 App Store Connect 发来的测试事件。"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "intro": "text"
+          }
+        }
+      },
+      "appStoreVersionAppVersionStateUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · App 版本状态变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "应用版本的审核或发布状态已更新。"
+            },
+            {
+              "id": "data_attributes_oldValue",
+              "kind": "text",
+              "label": "此前版本状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/oldValue\")) is not none %}{{ (event.raw | field(\"/data/attributes/oldValue\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_newValue",
+              "kind": "text",
+              "label": "当前版本状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/newValue\")) is not none %}{{ (event.raw | field(\"/data/attributes/newValue\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_oldValue": "field",
+            "data_attributes_newValue": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "buildUploadStateUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · 构建上传状态变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "新的构建上传处理进度已更新。"
+            },
+            {
+              "id": "data_attributes_newState",
+              "kind": "text",
+              "label": "上传状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}{{ (event.raw | field(\"/data/attributes/newState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_newState": "field",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "buildBetaDetailExternalBuildStateUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · TestFlight 构建状态变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "TestFlight 构建的外部测试状态已更新。"
+            },
+            {
+              "id": "data_attributes_oldExternalBuildState",
+              "kind": "text",
+              "label": "此前测试状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/oldExternalBuildState\")) is not none %}{{ (event.raw | field(\"/data/attributes/oldExternalBuildState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_newExternalBuildState",
+              "kind": "text",
+              "label": "当前测试状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/newExternalBuildState\")) is not none %}{{ (event.raw | field(\"/data/attributes/newExternalBuildState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "purple",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_oldExternalBuildState": "field",
+            "data_attributes_newExternalBuildState": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "betaFeedbackScreenshotSubmissionCreated": {
+        "content": {
+          "title": "{{ event.source_name }} · TestFlight 截图反馈",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "测试用户提交了截图反馈。可在 App Store Connect 中查看反馈内容与截图。"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "purple",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "betaFeedbackCrashSubmissionCreated": {
+        "content": {
+          "title": "{{ event.source_name }} · TestFlight 崩溃反馈",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "测试用户提交了崩溃反馈。可在 App Store Connect 中查看关联反馈与崩溃信息。"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "purple",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "backgroundAssetVersionStateUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · 后台资源版本状态变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "后台资源版本的处理状态已更新。"
+            },
+            {
+              "id": "data_attributes_oldState",
+              "kind": "text",
+              "label": "此前处理状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/oldState\")) is not none %}{{ (event.raw | field(\"/data/attributes/oldState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_newState",
+              "kind": "text",
+              "label": "当前处理状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}{{ (event.raw | field(\"/data/attributes/newState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_oldState": "field",
+            "data_attributes_newState": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "backgroundAssetVersionInternalBetaReleaseCreated": {
+        "content": {
+          "title": "{{ event.source_name }} · 后台资源内部测试发布",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "后台资源已创建内部测试发布，可前往 App Store Connect 查看发布详情。"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "purple",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "backgroundAssetVersionExternalBetaReleaseStateUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · 后台资源外部测试状态变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "后台资源的外部测试审核状态已更新。"
+            },
+            {
+              "id": "data_attributes_oldState",
+              "kind": "text",
+              "label": "此前审核状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/oldState\")) is not none %}{{ (event.raw | field(\"/data/attributes/oldState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_newState",
+              "kind": "text",
+              "label": "当前审核状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}{{ (event.raw | field(\"/data/attributes/newState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "purple",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_oldState": "field",
+            "data_attributes_newState": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "backgroundAssetVersionAppStoreReleaseStateUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · 后台资源商店发布状态变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "后台资源在 App Store 的发布状态已更新。"
+            },
+            {
+              "id": "data_attributes_oldState",
+              "kind": "text",
+              "label": "此前发布状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/oldState\")) is not none %}{{ (event.raw | field(\"/data/attributes/oldState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_newState",
+              "kind": "text",
+              "label": "当前发布状态",
+              "text": "{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}{{ (event.raw | field(\"/data/attributes/newState\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_oldState": "field",
+            "data_attributes_newState": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "alternativeDistributionPackageVersionCreated": {
+        "content": {
+          "title": "{{ event.source_name }} · 替代市场分发包版本创建",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "已创建新的替代市场分发包版本。"
+            },
+            {
+              "id": "data_attributes_appId",
+              "kind": "text",
+              "label": "应用 ID",
+              "text": "{% if (event.raw | field(\"/data/attributes/appId\")) is not none %}{{ (event.raw | field(\"/data/attributes/appId\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_appId": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "alternativeDistributionPackageAvailableUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · 替代市场分发包可用性变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "替代市场分发包的可用性已更新，请查看应用与适用地区。"
+            },
+            {
+              "id": "data_attributes_appId",
+              "kind": "text",
+              "label": "应用 ID",
+              "text": "{% if (event.raw | field(\"/data/attributes/appId\")) is not none %}{{ (event.raw | field(\"/data/attributes/appId\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_available",
+              "kind": "text",
+              "label": "是否可用",
+              "text": "{% if (event.raw | field(\"/data/attributes/available\")) is not none %}{{ (\"是\" if (event.raw | field(\"/data/attributes/available\")) else \"否\") if (event.raw | field(\"/data/attributes/available\")) is not none else \"\" }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_territories",
+              "kind": "text",
+              "label": "适用地区",
+              "text": "{% if (event.raw | field(\"/data/attributes/territories\")) is not none %}{{ (event.raw | field(\"/data/attributes/territories\")) | default([], true) | join(\"、\") }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_relationships_instance_data_id",
+              "kind": "text",
+              "label": "关联资源编号",
+              "text": "{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}{{ (event.raw | field(\"/data/relationships/instance/data/id\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_appId": "field",
+            "data_attributes_available": "field",
+            "data_attributes_territories": "field",
+            "data_attributes_timestamp": "note",
+            "data_relationships_instance_data_id": "note",
+            "open_console": "button"
+          }
+        }
+      },
+      "alternativeDistributionTerritoryAvailabilityUpdated": {
+        "content": {
+          "title": "{{ event.source_name }} · 替代市场地区可用性变更",
+          "blocks": [
+            {
+              "id": "intro",
+              "kind": "text",
+              "label": "",
+              "text": "替代分发的地区可用性已更新。"
+            },
+            {
+              "id": "data_attributes_appId",
+              "kind": "text",
+              "label": "应用 ID",
+              "text": "{% if (event.raw | field(\"/data/attributes/appId\")) is not none %}{{ (event.raw | field(\"/data/attributes/appId\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_available",
+              "kind": "text",
+              "label": "是否可用",
+              "text": "{% if (event.raw | field(\"/data/attributes/available\")) is not none %}{{ (\"是\" if (event.raw | field(\"/data/attributes/available\")) else \"否\") if (event.raw | field(\"/data/attributes/available\")) is not none else \"\" }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_territories",
+              "kind": "text",
+              "label": "适用地区",
+              "text": "{% if (event.raw | field(\"/data/attributes/territories\")) is not none %}{{ (event.raw | field(\"/data/attributes/territories\")) | default([], true) | join(\"、\") }}{% endif %}"
+            },
+            {
+              "id": "data_attributes_timestamp",
+              "kind": "text",
+              "label": "事件时间",
+              "text": "{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}{{ (event.raw | field(\"/data/attributes/timestamp\")) | default(\"\", true) }}{% endif %}"
+            },
+            {
+              "id": "open_console",
+              "kind": "link",
+              "label": "",
+              "text": "打开 App Store Connect",
+              "url": "https://appstoreconnect.apple.com/"
+            }
+          ]
+        },
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {
+            "intro": "text",
+            "data_attributes_appId": "field",
+            "data_attributes_available": "field",
+            "data_attributes_territories": "field",
+            "data_attributes_timestamp": "note",
+            "open_console": "button"
+          }
+        }
+      }
+    }
+  }
+]

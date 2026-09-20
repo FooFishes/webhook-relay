@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+target
+web/node_modules
+web/dist
+web/*.tsbuildinfo
+data
+reports
+*.db*

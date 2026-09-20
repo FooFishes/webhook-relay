@@ -1,0 +1,405 @@
+[
+  {
+    "id": "apple-feishu-webhookPingCreated",
+    "name": "连通性测试通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "webhookPingCreated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 连通性测试"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "已收到 App Store Connect 连通性测试通知。"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-appStoreVersionAppVersionStateUpdated",
+    "name": "App 版本状态变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "appStoreVersionAppVersionStateUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · App 版本状态变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "App 版本的审核或发布状态发生变化。{% if (event.raw | field(\"/data/attributes/oldValue\")) is not none %}\n此前版本状态：{{ (event.raw | field(\"/data/attributes/oldValue\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/newValue\")) is not none %}\n当前版本状态：{{ (event.raw | field(\"/data/attributes/newValue\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-buildUploadStateUpdated",
+    "name": "构建上传状态变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "buildUploadStateUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 构建上传状态变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "构建上传状态已更新。{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}\n上传状态：{{ (event.raw | field(\"/data/attributes/newState\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-buildBetaDetailExternalBuildStateUpdated",
+    "name": "TestFlight 构建状态变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "buildBetaDetailExternalBuildStateUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · TestFlight 构建状态变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "TestFlight 外部测试构建状态已更新。{% if (event.raw | field(\"/data/attributes/oldExternalBuildState\")) is not none %}\n此前测试状态：{{ (event.raw | field(\"/data/attributes/oldExternalBuildState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/newExternalBuildState\")) is not none %}\n当前测试状态：{{ (event.raw | field(\"/data/attributes/newExternalBuildState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-betaFeedbackScreenshotSubmissionCreated",
+    "name": "TestFlight 截图反馈通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "betaFeedbackScreenshotSubmissionCreated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · TestFlight 截图反馈"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "收到新的截图反馈。反馈正文和截图需在 App Store Connect 中查看。{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-betaFeedbackCrashSubmissionCreated",
+    "name": "TestFlight 崩溃反馈通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "betaFeedbackCrashSubmissionCreated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · TestFlight 崩溃反馈"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "收到新的崩溃反馈。崩溃详情需在 App Store Connect 中查看。{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-backgroundAssetVersionStateUpdated",
+    "name": "后台资源版本状态变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "backgroundAssetVersionStateUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 后台资源版本状态变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "后台资源包处理状态已更新。{% if (event.raw | field(\"/data/attributes/oldState\")) is not none %}\n此前处理状态：{{ (event.raw | field(\"/data/attributes/oldState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}\n当前处理状态：{{ (event.raw | field(\"/data/attributes/newState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-backgroundAssetVersionInternalBetaReleaseCreated",
+    "name": "后台资源内部测试发布通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "backgroundAssetVersionInternalBetaReleaseCreated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 后台资源内部测试发布"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "已创建后台资源内部测试发布。{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-backgroundAssetVersionExternalBetaReleaseStateUpdated",
+    "name": "后台资源外部测试状态变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "backgroundAssetVersionExternalBetaReleaseStateUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 后台资源外部测试状态变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "后台资源外部测试审核状态已更新。{% if (event.raw | field(\"/data/attributes/oldState\")) is not none %}\n此前审核状态：{{ (event.raw | field(\"/data/attributes/oldState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}\n当前审核状态：{{ (event.raw | field(\"/data/attributes/newState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-backgroundAssetVersionAppStoreReleaseStateUpdated",
+    "name": "后台资源商店发布状态变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "backgroundAssetVersionAppStoreReleaseStateUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 后台资源商店发布状态变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "后台资源的 App Store 发布状态已更新。{% if (event.raw | field(\"/data/attributes/oldState\")) is not none %}\n此前发布状态：{{ (event.raw | field(\"/data/attributes/oldState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/newState\")) is not none %}\n当前发布状态：{{ (event.raw | field(\"/data/attributes/newState\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-alternativeDistributionPackageVersionCreated",
+    "name": "替代市场分发包版本创建通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "alternativeDistributionPackageVersionCreated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 替代市场分发包版本创建"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "已创建新的替代市场分发包版本。{% if (event.raw | field(\"/data/attributes/appId\")) is not none %}\n应用 ID：{{ (event.raw | field(\"/data/attributes/appId\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-alternativeDistributionPackageAvailableUpdated",
+    "name": "替代市场分发包可用性变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "alternativeDistributionPackageAvailableUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 替代市场分发包可用性变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "替代市场分发包可用性已更新。{% if (event.raw | field(\"/data/attributes/appId\")) is not none %}\n应用 ID：{{ (event.raw | field(\"/data/attributes/appId\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/available\")) is not none %}\n是否可用：{{ (\"是\" if (event.raw | field(\"/data/attributes/available\")) else \"否\") }}{% endif %}{% if (event.raw | field(\"/data/attributes/territories\")) is not none %}\n适用地区：{{ (event.raw | field(\"/data/attributes/territories\")) | join(\"、\") }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}{% if (event.raw | field(\"/data/relationships/instance/data/id\")) is not none %}\n关联资源编号：{{ (event.raw | field(\"/data/relationships/instance/data/id\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple-feishu-alternativeDistributionTerritoryAvailabilityUpdated",
+    "name": "替代市场地区可用性变更通知",
+    "source_provider": "apple_app_store_connect",
+    "event_type": "alternativeDistributionTerritoryAvailabilityUpdated",
+    "destination_provider": "feishu",
+    "payload_template": {
+      "msg_type": "interactive",
+      "card": {
+        "config": {
+          "wide_screen_mode": true
+        },
+        "header": {
+          "title": {
+            "tag": "plain_text",
+            "content": "{{ event.source_name }} · 替代市场地区可用性变更"
+          },
+          "template": "blue"
+        },
+        "elements": [
+          {
+            "tag": "div",
+            "text": {
+              "tag": "plain_text",
+              "content": "替代市场地区可用性已更新。{% if (event.raw | field(\"/data/attributes/appId\")) is not none %}\n应用 ID：{{ (event.raw | field(\"/data/attributes/appId\")) }}{% endif %}{% if (event.raw | field(\"/data/attributes/available\")) is not none %}\n是否可用：{{ (\"是\" if (event.raw | field(\"/data/attributes/available\")) else \"否\") }}{% endif %}{% if (event.raw | field(\"/data/attributes/territories\")) is not none %}\n适用地区：{{ (event.raw | field(\"/data/attributes/territories\")) | join(\"、\") }}{% endif %}{% if (event.raw | field(\"/data/attributes/timestamp\")) is not none %}\n事件时间：{{ (event.raw | field(\"/data/attributes/timestamp\")) }}{% endif %}"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
