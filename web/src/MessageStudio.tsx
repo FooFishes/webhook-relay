@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Input, InputArea, Popover } from "@cloudflare/kumo";
+import { Button, Popover } from "@cloudflare/kumo";
 import {
-  ArrowUp,
-  ArrowDown,
   Check,
   CaretDown,
   Code,
@@ -14,7 +12,6 @@ import {
   ArrowCounterClockwise,
   BracketsCurly,
   LinkSimple,
-  PencilSimple,
 } from "@phosphor-icons/react";
 import type { Api } from "./api";
 import type {
@@ -68,6 +65,17 @@ export function ProviderMark({
   );
 }
 
+// Drag payloads use private MIME types so a dragged block never drops into a
+// text field as plain text. Only field chips also carry text/plain.
+const BLOCK_MIME = "application/x-relay-block";
+const NEW_MIME = "application/x-relay-new";
+const FIELD_MIME = "application/x-relay-field";
+type Drag =
+  | { type: "block"; index: number }
+  | { type: "new"; kind: ContentBlock["kind"] }
+  | { type: "field"; token: string; label: string };
+type Field = ReturnType<typeof variablesFor>[number];
+
 export function MessageStudio({
   active,
   api,
@@ -95,9 +103,11 @@ export function MessageStudio({
     initialEvent || "appStoreVersionAppVersionStateUpdated",
   );
   const [search, setSearch] = useState("");
-  const [section, setSection] = useState("content");
-  const [customizing, setCustomizing] = useState<string | null>(null);
-  const [dragged, setDragged] = useState<number | null>(null);
+  // "title", a block id, or null when nothing is being edited.
+  const [editing, setEditing] = useState<string | null>(null);
+  const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const drag = useRef<Drag | null>(null);
   const [retry, setRetry] = useState(0);
   const [preview, setPreview] = useState<{
     key: string;
@@ -118,7 +128,8 @@ export function MessageStudio({
     value,
     eventType,
   );
-  const editing = customizing === eventType;
+  const fields = variablesFor(definition);
+  const isCard = presentation.style === "card";
   const groups = [...new Set(available.map(([, d]) => d.group || "事件"))];
   const shown = available.filter(([key, d]) =>
     `${d.name} ${key}`.toLowerCase().includes(search.toLowerCase()),
@@ -169,6 +180,23 @@ export function MessageStudio({
         ),
       });
   }
+  function setBlockStyle(id: string, style: string) {
+    update({
+      presentation: {
+        ...custom?.presentation,
+        block_styles: { ...custom?.presentation?.block_styles, [id]: style },
+      },
+    });
+  }
+  function setPresentation(change: { style?: string; accent?: string }) {
+    update({
+      presentation: {
+        ...custom?.presentation,
+        ...change,
+        block_styles: custom?.presentation?.block_styles || {},
+      },
+    });
+  }
   function move(index: number, targetIndex: number) {
     if (!content || targetIndex < 0 || targetIndex >= content.blocks.length)
       return;
@@ -177,14 +205,108 @@ export function MessageStudio({
     blocks.splice(targetIndex, 0, block);
     updateContent({ ...content, blocks });
   }
+  // Inserts a new block; a field chip becomes a labelled side-by-side field.
+  function insert(at: number, kind: ContentBlock["kind"], field?: Field) {
+    if (!content || content.blocks.length >= 40) return;
+    const block: ContentBlock = {
+      id: crypto.randomUUID(),
+      kind,
+      label: field?.label || "",
+      text: field
+        ? `{{ ${field.expression} }}`
+        : kind === "link"
+          ? "打开详情"
+          : "新的通知内容",
+      ...(kind === "link" ? { url: "https://appstoreconnect.apple.com/" } : {}),
+    };
+    const blocks = [...content.blocks];
+    blocks.splice(at, 0, block);
+    update({
+      content: { ...content, blocks },
+      ...(field && target.block_styles?.some((s) => s.id === "field")
+        ? {
+            presentation: {
+              ...custom?.presentation,
+              block_styles: {
+                ...custom?.presentation?.block_styles,
+                [block.id]: "field",
+              },
+            },
+          }
+        : {}),
+    });
+    if (!field) setEditing(block.id);
+  }
+  function remove(block: ContentBlock) {
+    if (!content) return;
+    const block_styles = { ...custom?.presentation?.block_styles };
+    delete block_styles[block.id];
+    update({
+      content: {
+        ...content,
+        blocks: content.blocks.filter((b) => b.id !== block.id),
+      },
+      presentation: { ...custom?.presentation, block_styles },
+    });
+    if (editing === block.id) setEditing(null);
+  }
   function reset() {
     const overrides = { ...value.overrides };
     delete overrides[eventType];
     onChange({ ...value, overrides });
-    setCustomizing(null);
+    setEditing(null);
+  }
+  // A chip click inserts at the caret of the field being edited; with nothing
+  // open it adds the field to the end of the message.
+  function applyField(field: Field) {
+    if (!content) return;
+    const input = editing
+      ? (document.getElementById(
+          `studio-input-${editing}`,
+        ) as HTMLTextAreaElement | null)
+      : null;
+    if (!input || !editing) return insert(content.blocks.length, "text", field);
+    const text = input.value;
+    const start = input.selectionStart ?? text.length;
+    const end = input.selectionEnd ?? start;
+    const token = `{{ ${field.label} }}`;
+    const next = wireTemplate(
+      text.slice(0, start) + token + text.slice(end),
+      definition,
+    );
+    if (editing === "title") updateContent({ ...content, title: next });
+    else updateBlock(editing, { text: next });
+    requestAnimationFrame(() => {
+      input.focus();
+      input.setSelectionRange(start + token.length, start + token.length);
+    });
+  }
+  function dropPosition(e: React.DragEvent<HTMLOListElement>) {
+    // Side-by-side fields share a row, so within a row compare horizontally.
+    const rows = [...e.currentTarget.querySelectorAll(":scope > li")];
+    const index = rows.findIndex((row) => {
+      const rect = row.getBoundingClientRect();
+      if (e.clientY < rect.top) return true;
+      if (e.clientY > rect.bottom) return false;
+      return rect.width < e.currentTarget.clientWidth * 0.75
+        ? e.clientX < rect.left + rect.width / 2
+        : e.clientY < rect.top + rect.height / 2;
+    });
+    return index < 0 ? rows.length : index;
+  }
+  function endDrag() {
+    drag.current = null;
+    setDropIndex(null);
+    setDraggingId(null);
+  }
+  function styleOf(block: ContentBlock) {
+    if (!isCard) return "plain";
+    const style = presentation.block_styles[block.id] || "default";
+    if (style !== "default") return style;
+    return block.kind === "link" ? "button" : "text";
   }
   const currentPreview = preview?.key === request ? preview : undefined;
-  const blockStyle = (block: ContentBlock) => {
+  const styleName = (block: ContentBlock) => {
     const style = presentation.block_styles[block.id] || "default";
     return target.block_styles?.find((s) => s.id === style)?.name || "默认样式";
   };
@@ -226,7 +348,7 @@ export function MessageStudio({
                     aria-pressed={key === eventType}
                     onClick={() => {
                       setSelection(key);
-                      setCustomizing(null);
+                      setEditing(null);
                     }}
                   >
                     <span>{d.name}</span>
@@ -251,353 +373,332 @@ export function MessageStudio({
           <span className={`template-badge ${custom ? "custom" : ""}`}>
             {custom ? "已自定义" : "内置预设"}
           </span>
-        </div>
-        <div className="studio-tabs" role="tablist" aria-label="模板设置">
-          {[
-            ["content", "消息内容"],
-            ["style", "消息样式"],
-            ["data", "事件字段"],
-          ].map(([key, label]) => (
-            <button
+          {custom && (
+            <Button
               type="button"
-              key={key}
-              role="tab"
-              aria-selected={section === key}
-              aria-controls={`studio-panel-${key}`}
-              id={`studio-tab-${key}`}
-              tabIndex={section === key ? 0 : -1}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-                  const tabs = ["content", "style", "data"];
-                  const next =
-                    tabs[
-                      (tabs.indexOf(key) + (e.key === "ArrowRight" ? 1 : 2)) % 3
-                    ];
-                  setSection(next);
-                  document.getElementById(`studio-tab-${next}`)?.focus();
-                }
-              }}
-              onClick={() => setSection(key)}
+              size="sm"
+              variant="ghost"
+              className="ml-auto"
+              icon={<ArrowCounterClockwise size={14} />}
+              onClick={reset}
             >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div
-          className="studio-editor-body"
-          role="tabpanel"
-          id={`studio-panel-${section}`}
-          aria-labelledby={`studio-tab-${section}`}
-        >
-          {content && section === "content" && (
-            <>
-              <div className="content-toolbar">
-                <div className="flex gap-2">
-                  {custom && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      icon={<ArrowCounterClockwise size={14} />}
-                      onClick={reset}
-                    >
-                      恢复内置
-                    </Button>
-                  )}
-                  <Button
-                    type="button"
-                    size="sm"
-                    icon={
-                      editing ? <Check size={14} /> : <PencilSimple size={14} />
-                    }
-                    onClick={() => setCustomizing(editing ? null : eventType)}
-                  >
-                    {editing ? "完成编辑" : "自定义此事件"}
-                  </Button>
-                </div>
-              </div>
-              <div className="content-title-block">
-                {!editing && <span className="block-caption">消息标题</span>}
-                {editing ? (
-                  <TemplateInput
-                    label="消息标题"
-                    value={content.title}
-                    definition={definition}
-                    onChange={(title) => updateContent({ ...content, title })}
-                  />
-                ) : (
-                  <p>
-                    <TemplateTokens
-                      text={content.title}
-                      definition={definition}
-                    />
-                  </p>
-                )}
-              </div>
-              <div className="content-block-list">
-                {content.blocks.map((block, index) => (
-                  <article
-                    key={block.id}
-                    className={`content-block ${editing ? "editable" : ""}`}
-                    onDragOver={(e) => {
-                      if (dragged !== null) e.preventDefault();
-                    }}
-                    onDrop={(e) => {
-                      if (dragged !== null) {
-                        e.preventDefault();
-                        move(dragged, index);
-                        setDragged(null);
-                      }
-                    }}
-                  >
-                    <div className="block-header">
-                      <span className="block-caption">
-                        {editing && (
-                          <span
-                            draggable
-                            className="drag-handle"
-                            onDragStart={(e) => {
-                              setDragged(index);
-                              e.dataTransfer.setData("text/plain", block.id);
-                            }}
-                            onDragEnd={() => setDragged(null)}
-                          >
-                            <DotsSixVertical size={15} />
-                          </span>
-                        )}
-                        {block.kind === "link" ? (
-                          <LinkSimple size={15} />
-                        ) : (
-                          <TextT size={15} />
-                        )}
-                        {block.label ||
-                          (block.kind === "link" ? "操作链接" : "正文")}
-                      </span>
-                      <StylePicker
-                        target={target}
-                        block={block}
-                        selected={
-                          presentation.block_styles[block.id] || "default"
-                        }
-                        disabled={presentation.style !== "card"}
-                        label={blockStyle(block)}
-                        onChange={(style) =>
-                          update({
-                            presentation: {
-                              ...custom?.presentation,
-                              block_styles: {
-                                ...custom?.presentation?.block_styles,
-                                [block.id]: style,
-                              },
-                            },
-                          })
-                        }
-                      />
-                    </div>
-                    {editing ? (
-                      <div className="block-inputs">
-                        <Input
-                          label="内容标签"
-                          value={block.label}
-                          onChange={(e) =>
-                            updateBlock(block.id, { label: e.target.value })
-                          }
-                        />
-                        <TemplateInput
-                          label={`内容 ${index + 1}`}
-                          value={block.text}
-                          definition={definition}
-                          onChange={(text) => updateBlock(block.id, { text })}
-                        />
-                        {block.kind === "link" && (
-                          <TemplateInput
-                            label="链接地址"
-                            value={block.url || ""}
-                            definition={definition}
-                            onChange={(url) => updateBlock(block.id, { url })}
-                          />
-                        )}
-                        <div className="block-actions">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="ghost"
-                            aria-label={`上移内容 ${index + 1}`}
-                            icon={<ArrowUp size={14} />}
-                            disabled={index === 0}
-                            onClick={() => move(index, index - 1)}
-                          />
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="ghost"
-                            aria-label={`下移内容 ${index + 1}`}
-                            icon={<ArrowDown size={14} />}
-                            disabled={index === content.blocks.length - 1}
-                            onClick={() => move(index, index + 1)}
-                          />
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="ghost"
-                            aria-label={`删除内容 ${index + 1}`}
-                            icon={<Trash size={14} />}
-                            disabled={content.blocks.length <= 1}
-                            onClick={() => {
-                              const block_styles = {
-                                ...custom?.presentation?.block_styles,
-                              };
-                              delete block_styles[block.id];
-                              update({
-                                content: {
-                                  ...content,
-                                  blocks: content.blocks.filter(
-                                    (b) => b.id !== block.id,
-                                  ),
-                                },
-                                presentation: {
-                                  ...custom?.presentation,
-                                  block_styles,
-                                },
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="block-copy">
-                        <TemplateTokens
-                          text={block.text}
-                          definition={definition}
-                        />
-                      </p>
-                    )}
-                  </article>
-                ))}
-              </div>
-              {editing && (
-                <div className="add-block-actions">
-                  {["text", "link"].map((kind) => (
-                    <Button
-                      type="button"
-                      key={kind}
-                      size="sm"
-                      variant="ghost"
-                      icon={<Plus size={15} />}
-                      disabled={content.blocks.length >= 40}
-                      onClick={() =>
-                        updateContent({
-                          ...content,
-                          blocks: [
-                            ...content.blocks,
-                            {
-                              id: crypto.randomUUID(),
-                              kind: kind as "text" | "link",
-                              label: "",
-                              text:
-                                kind === "link" ? "打开详情" : "新的通知内容",
-                              ...(kind === "link"
-                                ? { url: "https://appstoreconnect.apple.com/" }
-                                : {}),
-                            },
-                          ],
-                        })
-                      }
-                    >
-                      {kind === "link" ? "添加链接" : "添加内容"}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </>
+              恢复内置
+            </Button>
           )}
-          {content && section === "style" && (
-            <div className="style-settings">
-              <div className="style-options">
-                {target.message_styles?.map((style) => (
+        </div>
+        {content && (
+          <div className="studio-toolbar">
+            <div className="segmented" role="group" aria-label="消息样式">
+              {target.message_styles?.map((style) => (
+                <button
+                  type="button"
+                  key={style.id}
+                  title={style.description}
+                  aria-pressed={presentation.style === style.id}
+                  onClick={() => setPresentation({ style: style.id })}
+                >
+                  {style.name}
+                </button>
+              ))}
+            </div>
+            {isCard && (
+              <div
+                className="accent-options"
+                role="group"
+                aria-label="卡片颜色"
+              >
+                {Object.entries(target.accents || {}).map(([id, name]) => (
                   <button
                     type="button"
-                    className={`style-option ${presentation.style === style.id ? "selected" : ""}`}
-                    key={style.id}
-                    aria-pressed={presentation.style === style.id}
-                    onClick={() =>
-                      update({
-                        presentation: {
-                          ...custom?.presentation,
-                          style: style.id,
-                          block_styles:
-                            custom?.presentation?.block_styles || {},
-                        },
-                      })
-                    }
+                    key={id}
+                    aria-label={name}
+                    title={name}
+                    aria-pressed={presentation.accent === id}
+                    className="accent-option"
+                    data-accent={id}
+                    onClick={() => setPresentation({ accent: id })}
                   >
-                    <strong>{style.name}</strong>
-                    {presentation.style === style.id && <Check size={16} />}
+                    {presentation.accent === id && <Check size={12} />}
                   </button>
                 ))}
               </div>
-              {presentation.style === "card" && (
-                <>
-                  <h3>卡片颜色</h3>
-                  <div className="accent-options">
-                    {Object.entries(target.accents || {}).map(([id, name]) => (
+            )}
+          </div>
+        )}
+        {content && (
+          <div className="studio-editor-body">
+            <div className="field-shelf" aria-label="事件字段">
+              <p>
+                把字段拖进文字里；编辑时点击会插入到光标处，否则添加为新的一行。
+              </p>
+              <div className="field-chips">
+                {fields.map((field) => (
+                  <button
+                    type="button"
+                    key={field.expression}
+                    className="field-chip"
+                    aria-label={`字段：${field.label}`}
+                    draggable
+                    title={`示例：${field.path ? sampleValue(definition?.sample, field.path) : sourceName}`}
+                    onDragStart={(e) => {
+                      const token = `{{ ${field.label} }}`;
+                      drag.current = {
+                        type: "field",
+                        token,
+                        label: field.label,
+                      };
+                      e.dataTransfer.setData("text/plain", token);
+                      e.dataTransfer.setData(FIELD_MIME, field.expression);
+                      e.dataTransfer.effectAllowed = "copy";
+                    }}
+                    onDragEnd={endDrag}
+                    onClick={() => applyField(field)}
+                  >
+                    <BracketsCurly size={13} />
+                    {field.label}
+                    {field.optional && <small>可选</small>}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div
+              className="message-canvas"
+              data-style={presentation.style}
+              data-accent={presentation.accent || "blue"}
+            >
+              <div className="canvas-title">
+                <Editable
+                  id="title"
+                  label="消息标题"
+                  placeholder="添加标题"
+                  value={content.title}
+                  definition={definition}
+                  editing={editing === "title"}
+                  onEdit={setEditing}
+                  onChange={(title) => updateContent({ ...content, title })}
+                />
+              </div>
+              <ol
+                className="canvas-blocks"
+                aria-label="消息内容"
+                onDragOver={(e) => {
+                  const current = drag.current;
+                  if (!current) return;
+                  // Over a text, a field chip is inserted into that text instead.
+                  if (
+                    current.type === "field" &&
+                    (e.target as HTMLElement).closest(".canvas-editable")
+                  )
+                    return setDropIndex(null);
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect =
+                    current.type === "block" ? "move" : "copy";
+                  const at = dropPosition(e);
+                  // Dropping a block right where it already is changes nothing.
+                  setDropIndex(
+                    current.type === "block" &&
+                      (at === current.index || at === current.index + 1)
+                      ? null
+                      : at,
+                  );
+                }}
+                onDragLeave={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node))
+                    setDropIndex(null);
+                }}
+                onDrop={(e) => {
+                  const current = drag.current;
+                  if (!current || dropIndex === null) return;
+                  e.preventDefault();
+                  if (current.type === "block") {
+                    const to =
+                      dropIndex > current.index ? dropIndex - 1 : dropIndex;
+                    move(current.index, to);
+                  } else if (current.type === "new") {
+                    insert(dropIndex, current.kind);
+                  } else {
+                    const field = fields.find((f) => f.label === current.label);
+                    if (field) insert(dropIndex, "text", field);
+                  }
+                  endDrag();
+                }}
+              >
+                {content.blocks.map((block, index) => {
+                  const style = styleOf(block);
+                  const label = `内容 ${index + 1}`;
+                  const isEditing = editing === block.id;
+                  return (
+                    <li
+                      key={block.id}
+                      className="canvas-block"
+                      data-block-style={style}
+                      data-editing={isEditing || undefined}
+                      data-dragging={draggingId === block.id || undefined}
+                      data-drop-before={dropIndex === index || undefined}
+                      data-drop-after={
+                        (index === content.blocks.length - 1 &&
+                          dropIndex === content.blocks.length) ||
+                        undefined
+                      }
+                    >
                       <button
                         type="button"
-                        key={id}
-                        aria-label={name}
-                        aria-pressed={presentation.accent === id}
-                        className="accent-option"
-                        data-accent={id}
-                        onClick={() =>
-                          update({
-                            presentation: {
-                              ...custom?.presentation,
-                              accent: id,
-                              block_styles:
-                                custom?.presentation?.block_styles || {},
-                            },
-                          })
-                        }
+                        className="drag-handle"
+                        data-handle={block.id}
+                        draggable
+                        aria-label={`移动${label}，可用上下方向键调整顺序`}
+                        title="拖动调整顺序"
+                        onDragStart={(e) => {
+                          drag.current = { type: "block", index };
+                          e.dataTransfer.setData(BLOCK_MIME, block.id);
+                          e.dataTransfer.effectAllowed = "move";
+                          const row = e.currentTarget.closest("li");
+                          if (row) e.dataTransfer.setDragImage(row, 20, 20);
+                          setDraggingId(block.id);
+                        }}
+                        onDragEnd={endDrag}
+                        onKeyDown={(e) => {
+                          const delta =
+                            e.key === "ArrowUp"
+                              ? -1
+                              : e.key === "ArrowDown"
+                                ? 1
+                                : 0;
+                          if (!delta) return;
+                          e.preventDefault();
+                          move(index, index + delta);
+                          requestAnimationFrame(() =>
+                            (
+                              document.querySelector(
+                                `[data-handle="${block.id}"]`,
+                              ) as HTMLElement | null
+                            )?.focus(),
+                          );
+                        }}
                       >
-                        {presentation.accent === id && <Check size={16} />}
+                        <DotsSixVertical size={16} />
                       </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-          {section === "data" && (
-            <div className="event-schema">
-              <p className="text-kumo-subtle">示例值</p>
-              {variablesFor(definition).map((field) => (
-                <div className="schema-field" key={field.expression}>
-                  <span>
-                    <BracketsCurly size={16} />
-                    {field.label}
-                    {field.optional && (
-                      <small title="缺失时省略此字段">可选</small>
+                      <div className="canvas-block-body">
+                        {isEditing ? (
+                          <input
+                            className="canvas-label-input"
+                            aria-label={`${label}的标签`}
+                            placeholder="标签（可选）"
+                            value={readableTemplate(block.label, definition)}
+                            onChange={(e) =>
+                              updateBlock(block.id, {
+                                label: wireTemplate(e.target.value, definition),
+                              })
+                            }
+                          />
+                        ) : (
+                          block.label && (
+                            <span className="canvas-block-label">
+                              <TemplateTokens
+                                text={block.label}
+                                definition={definition}
+                              />
+                            </span>
+                          )
+                        )}
+                        <Editable
+                          id={block.id}
+                          label={label}
+                          placeholder={
+                            block.kind === "link" ? "按钮文字" : "输入内容"
+                          }
+                          value={block.text}
+                          definition={definition}
+                          editing={isEditing}
+                          onEdit={setEditing}
+                          onChange={(text) => updateBlock(block.id, { text })}
+                          icon={
+                            style === "button" ? (
+                              <LinkSimple size={14} />
+                            ) : undefined
+                          }
+                        />
+                        {isEditing && block.kind === "link" && (
+                          <label className="canvas-url">
+                            <LinkSimple size={14} />
+                            <input
+                              aria-label={`${label}的链接地址`}
+                              placeholder="https://"
+                              value={readableTemplate(
+                                block.url || "",
+                                definition,
+                              )}
+                              onChange={(e) =>
+                                updateBlock(block.id, {
+                                  url: wireTemplate(e.target.value, definition),
+                                })
+                              }
+                            />
+                          </label>
+                        )}
+                      </div>
+                      <div className="canvas-block-tools">
+                        <StylePicker
+                          target={target}
+                          block={block}
+                          selected={
+                            presentation.block_styles[block.id] || "default"
+                          }
+                          disabled={!isCard}
+                          label={styleName(block)}
+                          onChange={(s) => setBlockStyle(block.id, s)}
+                        />
+                        <button
+                          type="button"
+                          className="canvas-icon-button"
+                          aria-label={`删除${label}`}
+                          title="删除"
+                          disabled={content.blocks.length <= 1}
+                          onClick={() => remove(block)}
+                        >
+                          <Trash size={14} />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+              <div className="canvas-add">
+                {(["text", "link"] as const).map((kind) => (
+                  <button
+                    type="button"
+                    key={kind}
+                    className="canvas-add-button"
+                    draggable
+                    disabled={content.blocks.length >= 40}
+                    title="点击添加到末尾，或拖到指定位置"
+                    onDragStart={(e) => {
+                      drag.current = { type: "new", kind };
+                      e.dataTransfer.setData(NEW_MIME, kind);
+                      e.dataTransfer.effectAllowed = "copy";
+                    }}
+                    onDragEnd={endDrag}
+                    onClick={() => insert(content.blocks.length, kind)}
+                  >
+                    <Plus size={14} />
+                    {kind === "link" ? (
+                      <LinkSimple size={14} />
+                    ) : (
+                      <TextT size={14} />
                     )}
-                  </span>
-                  {field.path && <code>{field.path}</code>}
-                  <p>
-                    {field.path
-                      ? sampleValue(definition?.sample, field.path)
-                      : sourceName}
-                  </p>
-                </div>
-              ))}
-              <details>
-                <summary>
-                  <Code size={16} /> 查看事件示例
-                </summary>
-                <pre className="code-panel">
-                  {JSON.stringify(definition?.sample, null, 2)}
-                </pre>
-              </details>
+                    {kind === "link" ? "添加链接" : "添加内容"}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
+            {!isCard && (
+              <p className="canvas-footnote">
+                {presentation.style === "text" ? "纯文本" : "富文本"}
+                不区分内容样式，切换到消息卡片后可为每段内容选择展示方式。
+              </p>
+            )}
+          </div>
+        )}
       </section>
       <aside className="studio-preview" aria-label="消息实时预览">
         <div className="preview-toolbar">
@@ -642,6 +743,16 @@ export function MessageStudio({
             </pre>
           </details>
         )}
+        {definition && (
+          <details className="preview-payload">
+            <summary>
+              <Code size={15} /> 查看事件示例
+            </summary>
+            <pre className="code-panel">
+              {JSON.stringify(definition.sample, null, 2)}
+            </pre>
+          </details>
+        )}
       </aside>
     </div>
   );
@@ -661,7 +772,6 @@ function TemplateTokens({
         .map((part, i) =>
           part.startsWith("{{") ? (
             <span className="variable-token" key={i}>
-              <BracketsCurly size={12} />
               {part.slice(2, -2).trim()}
             </span>
           ) : (
@@ -672,75 +782,98 @@ function TemplateTokens({
   );
 }
 
-function TemplateInput({
+/**
+ * Text shown as it will read, with variables as chips. Click to edit in
+ * place; field chips can be dropped in while editing (native text drop) or
+ * onto the rendered text, which appends the variable.
+ */
+function Editable({
+  id,
   label,
+  placeholder,
   value,
   definition,
+  editing,
+  onEdit,
   onChange,
+  icon,
 }: {
+  id: string;
   label: string;
+  placeholder: string;
   value: string;
   definition?: EventDefinition;
+  editing: boolean;
+  onEdit: (id: string | null) => void;
   onChange: (text: string) => void;
+  icon?: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLTextAreaElement>(null);
+  const [over, setOver] = useState(false);
   const text = readableTemplate(value, definition);
-  return (
-    <div className="template-input">
-      <InputArea
-        ref={ref}
-        label={label}
-        rows={2}
-        value={text}
-        onChange={(e) => onChange(wireTemplate(e.target.value, definition))}
-      />
-      <Popover open={open} onOpenChange={setOpen}>
-        <Popover.Trigger
-          render={
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              icon={<BracketsCurly size={14} />}
-            />
-          }
+  if (editing)
+    return (
+      <div className="canvas-editable" data-editing>
+        <textarea
+          id={`studio-input-${id}`}
+          aria-label={label}
+          autoFocus
+          rows={Math.max(1, text.split("\n").length)}
+          placeholder={placeholder}
+          value={text}
+          onChange={(e) => onChange(wireTemplate(e.target.value, definition))}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              e.stopPropagation();
+              onEdit(null);
+            }
+          }}
+        />
+        <button
+          type="button"
+          className="canvas-done"
+          aria-label={`完成编辑${label}`}
+          onClick={() => onEdit(null)}
         >
-          插入变量
-        </Popover.Trigger>
-        <Popover.Content className="studio-popover" side="bottom" align="start">
-          {variablesFor(definition).map((field) => (
-            <button
-              type="button"
-              className="popover-option"
-              key={field.expression}
-              onClick={() => {
-                const start = ref.current?.selectionStart ?? text.length;
-                const end = ref.current?.selectionEnd ?? start;
-                const token = `{{ ${field.label} }}`;
-                onChange(
-                  wireTemplate(
-                    text.slice(0, start) + token + text.slice(end),
-                    definition,
-                  ),
-                );
-                setOpen(false);
-                requestAnimationFrame(() => {
-                  ref.current?.focus();
-                  ref.current?.setSelectionRange(
-                    start + token.length,
-                    start + token.length,
-                  );
-                });
-              }}
-            >
-              <BracketsCurly size={16} />
-              <span>{field.label}</span>
-              {field.optional && <small title="缺失时省略此字段">可选</small>}
-            </button>
-          ))}
-        </Popover.Content>
-      </Popover>
+          <Check size={14} />
+        </button>
+      </div>
+    );
+  return (
+    <div
+      className="canvas-editable"
+      role="button"
+      tabIndex={0}
+      aria-label={`编辑${label}`}
+      data-over={over || undefined}
+      onClick={() => onEdit(id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onEdit(id);
+        }
+      }}
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes(FIELD_MIME)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+        setOver(true);
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        const token = e.dataTransfer.getData("text/plain");
+        setOver(false);
+        if (!e.dataTransfer.types.includes(FIELD_MIME) || !token) return;
+        e.preventDefault();
+        e.stopPropagation();
+        onChange(wireTemplate(text + (text ? " " : "") + token, definition));
+      }}
+    >
+      {icon}
+      {text ? (
+        <TemplateTokens text={value} definition={definition} />
+      ) : (
+        <span className="canvas-placeholder">{placeholder}</span>
+      )}
     </div>
   );
 }
@@ -792,7 +925,7 @@ function StylePicker({
             >
               <div>
                 <strong>{style.name}</strong>
-                {style.id === "default" && <small>按内容类型自动选择</small>}
+                <small>{style.description}</small>
               </div>
               {style.id === selected && <Check size={16} />}
             </button>

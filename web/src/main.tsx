@@ -2,6 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { App } from "./App";
+import "@fontsource/barlow-semi-condensed/latin-500.css";
+import "@fontsource/barlow-semi-condensed/latin-600.css";
 import "./styles.css";
 const client = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: true } },
