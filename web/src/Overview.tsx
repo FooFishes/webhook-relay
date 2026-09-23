@@ -39,7 +39,7 @@ export function Overview({
   const d = query.data!;
   const queued = d.queue.pending + d.queue.retrying + d.queue.sending;
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <div className="section-toolbar">
         <span className="text-kumo-subtle">
           更新于 {formatTime(d.window.until)}
@@ -63,23 +63,15 @@ export function Overview({
           </Button>
         </div>
       </div>
-      <div className="metrics-grid">
-        <div className="metric">
+      <div className="metrics-grid relay-line">
+        <div className="metric" data-lamp={d.received ? "on" : "off"}>
           <span>接收事件</span>
           <span className="metric-value">{d.received.toLocaleString()}</span>
           <span className="text-kumo-subtle">所选时间内接收</span>
         </div>
-        <div className="metric">
-          <span>投递成功率</span>
-          <span className="metric-value">
-            {d.success_rate === null ? "—" : `${d.success_rate.toFixed(1)}%`}
-          </span>
-          <span className="text-kumo-subtle">
-            已结束投递：{d.succeeded} 成功 / {d.failed} 失败
-          </span>
-        </div>
         <button
           className="metric"
+          data-lamp={d.queue.sending ? "busy" : queued ? "wait" : "off"}
           onClick={() => onNavigate("deliveries", { status: "queued" })}
         >
           <span>当前队列</span>
@@ -89,8 +81,18 @@ export function Overview({
             {d.queue.paused}
           </span>
         </button>
+        <div className="metric" data-lamp={d.succeeded ? "on" : "off"}>
+          <span>投递成功率</span>
+          <span className="metric-value">
+            {d.success_rate === null ? "—" : `${d.success_rate.toFixed(1)}%`}
+          </span>
+          <span className="text-kumo-subtle">
+            已结束投递：{d.succeeded} 成功 / {d.failed} 失败
+          </span>
+        </div>
         <button
           className={`metric ${d.attention_failed ? "metric-attention" : ""}`}
+          data-lamp={d.attention_failed ? "fault" : "off"}
           onClick={() => onNavigate("deliveries", { status: "failed" })}
         >
           <span>待处理失败</span>

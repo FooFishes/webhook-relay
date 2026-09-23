@@ -23,6 +23,7 @@ import { Resources } from "./Resources";
 import { Records } from "./Records";
 import { TemplateLibrary } from "./TemplateLibrary";
 import { Overview } from "./Overview";
+import { RelayMark } from "./RelayMark";
 import type { RecordFilters, Navigate } from "./types";
 
 const icons = {
@@ -81,7 +82,7 @@ export function App() {
         <div className="login-top">{themeButton}</div>
         <section className="login-card">
           <div className="brand-mark">
-            <ArrowsLeftRight size={28} />
+            <RelayMark size={52} />
           </div>
           <h1 className="mb-6">Webhook Relay</h1>
           <form onSubmit={login} className="grid gap-5">
@@ -148,9 +149,7 @@ export function Console({
             navigate("overview");
           }}
         >
-          <span className="sidebar-logo">
-            <ArrowsLeftRight size={20} />
-          </span>
+          <RelayMark size={33} />
           <span>Relay</span>
         </a>
         <nav aria-label="主导航">
