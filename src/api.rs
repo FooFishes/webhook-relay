@@ -83,6 +83,8 @@ pub fn router(s: AppState, web_dir: &str) -> Router {
         .fallback_service(tower_http::services::ServeDir::new(web_dir))
         .layer(DefaultBodyLimit::max(256 * 1024))
         .layer(middleware::from_fn(security_headers))
+        // The provider catalog in /api/meta is large but compresses well.
+        .layer(tower_http::compression::CompressionLayer::new())
         .with_state(s)
 }
 async fn security_headers(req: Request, next: Next) -> Response {
