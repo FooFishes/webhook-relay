@@ -603,7 +603,7 @@ export function Resources({
                   <EventFilter
                     value={eventTypes}
                     onChange={setEventTypes}
-                    eventNames={sourceProvider?.event_types}
+                    source={sourceProvider}
                   />
                   {usePolicy && (
                     <div className="route-template-summary">

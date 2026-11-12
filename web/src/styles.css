@@ -362,6 +362,60 @@
   .event-options {
     @apply grid gap-3 grid-cols-2;
   }
+  .event-picker {
+    display: grid;
+    gap: 12px;
+  }
+  .event-picker-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--relay-muted);
+  }
+  .event-picker-bar .event-search {
+    flex: 1;
+    margin: 0;
+  }
+  .event-picker-groups {
+    max-height: 380px;
+    overflow-y: auto;
+    border: 1px solid var(--relay-border);
+    border-radius: 8px;
+  }
+  .event-picker-group + .event-picker-group {
+    border-top: 1px solid var(--relay-border);
+  }
+  .event-picker-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+  }
+  .event-picker-head > button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .event-picker-head > button > span:first-child {
+    flex: 1;
+  }
+  .event-picker-head svg {
+    color: var(--relay-muted);
+    transition: transform 0.2s ease;
+  }
+  .event-picker-head > button[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .event-picker-count {
+    color: var(--relay-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .event-picker-group .event-options {
+    padding: 2px 12px 12px 38px;
+  }
   .variable-actions {
     @apply flex flex-wrap items-center gap-1;
   }
