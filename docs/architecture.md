@@ -35,13 +35,15 @@ API、密钥服务、数据库操作、Provider 协议和 Worker 分开管理：
 
 ## 抽象边界
 
-`SourceAdapter` 提供平台描述、凭据字段、事件选项及预览示例，负责当前平台的原始请求验签和事件标准化。来源适配器不直接发送目标通知，不持有数据库连接。
+`SourceAdapter` 提供平台描述、凭据字段、事件选项及预览示例，负责当前平台的原始请求验签和事件标准化。标准化同时接收请求头和原始正文，GitHub 的事件名只在 `x-github-event` 头里；事件目录用 `sample_headers` 为预览示例补齐这些请求头，预览与真实接收走同一条解析路径。来源适配器不直接发送目标通知，不持有数据库连接。
 
 `DestinationAdapter` 负责消息基本结构校验和发送前签名。Worker 处理 HTTP 和队列状态。适配器同时负责目标 URL 校验、响应业务码解释及是否重试的判定。Worker 按任务快照中的 provider 选择适配器，不固定调用飞书。
 
-事件内容与目标协议独立：Source 在事件目录里提供完整的 `content_template`，Destination 通过 `render_content` 将标题和内容块转换为自身消息格式。`providers/message.rs` 依次解析 Source 默认内容、Destination 默认展示、平台组合完整预设、当前规则的事件覆盖，再填充真实事件字段并交给目标适配器。`presets/apple_feishu_designs.json` 保存 13 个 Apple → 飞书完整预设，包含内容及展示配置。规则不保存模板时同样使用此路径；旧的原生 JSON 模板路径保持兼容。
+事件内容与目标协议独立：Source 在事件目录里提供完整的 `content_template`，Destination 通过 `render_content` 将标题和内容块转换为自身消息格式。`providers/message.rs` 依次解析 Source 默认内容、Destination 默认展示、平台组合完整预设、当前规则的事件覆盖，再填充真实事件字段并交给目标适配器。`presets/apple_feishu_designs.json` 保存 13 个 Apple → 飞书完整预设，包含内容及展示配置；`presets/github_feishu_designs.json` 只保存 274 个 GitHub 事件的卡片颜色与字段布局，内容直接使用事件目录。规则不保存模板时同样使用此路径；旧的原生 JSON 模板路径保持兼容。
 
 控制台的 `TemplateLibrary` 提供成品模板目录，`MessageStudio` 提供事件切换、内容编辑、变量插入、局部样式弹出面板及服务端实时预览。编辑只保存当前规则的覆盖，恢复默认只需删除该事件覆盖。预览样例不代表调用了 Apple API 补充数据，模板不虚构 Webhook 中没有的版本号、截图或反馈正文。
+
+GitHub 事件目录 `providers/github_events.json` 和对应的飞书预设由 `scripts/github_catalog.py` 生成。脚本里以数据描述每个事件的名称、字段、链接和配色，`--openapi` 参数会对照 GitHub 官方 OpenAPI 描述检查事件与动作是否一一对应、字段路径是否存在。GitHub 新增事件时，更新脚本里的定义后重新生成，不手改 JSON。
 
 `RelayEvent` 提供统一字段及 `raw`，使模板能使用通用摘要，也能读取 Provider 专属字段。首版不自动补查 Apple API，避免把 Webhook 验签密钥与 App Store Connect `.p8` API 凭证混为一谈。
 
@@ -84,7 +86,7 @@ WebUI 通过专用表单和递归字段表单编辑消息，不直接编辑原�
 - API 不返回已有密钥；浏览器不持久化管理员令牌。用户主动输入的 Key 值只在提交时发送，关闭表单后清空。
 - 生产目标仅允许 `https://open.feishu.cn/open-apis/bot/v2/hook/...`，禁止凭据、query、fragment 和重定向，不支持任意 HTTP 地址。
 - `RELAY_TEST_FEISHU_ORIGIN` 仅用于回归测试，必须是精确 `http://127.0.0.1:PORT`，不应在生产设置。
-- 全局请求体与模板限制 256 KiB，飞书适配器另行限制消息为 20 KB、模板渲染使用 fuel 和输出大小限制。入站事件仍应视为业务数据，不能当成代码执行。
+- 管理接口请求体与模板限制 256 KiB，Webhook 接收端放宽到 1 MiB 以容纳 GitHub 的 push 和工作流事件；飞书适配器另行限制消息为 20 KB、模板渲染使用 fuel 和输出大小限制。入站事件仍应视为业务数据，不能当成代码执行。
 - HTTP 连接超时 5 秒、总超时 15 秒、响应正文限制 64 KiB。
 - 控制台带有 CSP、禁止嵌入、MIME 嗅探防护和禁止缓存响应头。
 - 审计不具备抵抗数据库管理员篡改的能力；多人身份、WORM 存储、外部归档和留存策略需要独立设计。

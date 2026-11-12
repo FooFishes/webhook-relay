@@ -34,7 +34,7 @@ Content-Type: application/json
 `GET /api/meta` 返回：
 
 - `public_url`：生成实例回调地址的基础 URL。
-- `source_providers`：已注册来源适配器列表，每项包含 `id`、`name`、`category`、`fields`、`defaults`、`event_types`、`sample`。
+- `source_providers`：已注册来源适配器列表，每项包含 `id`、`name`、`category`、`fields`、`defaults`、`event_types`、`sample`、`event_definitions`。事件定义里的 `sample_headers` 是预览该事件时需要的请求头，例如 GitHub 的 `x-github-event`。
 - `destination_providers`：已注册目标适配器列表，每项包含 `id`、`name`、`category`、`fields`、`defaults`、`editor`、`message_types`、`default_template`。
 - `default_template`：兼容旧客户端的飞书默认模板；新客户端使用所选目标适配器自己的默认模板。
 
@@ -71,7 +71,7 @@ Content-Type: application/json
 
 - `source_providers[].event_definitions[event].content_template`：该 Source 事件的完整默认内容，含 `title` 和有序 `blocks`；各字段使用该事件自己的取值表达式。
 - `destination_providers[].default_presentation`、`message_styles`、`block_styles`、`accents`：目标平台的默认展示方式及可选样式。当前飞书的结构化事件消息支持消息卡片、富文本、纯文本；图片和群名片仍可通过旧版原生消息编辑器配置。
-- `pair_presets[]`：Source → Destination 的完整特调预设。`events[event]` 含 `content` 与 `presentation`，目前覆盖 13 个 Apple 事件到飞书的成品消息。
+- `pair_presets[]`：Source → Destination 的完整特调预设。`events[event]` 含 `content` 与 `presentation`，目前覆盖 13 个 Apple 事件和 274 个 GitHub 事件到飞书的成品消息。
 
 规则可省略所有消息配置字段，或显式保存：
 
@@ -114,7 +114,7 @@ Content-Type: application/json
 
 内容块支持 `text` 和 `link`，链接还需 `url`，仅接受 HTTP/HTTPS。空的渲染结果会省略，布尔值 `false` 不视为缺失。卡片支持正文、并排字段、辅助说明、链接按钮；切换富文本/纯文本保留内容和链接，局部卡片样式只在卡片模式下应用。每个事件允许 1–40 个内容块，配置总大小限制为 256 KB；最终消息仍受 Destination 限制。
 
-`POST /api/preview` 可传 `message_policy`、`sample`、`source_provider`、`destination_provider`、`source_name`，省略 `message_policy` 和 `payload_template` 时预览完整内置消息。预览与 Webhook 接收使用同一渲染路径。
+`POST /api/preview` 可传 `message_policy`、`sample`、`event_type`、`source_provider`、`destination_provider`、`source_name`，省略 `message_policy` 和 `payload_template` 时预览完整内置消息。预览与 Webhook 接收使用同一渲染路径。
 
 `message_policy`、旧版 `event_templates`、`payload_template` 三种配置互斥。旧规则保持原来的选择和发送逻辑，不自动覆盖用户已有内容。控制台可显式切换为完整内置预设，保存后生效。自定义内容保存在当前规则中；模板库的试用编辑不修改规则。审计仅保存 `message_policy_sha256`，不记录完整消息正文；已入队任务保持接收时的消息快照。
 
@@ -186,7 +186,7 @@ Content-Type: application/json
 }
 ```
 
-`event_types` 为空数组时匹配所有事件；最多 100 项。`max_attempts` 是 1–10 的整数。`enabled` 必须显式提供布尔值。
+`event_types` 为空数组时匹配所有事件；最多 500 项。`max_attempts` 是 1–10 的整数。`enabled` 必须显式提供布尔值。
 
 ## 预览
 
@@ -209,7 +209,7 @@ Content-Type: application/json
 }
 ```
 
-`source_provider` 与 `destination_provider` 指定预览适配器，未注册类型返回 400。为兼容旧请求，省略时使用原有 Apple / 飞书组合；WebUI 始终明确传递所选实例的平台。
+`source_provider` 与 `destination_provider` 指定预览适配器，未注册类型返回 400。`event_type` 让服务端按事件目录补上该事件的 `sample_headers`；GitHub 这类从请求头识别事件的来源必须传入。为兼容旧请求，省略时使用原有 Apple / 飞书组合；WebUI 始终明确传递所选实例的平台。
 
 返回 `{"payload":{...},"event":{...}}`。预览不读 Key、不发送通知；只记录预览动作和事件类型，不将示例原文写入审计。
 
@@ -255,10 +255,20 @@ worker.recovered
 | `401` | 缺失或错误的签名 |
 | `404` | 来源不存在、类型错误或已停用 |
 | `409` | 同一来源中相同事件 ID 对应不同正文 |
-| `413` | 请求体超过 256 KiB |
+| `413` | 请求体超过 1 MiB |
 | `500` | 持久化或内部处理失败，不应将其视为已成功接收 |
 
 原始事件必须包含非空的 `data.id` 和 `data.type`。新事件回应包含本地 `event_id` 和任务数 `deliveries`。所有平台通知和结果详情应通过投递记录确认。
+
+## GitHub 接收端
+
+回调地址为 `/hooks/{source_id}`，状态码与 Apple 接收端相同。
+
+- 签名：`x-hub-signature-256: sha256=<HMAC-SHA256 原始正文的 hex digest>`，密钥为 GitHub Webhook 中填写的 Secret。
+- 事件：`x-github-event` 为事件名，正文中的 `action` 为子动作，组合成 `pull_request.opened` 这样的事件类型；没有 `action` 的事件（如 `push`）直接使用事件名。`repository_dispatch` 的 `action` 是自定义值，统一记为 `repository_dispatch`。
+- 去重：`x-github-delivery` 作为事件 ID。在 GitHub 中重新投递同一条记录会被识别为重复事件。
+- 正文必须是 JSON，GitHub Webhook 的 Content type 需选择 `application/json`。
+- 目录之外的新动作（如 GitHub 日后新增的 `pull_request.xxx`）会保留接收记录，但不创建投递任务。
 
 
 ## 按来源事件配置消息模板

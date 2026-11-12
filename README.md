@@ -4,7 +4,7 @@
 
 自托管的 Webhook 通知转发服务。接收来源平台的事件，使用完整的事件预设生成消息，再通过持久化队列发送到目标平台。
 
-当前支持 **Apple App Store Connect → 飞书**，内置 13 类事件的完整消息模板。创建来源、目标和转发规则后即可使用；需要调整时，可以在控制台按事件编辑内容、插入变量、选择展示样式并预览。
+当前支持 **Apple App Store Connect → 飞书**（13 类事件）和 **GitHub → 飞书**（274 个事件动作），每个事件都有完整的消息模板。创建来源、目标和转发规则后即可使用；需要调整时，可以在控制台按事件编辑内容、插入变量、选择展示样式并预览。
 
 **[快速开始](#快速开始) · [事件与模板](#事件与模板) · [本地开发](#本地开发) · [管理 API](docs/api.md) · [架构](docs/architecture.md)**
 
@@ -67,6 +67,14 @@ Compose 默认仅将服务发布到宿主机的 `127.0.0.1:8080`。公网部署�
 5. 在 App Store Connect 配置 Webhook，填写回调地址和相同的 Secret，订阅所需事件并发起连接测试。
 6. 在「接收记录」确认事件到达，在「投递记录」确认飞书发送结果。Webhook 返回 `202` 表示事件已持久化，最终是否发送成功以投递记录为准。
 
+### 接通 GitHub → 飞书
+
+1. 在「密钥」中添加一个随机字符串作为 GitHub Webhook Secret，飞书机器人与上面相同。
+2. 在「来源」中创建 GitHub 实例，选择该 Secret，复制回调地址 `https://你的域名/hooks/{source_id}`。
+3. 在「转发规则」中关联来源和飞书目标。事件可选全部或指定：事件按分类折叠，支持搜索和整组勾选，粒度细到 `pull_request.opened`、`pull_request.closed` 这样的事件动作。
+4. 在仓库或组织的 Settings → Webhooks 中添加 Webhook：Payload URL 填回调地址，Content type 选 `application/json`，Secret 与第 1 步相同，再勾选要发送的事件。GitHub App 的 Webhook 也可以指向同一地址，以接收安装、授权等应用事件。
+5. GitHub 创建 Webhook 后会立即发送 `ping`，在「接收记录」中能看到即表示连通。
+
 如飞书启用了关键词或 IP 白名单校验，需让消息包含配置的关键词，并允许 Relay 服务器的出口 IP。平台操作说明见 [Apple Webhook 文档](https://developer.apple.com/documentation/appstoreconnectapi/configuring-webhook-notifications)与[飞书自定义机器人文档](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot)。
 
 ## 事件与模板
@@ -84,6 +92,20 @@ Compose 默认仅将服务发布到宿主机的 `127.0.0.1:8080`。公网部署�
 | 连接测试   | 连通性测试                                                     |
 
 完整事件标识和示例见 [Apple 事件目录](src/providers/apple_events.json)。规则筛选使用收到的 `data.type`，例如 `appStoreVersionAppVersionStateUpdated`。
+
+GitHub 覆盖官方 Webhook 文档中的全部 76 种事件、274 个事件动作，分为以下几类：
+
+- **连接**：`ping`、Webhook 删除。
+- **代码**：推送、分支与标签的创建和删除、提交评论、Wiki。
+- **Pull Request**：PR 全部动作、评审、代码评论、评审对话、合并队列。
+- **Issue**：Issue 全部动作、评论、子 Issue、依赖与关联、标签、里程碑。
+- **讨论**：讨论与讨论评论。
+- **持续集成**：工作流运行与任务、手动触发、检查运行与套件、提交状态。
+- **部署与发布**：部署、部署状态与审批、Release、软件包、Pages 构建。
+- **安全**：代码扫描、Dependabot、密钥扫描、安全公告等告警。
+- **仓库**、**组织与团队**、**项目**、**应用与赞助**：设置、成员、项目条目、GitHub App 安装、Marketplace 与赞助等。
+
+规则筛选使用 `事件.动作`，例如 `pull_request.closed`；没有动作的事件直接使用事件名，例如 `push`。完整目录见 [GitHub 事件目录](src/providers/github_events.json)，由 [`scripts/github_catalog.py`](scripts/github_catalog.py) 对照 GitHub 官方 OpenAPI 生成。
 
 ### 默认内容与展示方式
 
@@ -215,7 +237,7 @@ cargo build --locked
 python3 scripts/verify_http.py
 ```
 
-HTTP 回归使用真实 Rust 进程、临时 SQLite 和本地飞书模拟服务，覆盖验签、去重、事件模板、重试、重启恢复和审计，不连接真实 Apple 或飞书，也不修改正式数据库。报告生成在被 Git 忽略的 `reports/` 目录。
+HTTP 回归使用真实 Rust 进程、临时 SQLite 和本地飞书模拟服务，覆盖验签、去重、事件模板、重试、重启恢复和审计，不连接真实 Apple、GitHub 或飞书，也不修改正式数据库。报告生成在被 Git 忽略的 `reports/` 目录。
 
 Docker 冒烟验证：
 
@@ -228,7 +250,7 @@ python3 scripts/verify_docker.py
 
 ## 当前范围
 
-- 当前适配器为 App Store Connect 来源和飞书目标；平台接口、消息格式和字段描述由适配器提供，可通过 Rust trait 扩展。
+- 当前适配器为 App Store Connect、GitHub 两个来源和飞书目标；平台接口、消息格式和字段描述由适配器提供，可通过 Rust trait 扩展。
 - TestFlight 反馈事件只转发 Webhook 自身携带的信息。尚未调用 App Store Connect API 补充反馈正文、截图或崩溃日志。
 - 不支持 App Store Server Notifications V2 的订阅、退款和内购 `signedPayload` 协议。
 - 使用单个管理员令牌，尚无多用户账号、角色权限或自动历史归档。
