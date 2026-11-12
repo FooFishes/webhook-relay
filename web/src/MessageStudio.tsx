@@ -11,6 +11,7 @@ import {
   Trash,
   ArrowCounterClockwise,
   BracketsCurly,
+  GithubLogo,
   LinkSimple,
 } from "@phosphor-icons/react";
 import type { Api } from "./api";
@@ -47,7 +48,9 @@ export function ProviderMark({
       data-provider={provider}
       aria-hidden="true"
     >
-      {provider === "apple_app_store_connect" ? (
+      {provider === "github" ? (
+        <GithubLogo weight="fill" />
+      ) : provider === "apple_app_store_connect" ? (
         <svg viewBox="0 0 24 24">
           <path
             fill="currentColor"
@@ -99,9 +102,7 @@ export function MessageStudio({
   eventTypes?: string[];
   initialEvent?: string;
 }) {
-  const [selection, setSelection] = useState(
-    initialEvent || "appStoreVersionAppVersionStateUpdated",
-  );
+  const [selection, setSelection] = useState(initialEvent || "");
   const [search, setSearch] = useState("");
   // "title", a block id, or null when nothing is being edited.
   const [editing, setEditing] = useState<string | null>(null);
@@ -139,6 +140,7 @@ export function MessageStudio({
     source_provider: source.id,
     destination_provider: target.id,
     source_name: sourceName,
+    event_type: eventType,
     sample: definition?.sample,
   });
   useEffect(() => {
@@ -217,7 +219,14 @@ export function MessageStudio({
         : kind === "link"
           ? "打开详情"
           : "新的通知内容",
-      ...(kind === "link" ? { url: "https://appstoreconnect.apple.com/" } : {}),
+      ...(kind === "link"
+        ? {
+            url:
+              definition?.content_template?.blocks.find(
+                (b) => b.kind === "link",
+              )?.url || "https://",
+          }
+        : {}),
     };
     const blocks = [...content.blocks];
     blocks.splice(at, 0, block);
