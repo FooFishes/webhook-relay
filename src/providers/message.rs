@@ -5,6 +5,7 @@ use anyhow::{Result, anyhow, ensure};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, HashSet};
+use std::sync::LazyLock;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -48,9 +49,20 @@ pub struct Policy {
     pub overrides: BTreeMap<String, Override>,
 }
 
-pub fn pair_presets() -> Value {
-    serde_json::from_str(include_str!("presets/apple_feishu_designs.json"))
-        .expect("built-in presentation presets")
+static PAIR_PRESETS: LazyLock<Value> = LazyLock::new(|| {
+    let mut pairs = Vec::new();
+    for preset in [
+        include_str!("presets/apple_feishu_designs.json"),
+        include_str!("presets/github_feishu_designs.json"),
+    ] {
+        let preset: Vec<Value> =
+            serde_json::from_str(preset).expect("built-in presentation presets");
+        pairs.extend(preset);
+    }
+    Value::Array(pairs)
+});
+pub fn pair_presets() -> &'static Value {
+    &PAIR_PRESETS
 }
 
 fn parse_policy(value: &Value) -> Result<Policy> {

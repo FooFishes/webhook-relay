@@ -1,5 +1,6 @@
 pub mod apple;
 pub mod feishu;
+pub mod github;
 pub mod message;
 pub mod presets;
 pub mod registry;

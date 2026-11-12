@@ -348,3 +348,108 @@ fn structured_templates_preserve_false_and_reject_unsafe_links() {
     let policy = json!({"preset":"default","overrides":{"webhookPingCreated":{"content":{"title":"安全链接","blocks":[{"id":"link","kind":"link","text":"打开","url":"javascript:alert(1)"}]}}}});
     assert!(message::validate(&policy, &source, &Feishu).is_err());
 }
+
+fn github_headers(event: &str) -> HeaderMap {
+    let mut headers = HeaderMap::new();
+    headers.insert("x-github-event", event.parse().unwrap());
+    headers.insert(
+        "x-github-delivery",
+        "72d3162e-cc78-11e3-81ab".parse().unwrap(),
+    );
+    headers
+}
+
+#[test]
+fn github_official_signature_vector_and_event_keys() {
+    use webhook_relay::providers::github::GitHub;
+    let signature = "sha256=757107ea0eb2509fc211221cce984b8a37570b6d7586c22c46f4379c8b043e17";
+    assert!(
+        GitHub
+            .verify(b"Hello, World!", signature, "It's a Secret to Everybody")
+            .is_ok()
+    );
+    assert!(
+        GitHub
+            .verify(b"Hello, World", signature, "It's a Secret to Everybody")
+            .is_err()
+    );
+    assert!(
+        GitHub
+            .verify(
+                b"Hello, World!",
+                &signature[7..],
+                "It's a Secret to Everybody"
+            )
+            .is_err()
+    );
+    for (event, body, expected) in [
+        (
+            "pull_request",
+            json!({"action":"opened"}),
+            "pull_request.opened",
+        ),
+        ("push", json!({"ref":"refs/heads/main"}), "push"),
+        (
+            "repository_dispatch",
+            json!({"action":"deploy-now"}),
+            "repository_dispatch",
+        ),
+        (
+            "pull_request",
+            json!({"action":"future"}),
+            "pull_request.future",
+        ),
+    ] {
+        let event = GitHub
+            .normalize(&github_headers(event), body.to_string().as_bytes(), "repo")
+            .unwrap();
+        assert_eq!(event.event_type, expected);
+        assert_eq!(event.id, "72d3162e-cc78-11e3-81ab");
+    }
+    assert!(GitHub.normalize(&HeaderMap::new(), b"{}", "repo").is_err());
+    assert!(
+        GitHub
+            .normalize(&github_headers("push"), b"payload=%7B%7D", "repo")
+            .is_err()
+    );
+}
+
+#[test]
+fn every_github_event_renders_complete_and_minimal_messages() {
+    use webhook_relay::providers::{github::GitHub, message, sample_headers};
+    let source = GitHub.descriptor();
+    let definitions = source["event_definitions"].as_object().unwrap();
+    assert_eq!(definitions.len(), 274);
+    for preset in ["recommended", "default"] {
+        message::validate(&json!({"preset":preset,"overrides":{}}), &source, &Feishu).unwrap();
+    }
+    for (kind, definition) in definitions {
+        let headers = sample_headers(definition).unwrap();
+        let mut event = GitHub
+            .normalize(
+                &headers,
+                &serde_json::to_vec(&definition["sample"]).unwrap(),
+                "仓库通知",
+            )
+            .unwrap();
+        assert_eq!(&event.event_type, kind);
+        let full = message::render(&message::default_policy(), &source, &event, &Feishu)
+            .unwrap()
+            .unwrap()
+            .to_string();
+        assert!(
+            full.contains(definition["name"].as_str().unwrap()),
+            "{kind}"
+        );
+        // Real payloads may omit any catalogued field; the message must still render cleanly.
+        event.raw = json!({"action": definition["sample"]["action"]});
+        let minimal = message::render(&message::default_policy(), &source, &event, &Feishu)
+            .unwrap()
+            .unwrap()
+            .to_string();
+        assert!(
+            !minimal.contains("None") && !minimal.contains("{{"),
+            "{kind}"
+        );
+    }
+}

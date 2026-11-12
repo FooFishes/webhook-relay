@@ -73,8 +73,13 @@ pub fn router(s: AppState, web_dir: &str) -> Router {
     Router::new()
         .nest("/api", admin)
         .route("/healthz", get(|| async { Json(json!({"status":"ok"})) }))
-        .route("/hooks/{id}", post(receive))
-        .route("/hooks/apple/{id}", post(receive))
+        .merge(
+            // GitHub payloads (push, workflow_run) routinely exceed the admin API limit.
+            Router::new()
+                .route("/hooks/{id}", post(receive))
+                .route("/hooks/apple/{id}", post(receive))
+                .layer(DefaultBodyLimit::max(1024 * 1024)),
+        )
         .fallback_service(tower_http::services::ServeDir::new(web_dir))
         .layer(DefaultBodyLimit::max(256 * 1024))
         .layer(middleware::from_fn(security_headers))

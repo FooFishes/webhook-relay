@@ -1,10 +1,11 @@
 // Only implemented adapters are registered. The same descriptors drive the UI.
-use super::{DestinationAdapter, SourceAdapter, apple::Apple, feishu::Feishu};
+use super::{DestinationAdapter, SourceAdapter, apple::Apple, feishu::Feishu, github::GitHub};
 use anyhow::{Result, anyhow};
 use serde_json::Value;
 pub fn source(id: &str) -> Result<&'static dyn SourceAdapter> {
     match id {
         "apple_app_store_connect" => Ok(&Apple),
+        "github" => Ok(&GitHub),
         _ => Err(anyhow!("unsupported source provider: {id}")),
     }
 }
@@ -15,7 +16,7 @@ pub fn destination(id: &str) -> Result<&'static dyn DestinationAdapter> {
     }
 }
 pub fn sources() -> Vec<Value> {
-    vec![Apple.descriptor()]
+    vec![Apple.descriptor(), GitHub.descriptor()]
 }
 pub fn destinations() -> Vec<Value> {
     vec![Feishu.descriptor()]

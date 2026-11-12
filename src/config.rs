@@ -94,7 +94,7 @@ pub async fn validate(s: &AppState, kind: &str, c: &Value) -> Result<()> {
                 .as_array()
                 .ok_or_else(|| anyhow!("event_types must be an array"))?;
             ensure!(
-                types.len() <= 100
+                types.len() <= 500
                     && types
                         .iter()
                         .all(|x| x.as_str().is_some_and(|s| !s.is_empty() && s.len() <= 128)),
