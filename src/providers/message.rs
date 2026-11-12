@@ -191,8 +191,11 @@ pub fn validate(value: &Value, source: &Value, destination: &dyn DestinationAdap
             );
         }
         template::validate_value(&serde_json::to_value(&content)?)?;
-        let event = registry::source(source["id"].as_str().unwrap())?
-            .normalize(&serde_json::to_vec(&definition["sample"])?, "预览来源")?;
+        let event = registry::source(source["id"].as_str().unwrap())?.normalize(
+            &super::sample_headers(definition)?,
+            &serde_json::to_vec(&definition["sample"])?,
+            "预览来源",
+        )?;
         render_resolved(&content, &presentation, &event, destination)?;
     }
     Ok(())

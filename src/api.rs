@@ -325,6 +325,7 @@ struct Preview {
     payload_template: Option<Value>,
     message_policy: Option<Value>,
     sample: Value,
+    event_type: Option<String>,
     source_name: Option<String>,
     source_provider: Option<String>,
     destination_provider: Option<String>,
@@ -342,8 +343,19 @@ async fn preview(State(s): State<AppState>, Json(p): Json<Preview>) -> Result<Js
     if p.payload_template.is_some() && p.message_policy.is_some() {
         return Err(bad("choose one message configuration mode"));
     }
+    let descriptor = source.descriptor();
+    let headers = match &p.event_type {
+        Some(kind) => crate::providers::sample_headers(
+            descriptor["event_definitions"]
+                .get(kind)
+                .ok_or_else(|| bad("unsupported source event"))?,
+        )
+        .map_err(|e| bad(e.to_string()))?,
+        None => HeaderMap::new(),
+    };
     let event = source
         .normalize(
+            &headers,
             &serde_json::to_vec(&p.sample)?,
             p.source_name.as_deref().unwrap_or("预览来源"),
         )
@@ -356,9 +368,9 @@ async fn preview(State(s): State<AppState>, Json(p): Json<Preview>) -> Result<Js
         let policy = p
             .message_policy
             .unwrap_or_else(crate::providers::message::default_policy);
-        crate::providers::message::validate(&policy, &source.descriptor(), destination)
+        crate::providers::message::validate(&policy, &descriptor, destination)
             .map_err(|e| bad(e.to_string()))?;
-        crate::providers::message::render(&policy, &source.descriptor(), &event, destination)
+        crate::providers::message::render(&policy, &descriptor, &event, destination)
             .map_err(|e| bad(e.to_string()))?
             .ok_or_else(|| bad("unsupported source event"))?
     };
@@ -402,7 +414,7 @@ async fn receive(
         .await?;
         return Err(ApiError(StatusCode::UNAUTHORIZED, "签名校验失败".into()));
     }
-    let event = match adapter.normalize(&raw, &source.name) {
+    let event = match adapter.normalize(&headers, &raw, &source.name) {
         Ok(e) => e,
         Err(_) => {
             s.log(

@@ -1,3 +1,4 @@
+use axum::http::HeaderMap;
 use serde_json::json;
 use webhook_relay::{
     crypto::Vault,
@@ -124,7 +125,9 @@ fn apple_normalizes_event_specific_state_fields() {
     ] {
         let raw =
             json!({"data":{"id":"event","type":"buildUploadStateUpdated","attributes":attrs}});
-        let event = Apple.normalize(raw.to_string().as_bytes(), "app").unwrap();
+        let event = Apple
+            .normalize(&HeaderMap::new(), raw.to_string().as_bytes(), "app")
+            .unwrap();
         assert!(event.summary.contains(expected));
     }
 }
@@ -160,7 +163,7 @@ fn each_apple_event_has_a_native_feishu_template_and_scoped_fields() {
             .unwrap();
         let raw = &definition["sample"];
         let event = Apple
-            .normalize(raw.to_string().as_bytes(), "i山大")
+            .normalize(&HeaderMap::new(), raw.to_string().as_bytes(), "i山大")
             .unwrap();
         let output = template::render_for(&preset["payload_template"], &event, &Feishu).unwrap();
         assert_eq!(event.raw, *raw);
@@ -182,7 +185,7 @@ fn each_apple_event_has_a_native_feishu_template_and_scoped_fields() {
         }
         let missing = json!({"data":{"id":"missing-optional", "type":kind}});
         let event = Apple
-            .normalize(missing.to_string().as_bytes(), "i山大")
+            .normalize(&HeaderMap::new(), missing.to_string().as_bytes(), "i山大")
             .unwrap();
         let minimal = template::render_for(&preset["payload_template"], &event, &Feishu).unwrap();
         assert!(!minimal.to_string().contains("事件时间："));
@@ -249,6 +252,7 @@ fn builtin_content_is_complete_for_every_event_and_renders_in_every_style() {
         for (kind, definition) in definitions {
             let mut event = Apple
                 .normalize(
+                    &HeaderMap::new(),
                     &serde_json::to_vec(&definition["sample"]).unwrap(),
                     "发布助手",
                 )
@@ -285,6 +289,7 @@ fn content_overrides_are_event_scoped_and_default_presentation_is_inherited() {
     let source = Apple.descriptor();
     let event = Apple
         .normalize(
+            &HeaderMap::new(),
             &serde_json::to_vec(&source["event_definitions"]["webhookPingCreated"]["sample"])
                 .unwrap(),
             "App",
@@ -334,7 +339,7 @@ fn structured_templates_preserve_false_and_reject_unsafe_links() {
             .clone();
     raw["data"]["attributes"]["available"] = false.into();
     let event = Apple
-        .normalize(&serde_json::to_vec(&raw).unwrap(), "App")
+        .normalize(&HeaderMap::new(), &serde_json::to_vec(&raw).unwrap(), "App")
         .unwrap();
     let rendered = message::render(&message::default_policy(), &source, &event, &Feishu)
         .unwrap()

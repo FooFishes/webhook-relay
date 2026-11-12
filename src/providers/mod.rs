@@ -7,12 +7,30 @@ pub mod template;
 
 use crate::model::RelayEvent;
 use anyhow::Result;
+use axum::http::{HeaderMap, HeaderName, HeaderValue};
+use serde_json::Value;
 // Providers own their wire protocol. Routing and persistence remain provider-independent.
 pub trait SourceAdapter: Send + Sync {
     fn descriptor(&self) -> serde_json::Value;
     fn signature_header(&self) -> &'static str;
     fn verify(&self, raw: &[u8], signature: &str, secret: &str) -> Result<()>;
-    fn normalize(&self, raw: &[u8], source_name: &str) -> Result<RelayEvent>;
+    // Some providers identify the event in request headers rather than the body.
+    fn normalize(&self, headers: &HeaderMap, raw: &[u8], source_name: &str) -> Result<RelayEvent>;
+}
+// Catalog samples carry the headers their provider needs, so previews match real deliveries.
+pub fn sample_headers(definition: &Value) -> Result<HeaderMap> {
+    let mut headers = HeaderMap::new();
+    for (name, value) in definition["sample_headers"]
+        .as_object()
+        .into_iter()
+        .flatten()
+    {
+        headers.insert(
+            HeaderName::try_from(name.as_str())?,
+            HeaderValue::from_str(value.as_str().unwrap_or_default())?,
+        );
+    }
+    Ok(headers)
 }
 pub struct DeliveryResponse {
     pub success: bool,

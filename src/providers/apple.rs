@@ -1,5 +1,6 @@
 use crate::{model::RelayEvent, providers::SourceAdapter};
 use anyhow::{Result, anyhow, ensure};
+use axum::http::HeaderMap;
 use hmac::{Hmac, Mac};
 use serde_json::{Value, json};
 use sha2::Sha256;
@@ -23,7 +24,7 @@ impl SourceAdapter for Apple {
         mac.verify_slice(&digest)
             .map_err(|_| anyhow!("invalid signature"))
     }
-    fn normalize(&self, raw: &[u8], source_name: &str) -> Result<RelayEvent> {
+    fn normalize(&self, _: &HeaderMap, raw: &[u8], source_name: &str) -> Result<RelayEvent> {
         let raw: Value = serde_json::from_slice(raw)?;
         let d = &raw["data"];
         let id = d["id"]
