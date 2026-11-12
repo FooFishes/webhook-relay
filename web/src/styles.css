@@ -376,6 +376,11 @@
     flex: 1;
     margin: 0;
   }
+  .event-picker-bar > span {
+    min-width: 6em;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
   .event-picker-groups {
     max-height: 380px;
     overflow-y: auto;
