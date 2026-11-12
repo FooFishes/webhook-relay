@@ -1,0 +1,2039 @@
+[
+  {
+    "id": "github-feishu",
+    "name": "GitHub × 飞书",
+    "description": "覆盖所有 GitHub 事件的飞书卡片预设，按事件语义设置卡片颜色与字段布局。",
+    "source_provider": "github",
+    "destination_provider": "feishu",
+    "events": {
+      "ping": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "meta.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "push": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "head_commit_message": "text"
+          }
+        }
+      },
+      "create": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "delete": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "commit_comment.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "gollum": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.opened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "pull_request_body": "text"
+          }
+        }
+      },
+      "pull_request.closed": {
+        "presentation": {
+          "style": "card",
+          "accent": "purple",
+          "block_styles": {}
+        }
+      },
+      "pull_request.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "pull_request.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.ready_for_review": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "pull_request.converted_to_draft": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.synchronize": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.review_requested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "pull_request.review_request_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.assigned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.unassigned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.labeled": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.unlabeled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.milestoned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.demilestoned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.locked": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "pull_request.unlocked": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.auto_merge_enabled": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.auto_merge_disabled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.enqueued": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request.dequeued": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "pull_request.stacked": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "pull_request_review.submitted": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "review_body": "text"
+          }
+        }
+      },
+      "pull_request_review.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "review_body": "text"
+          }
+        }
+      },
+      "pull_request_review.dismissed": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "review_body": "text"
+          }
+        }
+      },
+      "pull_request_review_comment.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "pull_request_review_comment.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "pull_request_review_comment.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "pull_request_review_thread.resolved": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "pull_request_review_thread.unresolved": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "merge_group.checks_requested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "merge_group.destroyed": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "issues.opened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "issue_body": "text"
+          }
+        }
+      },
+      "issues.closed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "issues.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "issues.transferred": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "issues.assigned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.unassigned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.labeled": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.unlabeled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.milestoned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.demilestoned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.locked": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "issues.unlocked": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.pinned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.unpinned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.typed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.untyped": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issues.field_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issues.field_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issue_comment.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "issue_comment.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "issue_comment.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "issue_comment.pinned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "issue_comment.unpinned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "sub_issues.sub_issue_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "sub_issues.sub_issue_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "sub_issues.parent_issue_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "sub_issues.parent_issue_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issue_dependencies.blocked_by_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issue_dependencies.blocked_by_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issue_dependencies.blocking_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "issue_dependencies.blocking_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "issue_relates_to.relates_to_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "issue_relates_to.relates_to_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "label.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "label.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "label.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "label.archived": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "label.unarchived": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "milestone.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "milestone.opened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "milestone.closed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "milestone.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "milestone.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "discussion.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "discussion_body": "text"
+          }
+        }
+      },
+      "discussion.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "discussion.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "discussion.answered": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "answer_body": "text"
+          }
+        }
+      },
+      "discussion.unanswered": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "discussion.category_changed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "discussion.closed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "discussion.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "discussion.labeled": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "discussion.unlabeled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "discussion.locked": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "discussion.unlocked": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "discussion.pinned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "discussion.unpinned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "discussion.transferred": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "discussion_comment.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "discussion_comment.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "discussion_comment.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "comment_body": "text"
+          }
+        }
+      },
+      "workflow_run.requested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "workflow_run.in_progress": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "workflow_run.completed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "workflow_job.queued": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "workflow_job.waiting": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "workflow_job.in_progress": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "workflow_job.completed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "workflow_dispatch": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "check_run.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "check_run.completed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "check_run.rerequested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "check_run.requested_action": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "check_suite.requested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "check_suite.rerequested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "check_suite.completed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "status": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "description": "text"
+          }
+        }
+      },
+      "deployment.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "deployment_description": "text"
+          }
+        }
+      },
+      "deployment_status.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "deployment_status_description": "text"
+          }
+        }
+      },
+      "deployment_review.requested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "deployment_review.approved": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "comment": "text"
+          }
+        }
+      },
+      "deployment_review.rejected": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "comment": "text"
+          }
+        }
+      },
+      "deployment_protection_rule.requested": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "release.published": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "release.released": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "release.prereleased": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "release.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "release.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "release.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "release.unpublished": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {
+            "release_body": "text"
+          }
+        }
+      },
+      "package.published": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "package.updated": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "registry_package.published": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "registry_package.updated": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "page_build": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "build_error_message": "text"
+          }
+        }
+      },
+      "code_scanning_alert.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "code_scanning_alert.fixed": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "code_scanning_alert.closed_by_user": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "code_scanning_alert.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "code_scanning_alert.reopened_by_user": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "code_scanning_alert.appeared_in_branch": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "code_scanning_alert.updated_assignment": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.fixed": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.dismissed": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.reintroduced": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.auto_dismissed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.auto_reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "dependabot_alert.assignees_changed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.resolved": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.publicly_leaked": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.validated": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.assigned": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.unassigned": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.metadata_created": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert.metadata_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_alert_location.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "secret_scanning_scan.completed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository_advisory.published": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "repository_advisory.reported": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "repository_vulnerability_alert.create": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "repository_vulnerability_alert.dismiss": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository_vulnerability_alert.reopen": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository_vulnerability_alert.resolve": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "security_advisory.published": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "security_advisory.updated": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "security_advisory.withdrawn": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "security_and_analysis": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.archived": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.unarchived": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.renamed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.transferred": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.publicized": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "repository.privatized": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "repository_description": "text"
+          }
+        }
+      },
+      "branch_protection_rule.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "branch_protection_rule.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "branch_protection_rule.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "branch_protection_configuration.enabled": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "branch_protection_configuration.disabled": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "repository_ruleset.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "repository_ruleset.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository_ruleset.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "deploy_key.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "deploy_key.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "custom_property_values.updated": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "public": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository_import": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "repository_dispatch": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "star.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "star.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "watch.started": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "fork": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "member.added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "member.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "member.removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "team_add": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "organization.member_added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "organization.member_removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "organization.member_invited": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "organization.renamed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "organization.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "membership.added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "membership.removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "team.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "team.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "team.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "team.added_to_repository": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "team.removed_from_repository": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "org_block.blocked": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "org_block.unblocked": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "custom_property.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "custom_property.updated": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "custom_property.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "custom_property.promote_to_enterprise": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "personal_access_token_request.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "personal_access_token_request.approved": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "personal_access_token_request.denied": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "personal_access_token_request.cancelled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "project.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "project.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "project.closed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "project.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "project.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "project_card.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "project_card_note": "text"
+          }
+        }
+      },
+      "project_card.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "project_card_note": "text"
+          }
+        }
+      },
+      "project_card.moved": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "project_card_note": "text"
+          }
+        }
+      },
+      "project_card.converted": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "project_card_note": "text"
+          }
+        }
+      },
+      "project_card.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "project_card_note": "text"
+          }
+        }
+      },
+      "project_column.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "project_column.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "project_column.moved": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "project_column.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "projects_v2.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "projects_v2_short_description": "text"
+          }
+        }
+      },
+      "projects_v2.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "projects_v2_short_description": "text"
+          }
+        }
+      },
+      "projects_v2.closed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {
+            "projects_v2_short_description": "text"
+          }
+        }
+      },
+      "projects_v2.reopened": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "projects_v2_short_description": "text"
+          }
+        }
+      },
+      "projects_v2.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "projects_v2_short_description": "text"
+          }
+        }
+      },
+      "projects_v2_item.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_item.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_item.archived": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_item.restored": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_item.converted": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_item.reordered": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_item.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "projects_v2_status_update.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {
+            "projects_v2_status_update_body": "text"
+          }
+        }
+      },
+      "projects_v2_status_update.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {
+            "projects_v2_status_update_body": "text"
+          }
+        }
+      },
+      "projects_v2_status_update.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {
+            "projects_v2_status_update_body": "text"
+          }
+        }
+      },
+      "installation.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "installation.deleted": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "installation.suspend": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "installation.unsuspend": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "installation.new_permissions_accepted": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "installation_repositories.added": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "installation_repositories.removed": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "installation_target.renamed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "github_app_authorization.revoked": {
+        "presentation": {
+          "style": "card",
+          "accent": "red",
+          "block_styles": {}
+        }
+      },
+      "marketplace_purchase.purchased": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "marketplace_purchase.changed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "marketplace_purchase.cancelled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "marketplace_purchase.pending_change": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "marketplace_purchase.pending_change_cancelled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "sponsorship.created": {
+        "presentation": {
+          "style": "card",
+          "accent": "green",
+          "block_styles": {}
+        }
+      },
+      "sponsorship.edited": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "sponsorship.cancelled": {
+        "presentation": {
+          "style": "card",
+          "accent": "grey",
+          "block_styles": {}
+        }
+      },
+      "sponsorship.pending_cancellation": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      },
+      "sponsorship.tier_changed": {
+        "presentation": {
+          "style": "card",
+          "accent": "blue",
+          "block_styles": {}
+        }
+      },
+      "sponsorship.pending_tier_change": {
+        "presentation": {
+          "style": "card",
+          "accent": "orange",
+          "block_styles": {}
+        }
+      }
+    }
+  }
+]
