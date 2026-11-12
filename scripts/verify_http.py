@@ -28,6 +28,7 @@ MESSAGES = []
 COUNTS = {}
 SIGNING = 'local-test-feishu-signing-secret'
 APPLE = 'local-test-apple-signing-secret'
+GITHUB = 'local-test-github-webhook-secret'
 TOKEN = secrets.token_urlsafe(36)
 MASTER = base64.b64encode(secrets.token_bytes(32)).decode()
 LOCK = threading.Lock()
@@ -215,7 +216,7 @@ def run():
             check('Missing signature is rejected', request('/hooks/apple/' + source['id'], 'POST', data=event(), auth=False)[0] == 401)
             check('Invalid signature is rejected', send(source, signature='hmacsha256=00')[0] == 401)
             check('Valid signature with invalid JSON is rejected', send(source, raw=b'not JSON')[0] == 400)
-            check('Body limit rejects oversized requests', send(source, raw=b'x' * (256 * 1024 + 1))[0] == 413)
+            check('Body limit rejects oversized requests', send(source, raw=b'x' * (1024 * 1024 + 1))[0] == 413)
             check('Preview handles quote/newline without invalid JSON', request('/api/preview', 'POST', {'sample': event(), 'source_name': 'quote"\n中文', 'payload_template': meta['default_template']})[1]['payload']['content']['text'].startswith('quote"\n中文'))
             check('Preview rejects undefined template variables', request('/api/preview', 'POST', {'sample': event(), 'payload_template': {'msg_type': 'text', 'content': {'text': '{{ event.missing }}'}}})[0] == 400)
             raw = json.dumps(event(), indent=2).encode()
@@ -439,6 +440,36 @@ def run():
             check('Policy rejects unknown event overrides',request('/api/preview','POST',{'sample':event(),'message_policy':invalid_policy})[0]==400)
             audit_rows=request('/api/audit?limit=200')[1]
             check('Policy audit contains hashes and no custom message body','message_policy_sha256' in json.dumps(audit_rows) and 'CUSTOM-POLICY-PING' not in json.dumps(audit_rows))
+            gh_key = create('keys', 'GitHub Webhook Secret', {'value': GITHUB})
+            gh_source = create('sources', 'GitHub 仓库', {'provider': 'github', 'enabled': True, 'key_id': gh_key['id']})
+            gh_defs = next(p for p in meta['source_providers'] if p['id'] == 'github')['event_definitions']
+            check('GitHub catalog lists every event action', len(gh_defs) == 274 and 'pull_request.closed' in gh_defs)
+
+            def send_github(event_name, payload, delivery=None, secret=GITHUB, headers=None):
+                raw = json.dumps(payload, ensure_ascii=False).encode()
+                values = {'x-hub-signature-256': 'sha256=' + hmac.new(secret.encode(), raw, hashlib.sha256).hexdigest(),
+                          'x-github-event': event_name, 'x-github-delivery': delivery or secrets.token_hex(16)}
+                values.update(headers or {})
+                return request('/hooks/' + gh_source['id'], 'POST', auth=False, raw=raw, headers=values)
+            create('routes', 'GitHub PR 关闭通知', {'source_id': gh_source['id'], 'destination_id': dest['id'],
+                                                  'event_types': ['ping', 'pull_request.closed'], 'max_attempts': 2, 'enabled': True})
+            check('GitHub signature mismatch is rejected', send_github('ping', gh_defs['ping']['sample'], secret='wrong')[0] == 401)
+            check('GitHub request without event header is rejected', send_github('ping', gh_defs['ping']['sample'], headers={'x-github-event': ''})[0] == 400)
+            status, accepted = send_github('ping', gh_defs['ping']['sample'])
+            check('GitHub ping is accepted and delivered', status == 202 and accepted['deliveries'] == 1)
+            closed = gh_defs['pull_request.closed']['sample']
+            status, preview = request('/api/preview', 'POST', {'source_provider': 'github', 'destination_provider': 'feishu', 'event_type': 'pull_request.closed',
+                                                                'sample': closed, 'source_name': 'GitHub 仓库'})
+            check('GitHub preview identifies the event from catalog headers', status == 200 and preview['event']['event_type'] == 'pull_request.closed', preview)
+            delivery = secrets.token_hex(16)
+            accepted = send_github('pull_request', closed, delivery=delivery)[1]
+            wait_for(lambda: deliveries(accepted['event_id'])[0]['status'] == 'succeeded')
+            with LOCK:
+                actual = {k: v for k, v in MESSAGES[-1]['body'].items() if k not in ('timestamp', 'sign')}
+            check('GitHub merged pull request reaches Feishu as the previewed card', actual == preview['payload'] and '已合并：是' in json.dumps(actual, ensure_ascii=False))
+            check('GitHub redelivery with the same delivery ID is deduplicated', send_github('pull_request', closed, delivery=delivery)[1].get('duplicate'))
+            check('GitHub actions outside the route filter create no task', send_github('pull_request', {**closed, 'action': 'opened'})[1]['deliveries'] == 0)
+            check('GitHub payloads above the admin API limit are accepted', send_github('pull_request', {**closed, 'padding': 'x' * (400 * 1024)})[0] == 202)
             process.terminate(); process.wait(timeout=5)
             env['RELAY_MASTER_KEY'] = base64.b64encode(secrets.token_bytes(32)).decode()
             invalid = subprocess.run([str(ROOT/'target/debug/webhook-relay')],cwd=ROOT,env=env,stdout=log,stderr=log,timeout=5)
