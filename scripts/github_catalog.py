@@ -23,6 +23,7 @@ def F(path, label, kind="str", ex=None):
     return {"path": path, "label": label, "kind": kind, "ex": ex}
 
 
+# An action label starting with "=" is the complete event name.
 def E(name, group, actions=None, *, subject=None, fields=(), extra=None, link=None, scope="repo", intro=None):
     """actions: {action: label}; empty means the event carries no action."""
     return {"name": name, "group": group, "actions": actions or {}, "subject": subject,
@@ -95,7 +96,7 @@ EVENTS = {
                                      fields=[F("comment.user.login", "评论人"), F("comment.path", "文件"), F("comment.body", "评论内容", "long")]),
     "pull_request_review_thread": E("PR 评审对话", "Pull Request", {"resolved": "已解决", "unresolved": "已重新打开"},
                                     subject=PR, link=PR_LINK, fields=[F("thread.comments.0.path", "文件")]),
-    "merge_group": E("合并队列", "Pull Request", {"checks_requested": "请求检查", "destroyed": "已销毁"},
+    "merge_group": E("合并队列", "Pull Request", {"checks_requested": "已请求检查", "destroyed": "已销毁"},
                      subject=("{merge_group.head_ref}", [F("merge_group.head_ref", "合并组分支")]),
                      fields=[F("merge_group.base_ref", "目标分支"), F("merge_group.head_sha", "提交", "sha")],
                      extra={"destroyed": [F("reason", "原因")]}, link=REPO_LINK),
@@ -118,19 +119,20 @@ EVENTS = {
                                                "pinned": "已置顶", "unpinned": "已取消置顶"},
                        subject=ISSUE, link=("{comment.html_url}", "查看评论"),
                        fields=[F("comment.user.login", "评论人"), F("comment.body", "评论内容", "long")]),
-    "sub_issues": E("子 Issue", "Issue", {"sub_issue_added": "已添加子 Issue", "sub_issue_removed": "已移除子 Issue",
-                                         "parent_issue_added": "已设置父 Issue", "parent_issue_removed": "已移除父 Issue"},
+    "sub_issues": E("子 Issue", "Issue", {"sub_issue_added": "已添加", "sub_issue_removed": "已移除",
+                                         "parent_issue_added": "=父 Issue 已设置", "parent_issue_removed": "=父 Issue 已移除"},
                     subject=("#{parent_issue.number} {parent_issue.title}",
                              [F("parent_issue.number", "父 Issue 编号"), F("parent_issue.title", "父 Issue 标题")]),
                     fields=[F("sub_issue.number", "子 Issue 编号"), F("sub_issue.title", "子 Issue 标题")],
                     link=("{parent_issue.html_url}", "查看父 Issue")),
-    "issue_dependencies": E("Issue 依赖", "Issue", {"blocked_by_added": "已添加阻塞项", "blocked_by_removed": "已移除阻塞项",
-                                                   "blocking_added": "已添加被阻塞项", "blocking_removed": "已移除被阻塞项"},
+    "issue_dependencies": E("Issue 依赖", "Issue", {"blocked_by_added": "=Issue 被标记为阻塞", "blocked_by_removed": "=Issue 已解除阻塞",
+                                                   "blocking_added": "=Issue 被标记为阻塞其他 Issue",
+                                                   "blocking_removed": "=Issue 已不再阻塞其他 Issue"},
                             subject=("#{blocked_issue.number} {blocked_issue.title}",
                                      [F("blocked_issue.number", "被阻塞 Issue 编号"), F("blocked_issue.title", "被阻塞 Issue 标题")]),
                             fields=[F("blocking_issue.number", "阻塞 Issue 编号"), F("blocking_issue.title", "阻塞 Issue 标题")],
                             link=("{blocked_issue.html_url}", "查看 Issue")),
-    "issue_relates_to": E("Issue 关联", "Issue", {"relates_to_added": "已添加关联", "relates_to_removed": "已移除关联"},
+    "issue_relates_to": E("Issue 关联", "Issue", {"relates_to_added": "=Issue 已添加关联", "relates_to_removed": "=Issue 已移除关联"},
                           subject=ISSUE, link=ISSUE_LINK,
                           fields=[F("related_issue.number", "关联 Issue 编号"), F("related_issue.title", "关联 Issue 标题")]),
     "label": E("标签", "Issue", {"created": "已创建", "edited": "已编辑", "deleted": "已删除",
@@ -160,7 +162,7 @@ EVENTS = {
                             subject=DISCUSSION, link=("{comment.html_url}", "查看评论"),
                             fields=[F("comment.user.login", "评论人"), F("comment.body", "评论内容", "long")]),
 
-    "workflow_run": E("工作流运行", "持续集成", {"requested": "已触发", "in_progress": "运行中", "completed": "已结束"},
+    "workflow_run": E("工作流运行", "持续集成", {"requested": "已触发", "in_progress": "=工作流正在运行", "completed": "已结束"},
                       subject=("{workflow_run.name} #{workflow_run.run_number}",
                                [F("workflow_run.name", "工作流"), F("workflow_run.run_number", "运行编号")]),
                       fields=[F("workflow_run.head_branch", "分支"), F("workflow_run.event", "触发方式"),
@@ -176,14 +178,14 @@ EVENTS = {
                       link=("{workflow_job.html_url}", "查看任务")),
     "workflow_dispatch": E("手动触发工作流", "持续集成", subject=("{workflow}", [F("workflow", "工作流文件")]),
                            fields=[F("ref", "分支或标签", "ref")], link=("{repository.html_url}/actions", "查看 Actions")),
-    "check_run": E("检查运行", "持续集成", {"created": "已创建", "completed": "已结束", "rerequested": "请求重新运行",
-                                           "requested_action": "请求操作"},
+    "check_run": E("检查运行", "持续集成", {"created": "已创建", "completed": "已结束", "rerequested": "已请求重跑",
+                                           "requested_action": "已请求操作"},
                    subject=("{check_run.name}", [F("check_run.name", "检查")]),
                    fields=[F("check_run.app.name", "应用"), F("check_run.head_sha", "提交", "sha"), F("check_run.status", "状态")],
                    extra={"completed": [F("check_run.conclusion", "结论")],
                           "requested_action": [F("requested_action.identifier", "操作")]},
                    link=("{check_run.html_url}", "查看检查")),
-    "check_suite": E("检查套件", "持续集成", {"requested": "已请求", "rerequested": "请求重新运行", "completed": "已结束"},
+    "check_suite": E("检查套件", "持续集成", {"requested": "已请求", "rerequested": "已请求重跑", "completed": "已结束"},
                      subject=("{check_suite.app.name}", [F("check_suite.app.name", "应用")]),
                      fields=[F("check_suite.head_branch", "分支"), F("check_suite.head_sha", "提交", "sha"),
                              F("check_suite.status", "状态")],
@@ -204,14 +206,14 @@ EVENTS = {
                            fields=[F("deployment_status.state", "状态"), F("deployment.ref", "分支或标签"),
                                    F("deployment_status.description", "说明", "long")],
                            link=("{deployment_status.target_url}", "查看部署")),
-    "deployment_review": E("部署审批", "部署与发布", {"requested": "等待审批", "approved": "已批准", "rejected": "已拒绝"},
+    "deployment_review": E("部署审批", "部署与发布", {"requested": "=部署等待审批", "approved": "已通过", "rejected": "已拒绝"},
                            subject=("{workflow_run.name}", [F("workflow_run.name", "工作流")]),
                            fields=[F("workflow_run.head_branch", "分支")],
                            extra={"requested": [F("environment", "环境"), F("requestor.login", "申请人")],
                                   "approved": [F("workflow_job_runs.0.environment", "环境"), F("approver.login", "审批人"), F("comment", "审批意见", "long")],
                                   "rejected": [F("workflow_job_runs.0.environment", "环境"), F("approver.login", "审批人"), F("comment", "审批意见", "long")]},
                            link=("{workflow_run.html_url}", "查看运行")),
-    "deployment_protection_rule": E("部署保护规则", "部署与发布", {"requested": "等待判定"},
+    "deployment_protection_rule": E("部署保护规则", "部署与发布", {"requested": "=部署等待保护规则判定"},
                                     subject=("{environment}", [F("environment", "环境")]),
                                     fields=[F("event", "触发方式"), F("deployment.ref", "分支或标签")],
                                     link=("{repository.html_url}/deployments", "查看部署")),
@@ -236,7 +238,7 @@ EVENTS = {
                     link=("{repository.html_url}/settings/pages", "查看 Pages")),
 
     "code_scanning_alert": E("代码扫描告警", "安全", {
-        "created": "新告警", "fixed": "已修复", "closed_by_user": "已手动关闭", "reopened": "已重新打开",
+        "created": "已产生", "fixed": "已修复", "closed_by_user": "已手动关闭", "reopened": "已重新打开",
         "reopened_by_user": "已手动重新打开", "appeared_in_branch": "出现在新分支", "updated_assignment": "处理人已变更"},
         subject=("#{alert.number} {alert.rule.description}",
                  [F("alert.number", "告警编号"), F("alert.rule.description", "规则")]),
@@ -244,7 +246,7 @@ EVENTS = {
                 F("alert.most_recent_instance.ref", "分支或标签", "ref")],
         link=("{alert.html_url}", "查看告警")),
     "dependabot_alert": E("Dependabot 告警", "安全", {
-        "created": "新告警", "fixed": "已修复", "dismissed": "已忽略", "reopened": "已重新打开", "reintroduced": "再次出现",
+        "created": "已产生", "fixed": "已修复", "dismissed": "已忽略", "reopened": "已重新打开", "reintroduced": "再次出现",
         "auto_dismissed": "已自动忽略", "auto_reopened": "已自动重新打开", "assignees_changed": "处理人已变更"},
         subject=("#{alert.number} {alert.security_advisory.summary}",
                  [F("alert.number", "告警编号"), F("alert.security_advisory.summary", "漏洞")]),
@@ -252,7 +254,7 @@ EVENTS = {
                 F("alert.dependency.manifest_path", "清单文件"), F("alert.security_advisory.ghsa_id", "GHSA")],
         link=("{alert.html_url}", "查看告警")),
     "secret_scanning_alert": E("密钥扫描告警", "安全", {
-        "created": "新告警", "resolved": "已解决", "reopened": "已重新打开", "publicly_leaked": "已公开泄露",
+        "created": "已产生", "resolved": "已解决", "reopened": "已重新打开", "publicly_leaked": "已公开泄露",
         "validated": "有效性已验证", "assigned": "已指派", "unassigned": "已取消指派",
         "metadata_created": "元数据已创建", "metadata_removed": "元数据已移除"},
         subject=("#{alert.number} {alert.secret_type_display_name}",
@@ -268,12 +270,12 @@ EVENTS = {
                               subject=("{type}", [F("type", "扫描类型")]),
                               fields=[F("source", "扫描范围"), F("completed_at", "完成时间")],
                               link=("{repository.html_url}/security/secret-scanning", "查看密钥扫描")),
-    "repository_advisory": E("仓库安全公告", "安全", {"published": "已发布", "reported": "收到报告"},
+    "repository_advisory": E("仓库安全公告", "安全", {"published": "已发布", "reported": "=收到安全漏洞报告"},
                              subject=("{repository_advisory.summary}", [F("repository_advisory.summary", "公告")]),
                              fields=[F("repository_advisory.ghsa_id", "GHSA"), F("repository_advisory.severity", "严重程度")],
                              link=("{repository_advisory.html_url}", "查看公告")),
     "repository_vulnerability_alert": E("依赖漏洞告警（旧版）", "安全", {
-        "create": "新告警", "dismiss": "已忽略", "reopen": "已重新打开", "resolve": "已解决"},
+        "create": "已产生", "dismiss": "已忽略", "reopen": "已重新打开", "resolve": "已解决"},
         subject=("{alert.affected_package_name}", [F("alert.affected_package_name", "依赖包")]),
         fields=[F("alert.severity", "严重程度"), F("alert.affected_range", "影响范围"), F("alert.fixed_in", "修复版本"),
                 F("alert.external_identifier", "漏洞编号")],
@@ -311,19 +313,19 @@ EVENTS = {
     "repository_import": E("仓库导入", "仓库", subject=("{status}", [F("status", "导入状态")]), link=REPO_LINK),
     "repository_dispatch": E("仓库自定义事件", "仓库", subject=("{action}", [F("action", "事件类型", ex="on-demand-test")]),
                              fields=[F("branch", "分支")], link=("{repository.html_url}/actions", "查看 Actions")),
-    "star": E("Star", "仓库", {"created": "新增 Star", "deleted": "取消 Star"},
+    "star": E("Star", "仓库", {"created": "=新增 Star", "deleted": "=取消 Star"},
               fields=[F("repository.stargazers_count", "Star 总数")], link=REPO_LINK),
-    "watch": E("关注", "仓库", {"started": "新增关注"}, fields=[F("repository.watchers_count", "关注总数")], link=REPO_LINK),
-    "fork": E("Fork", "仓库", subject=("{forkee.full_name}", [F("forkee.full_name", "新仓库")]),
+    "watch": E("关注", "仓库", {"started": "=新增关注"}, fields=[F("repository.watchers_count", "关注总数")], link=REPO_LINK),
+    "fork": E("仓库被 Fork", "仓库", subject=("{forkee.full_name}", [F("forkee.full_name", "新仓库")]),
               link=("{forkee.html_url}", "查看 Fork")),
     "member": E("仓库协作者", "仓库", {"added": "已添加", "edited": "权限已变更", "removed": "已移除"},
                 subject=("{member.login}", [F("member.login", "协作者")]), extra={"added": [F("changes.permission.to", "权限")]},
                 link=("{repository.html_url}/settings/access", "查看协作者")),
     "team_add": E("团队加入仓库", "仓库", subject=("{team.name}", [F("team.name", "团队")]), link=("{team.html_url}", "查看团队")),
 
-    "organization": E("组织成员", "组织与团队", {
+    "organization": E("组织", "组织与团队", {
         "member_added": "成员已加入", "member_removed": "成员已移除", "member_invited": "已邀请成员",
-        "renamed": "组织已重命名", "deleted": "组织已删除"},
+        "renamed": "已重命名", "deleted": "已删除"},
         scope="org",
         extra={"member_added": [F("membership.user.login", "成员"), F("membership.role", "角色")],
                "member_removed": [F("membership.user.login", "成员"), F("membership.role", "角色")],
@@ -337,7 +339,7 @@ EVENTS = {
                                     "added_to_repository": "已加入仓库", "removed_from_repository": "已移出仓库"},
               scope="org", subject=("{team.name}", [F("team.name", "团队")]),
               fields=[F("team.privacy", "可见性"), F("repository.full_name", "仓库")], link=("{team.html_url}", "查看团队")),
-    "org_block": E("组织封禁", "组织与团队", {"blocked": "已封禁用户", "unblocked": "已解封用户"}, scope="org",
+    "org_block": E("组织封禁", "组织与团队", {"blocked": "=组织已封禁用户", "unblocked": "=组织已解封用户"}, scope="org",
                    subject=("{blocked_user.login}", [F("blocked_user.login", "用户")]),
                    link=("{blocked_user.html_url}", "查看用户")),
     "custom_property": E("组织自定义属性", "组织与团队", {"created": "已创建", "updated": "已更新", "deleted": "已删除",
@@ -345,7 +347,7 @@ EVENTS = {
                          scope="org", subject=("{definition.property_name}", [F("definition.property_name", "属性")]),
                          extra={a: [F("definition.value_type", "值类型")]
                                 for a in ("created", "updated", "promote_to_enterprise")}),
-    "personal_access_token_request": E("访问令牌申请", "组织与团队", {"created": "新申请", "approved": "已批准",
+    "personal_access_token_request": E("访问令牌申请", "组织与团队", {"created": "=收到访问令牌申请", "approved": "已批准",
                                                                        "denied": "已拒绝", "cancelled": "已取消"},
                                        scope="org", subject=("{personal_access_token_request.owner.login}",
                                                              [F("personal_access_token_request.owner.login", "申请人")]),
@@ -374,13 +376,13 @@ EVENTS = {
                                    fields=[F("projects_v2_status_update.target_date", "目标日期"),
                                            F("projects_v2_status_update.body", "内容", "long")]),
 
-    "installation": E("GitHub App 安装", "应用与赞助", {"created": "已安装", "deleted": "已卸载", "suspend": "已暂停",
+    "installation": E("GitHub App", "应用与赞助", {"created": "已安装", "deleted": "已卸载", "suspend": "已暂停",
                                                        "unsuspend": "已恢复", "new_permissions_accepted": "已接受新权限"},
                       scope="none", subject=("{installation.account.login}", [F("installation.account.login", "账号")]),
                       fields=[F("installation.app_slug", "应用"), F("installation.repository_selection", "仓库范围"),
                               F("sender.login", "操作人")],
                       link=("{installation.html_url}", "查看安装")),
-    "installation_repositories": E("GitHub App 仓库授权", "应用与赞助", {"added": "已添加仓库", "removed": "已移除仓库"},
+    "installation_repositories": E("GitHub App 授权仓库", "应用与赞助", {"added": "已添加", "removed": "已移除"},
                                    scope="none", subject=("{installation.account.login}",
                                                           [F("installation.account.login", "账号")]),
                                    fields=[F("repositories_added", "新增仓库", "names:full_name"),
@@ -399,7 +401,7 @@ EVENTS = {
         fields=[F("marketplace_purchase.plan.name", "套餐"), F("marketplace_purchase.billing_cycle", "计费周期"),
                 F("effective_date", "生效时间")]),
     "sponsorship": E("赞助", "应用与赞助", {
-        "created": "新赞助", "edited": "已编辑", "cancelled": "已取消", "pending_cancellation": "即将取消",
+        "created": "=新增赞助", "edited": "已编辑", "cancelled": "已取消", "pending_cancellation": "即将取消",
         "tier_changed": "档位已变更", "pending_tier_change": "档位即将变更"}, scope="none",
         subject=("{sponsorship.sponsor.login}", [F("sponsorship.sponsor.login", "赞助人")]),
         fields=[F("sponsorship.sponsorable.login", "被赞助人"), F("sponsorship.tier.name", "档位")],
@@ -577,9 +579,11 @@ LINK_LABEL = "链接地址"
 
 def build_entry(event, action, spec, label, order):
     key = f"{event}.{action}" if action else event
-    name = f"{spec['name']}{label}" if action else spec["name"]
-    if action and not re.match(r"^[A-Za-z]", label):
-        name = f"{spec['name']} {label}"
+    # Latin names read better with a space before Chinese action labels.
+    gap = " " if action and re.search(r"[A-Za-z0-9]$", spec["name"]) else ""
+    name = f"{spec['name']}{gap}{label}" if action else spec["name"]
+    if action and label.startswith("="):
+        name = label[1:]
     subject_text, subject_fields = spec["subject"] or ("", [])
     fields = []
     for f in subject_fields + COMMON[spec["scope"]] + spec["fields"] + spec["extra"].get(action, []):

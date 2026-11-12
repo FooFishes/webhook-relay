@@ -491,10 +491,10 @@
     }
   },
   "commit_comment.created": {
-    "name": "提交评论 已创建",
+    "name": "提交评论已创建",
     "group": "代码",
     "order": 5,
-    "description": "提交评论 已创建。",
+    "description": "提交评论已创建。",
     "fields": [
       {
         "path": "comment.commit_id",
@@ -562,7 +562,7 @@
       "x-github-delivery": "preview-commit_comment.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 提交评论 已创建",
+      "title": "{{ event.source_name }} · 提交评论已创建",
       "blocks": [
         {
           "id": "subject",
@@ -3845,10 +3845,10 @@
     }
   },
   "pull_request_review.submitted": {
-    "name": "PR 评审 已提交",
+    "name": "PR 评审已提交",
     "group": "Pull Request",
     "order": 29,
-    "description": "PR 评审 已提交。",
+    "description": "PR 评审已提交。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -3925,7 +3925,7 @@
       "x-github-delivery": "preview-pull_request_review.submitted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 评审 已提交",
+      "title": "{{ event.source_name }} · PR 评审已提交",
       "blocks": [
         {
           "id": "subject",
@@ -3974,10 +3974,10 @@
     }
   },
   "pull_request_review.edited": {
-    "name": "PR 评审 已编辑",
+    "name": "PR 评审已编辑",
     "group": "Pull Request",
     "order": 30,
-    "description": "PR 评审 已编辑。",
+    "description": "PR 评审已编辑。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4054,7 +4054,7 @@
       "x-github-delivery": "preview-pull_request_review.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 评审 已编辑",
+      "title": "{{ event.source_name }} · PR 评审已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -4103,10 +4103,10 @@
     }
   },
   "pull_request_review.dismissed": {
-    "name": "PR 评审 已驳回",
+    "name": "PR 评审已驳回",
     "group": "Pull Request",
     "order": 31,
-    "description": "PR 评审 已驳回。",
+    "description": "PR 评审已驳回。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4183,7 +4183,7 @@
       "x-github-delivery": "preview-pull_request_review.dismissed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 评审 已驳回",
+      "title": "{{ event.source_name }} · PR 评审已驳回",
       "blocks": [
         {
           "id": "subject",
@@ -4232,10 +4232,10 @@
     }
   },
   "pull_request_review_comment.created": {
-    "name": "PR 代码评论 已创建",
+    "name": "PR 代码评论已创建",
     "group": "Pull Request",
     "order": 32,
-    "description": "PR 代码评论 已创建。",
+    "description": "PR 代码评论已创建。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4312,7 +4312,7 @@
       "x-github-delivery": "preview-pull_request_review_comment.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 代码评论 已创建",
+      "title": "{{ event.source_name }} · PR 代码评论已创建",
       "blocks": [
         {
           "id": "subject",
@@ -4361,10 +4361,10 @@
     }
   },
   "pull_request_review_comment.edited": {
-    "name": "PR 代码评论 已编辑",
+    "name": "PR 代码评论已编辑",
     "group": "Pull Request",
     "order": 33,
-    "description": "PR 代码评论 已编辑。",
+    "description": "PR 代码评论已编辑。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4441,7 +4441,7 @@
       "x-github-delivery": "preview-pull_request_review_comment.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 代码评论 已编辑",
+      "title": "{{ event.source_name }} · PR 代码评论已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -4490,10 +4490,10 @@
     }
   },
   "pull_request_review_comment.deleted": {
-    "name": "PR 代码评论 已删除",
+    "name": "PR 代码评论已删除",
     "group": "Pull Request",
     "order": 34,
-    "description": "PR 代码评论 已删除。",
+    "description": "PR 代码评论已删除。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4570,7 +4570,7 @@
       "x-github-delivery": "preview-pull_request_review_comment.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 代码评论 已删除",
+      "title": "{{ event.source_name }} · PR 代码评论已删除",
       "blocks": [
         {
           "id": "subject",
@@ -4619,10 +4619,10 @@
     }
   },
   "pull_request_review_thread.resolved": {
-    "name": "PR 评审对话 已解决",
+    "name": "PR 评审对话已解决",
     "group": "Pull Request",
     "order": 35,
-    "description": "PR 评审对话 已解决。",
+    "description": "PR 评审对话已解决。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4687,7 +4687,7 @@
       "x-github-delivery": "preview-pull_request_review_thread.resolved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 评审对话 已解决",
+      "title": "{{ event.source_name }} · PR 评审对话已解决",
       "blocks": [
         {
           "id": "subject",
@@ -4724,10 +4724,10 @@
     }
   },
   "pull_request_review_thread.unresolved": {
-    "name": "PR 评审对话 已重新打开",
+    "name": "PR 评审对话已重新打开",
     "group": "Pull Request",
     "order": 36,
-    "description": "PR 评审对话 已重新打开。",
+    "description": "PR 评审对话已重新打开。",
     "fields": [
       {
         "path": "pull_request.number",
@@ -4792,7 +4792,7 @@
       "x-github-delivery": "preview-pull_request_review_thread.unresolved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · PR 评审对话 已重新打开",
+      "title": "{{ event.source_name }} · PR 评审对话已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -4829,10 +4829,10 @@
     }
   },
   "merge_group.checks_requested": {
-    "name": "合并队列 请求检查",
+    "name": "合并队列已请求检查",
     "group": "Pull Request",
     "order": 37,
-    "description": "合并队列 请求检查。",
+    "description": "合并队列已请求检查。",
     "fields": [
       {
         "path": "merge_group.head_ref",
@@ -4891,7 +4891,7 @@
       "x-github-delivery": "preview-merge_group.checks_requested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 合并队列 请求检查",
+      "title": "{{ event.source_name }} · 合并队列已请求检查",
       "blocks": [
         {
           "id": "subject",
@@ -4934,10 +4934,10 @@
     }
   },
   "merge_group.destroyed": {
-    "name": "合并队列 已销毁",
+    "name": "合并队列已销毁",
     "group": "Pull Request",
     "order": 38,
-    "description": "合并队列 已销毁。",
+    "description": "合并队列已销毁。",
     "fields": [
       {
         "path": "merge_group.head_ref",
@@ -5003,7 +5003,7 @@
       "x-github-delivery": "preview-merge_group.destroyed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 合并队列 已销毁",
+      "title": "{{ event.source_name }} · 合并队列已销毁",
       "blocks": [
         {
           "id": "subject",
@@ -7298,10 +7298,10 @@
     }
   },
   "issue_comment.created": {
-    "name": "Issue 评论 已创建",
+    "name": "Issue 评论已创建",
     "group": "Issue",
     "order": 59,
-    "description": "Issue 评论 已创建。",
+    "description": "Issue 评论已创建。",
     "fields": [
       {
         "path": "issue.number",
@@ -7371,7 +7371,7 @@
       "x-github-delivery": "preview-issue_comment.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 评论 已创建",
+      "title": "{{ event.source_name }} · Issue 评论已创建",
       "blocks": [
         {
           "id": "subject",
@@ -7414,10 +7414,10 @@
     }
   },
   "issue_comment.edited": {
-    "name": "Issue 评论 已编辑",
+    "name": "Issue 评论已编辑",
     "group": "Issue",
     "order": 60,
-    "description": "Issue 评论 已编辑。",
+    "description": "Issue 评论已编辑。",
     "fields": [
       {
         "path": "issue.number",
@@ -7487,7 +7487,7 @@
       "x-github-delivery": "preview-issue_comment.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 评论 已编辑",
+      "title": "{{ event.source_name }} · Issue 评论已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -7530,10 +7530,10 @@
     }
   },
   "issue_comment.deleted": {
-    "name": "Issue 评论 已删除",
+    "name": "Issue 评论已删除",
     "group": "Issue",
     "order": 61,
-    "description": "Issue 评论 已删除。",
+    "description": "Issue 评论已删除。",
     "fields": [
       {
         "path": "issue.number",
@@ -7603,7 +7603,7 @@
       "x-github-delivery": "preview-issue_comment.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 评论 已删除",
+      "title": "{{ event.source_name }} · Issue 评论已删除",
       "blocks": [
         {
           "id": "subject",
@@ -7646,10 +7646,10 @@
     }
   },
   "issue_comment.pinned": {
-    "name": "Issue 评论 已置顶",
+    "name": "Issue 评论已置顶",
     "group": "Issue",
     "order": 62,
-    "description": "Issue 评论 已置顶。",
+    "description": "Issue 评论已置顶。",
     "fields": [
       {
         "path": "issue.number",
@@ -7719,7 +7719,7 @@
       "x-github-delivery": "preview-issue_comment.pinned"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 评论 已置顶",
+      "title": "{{ event.source_name }} · Issue 评论已置顶",
       "blocks": [
         {
           "id": "subject",
@@ -7762,10 +7762,10 @@
     }
   },
   "issue_comment.unpinned": {
-    "name": "Issue 评论 已取消置顶",
+    "name": "Issue 评论已取消置顶",
     "group": "Issue",
     "order": 63,
-    "description": "Issue 评论 已取消置顶。",
+    "description": "Issue 评论已取消置顶。",
     "fields": [
       {
         "path": "issue.number",
@@ -7835,7 +7835,7 @@
       "x-github-delivery": "preview-issue_comment.unpinned"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 评论 已取消置顶",
+      "title": "{{ event.source_name }} · Issue 评论已取消置顶",
       "blocks": [
         {
           "id": "subject",
@@ -7878,10 +7878,10 @@
     }
   },
   "sub_issues.sub_issue_added": {
-    "name": "子 Issue 已添加子 Issue",
+    "name": "子 Issue 已添加",
     "group": "Issue",
     "order": 64,
-    "description": "子 Issue 已添加子 Issue。",
+    "description": "子 Issue 已添加。",
     "fields": [
       {
         "path": "parent_issue.number",
@@ -7949,7 +7949,7 @@
       "x-github-delivery": "preview-sub_issues.sub_issue_added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 子 Issue 已添加子 Issue",
+      "title": "{{ event.source_name }} · 子 Issue 已添加",
       "blocks": [
         {
           "id": "subject",
@@ -7992,10 +7992,10 @@
     }
   },
   "sub_issues.sub_issue_removed": {
-    "name": "子 Issue 已移除子 Issue",
+    "name": "子 Issue 已移除",
     "group": "Issue",
     "order": 65,
-    "description": "子 Issue 已移除子 Issue。",
+    "description": "子 Issue 已移除。",
     "fields": [
       {
         "path": "parent_issue.number",
@@ -8063,7 +8063,7 @@
       "x-github-delivery": "preview-sub_issues.sub_issue_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 子 Issue 已移除子 Issue",
+      "title": "{{ event.source_name }} · 子 Issue 已移除",
       "blocks": [
         {
           "id": "subject",
@@ -8106,10 +8106,10 @@
     }
   },
   "sub_issues.parent_issue_added": {
-    "name": "子 Issue 已设置父 Issue",
+    "name": "父 Issue 已设置",
     "group": "Issue",
     "order": 66,
-    "description": "子 Issue 已设置父 Issue。",
+    "description": "父 Issue 已设置。",
     "fields": [
       {
         "path": "parent_issue.number",
@@ -8177,7 +8177,7 @@
       "x-github-delivery": "preview-sub_issues.parent_issue_added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 子 Issue 已设置父 Issue",
+      "title": "{{ event.source_name }} · 父 Issue 已设置",
       "blocks": [
         {
           "id": "subject",
@@ -8220,10 +8220,10 @@
     }
   },
   "sub_issues.parent_issue_removed": {
-    "name": "子 Issue 已移除父 Issue",
+    "name": "父 Issue 已移除",
     "group": "Issue",
     "order": 67,
-    "description": "子 Issue 已移除父 Issue。",
+    "description": "父 Issue 已移除。",
     "fields": [
       {
         "path": "parent_issue.number",
@@ -8291,7 +8291,7 @@
       "x-github-delivery": "preview-sub_issues.parent_issue_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 子 Issue 已移除父 Issue",
+      "title": "{{ event.source_name }} · 父 Issue 已移除",
       "blocks": [
         {
           "id": "subject",
@@ -8334,10 +8334,10 @@
     }
   },
   "issue_dependencies.blocked_by_added": {
-    "name": "Issue 依赖 已添加阻塞项",
+    "name": "Issue 被标记为阻塞",
     "group": "Issue",
     "order": 68,
-    "description": "Issue 依赖 已添加阻塞项。",
+    "description": "Issue 被标记为阻塞。",
     "fields": [
       {
         "path": "blocked_issue.number",
@@ -8405,7 +8405,7 @@
       "x-github-delivery": "preview-issue_dependencies.blocked_by_added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 依赖 已添加阻塞项",
+      "title": "{{ event.source_name }} · Issue 被标记为阻塞",
       "blocks": [
         {
           "id": "subject",
@@ -8448,10 +8448,10 @@
     }
   },
   "issue_dependencies.blocked_by_removed": {
-    "name": "Issue 依赖 已移除阻塞项",
+    "name": "Issue 已解除阻塞",
     "group": "Issue",
     "order": 69,
-    "description": "Issue 依赖 已移除阻塞项。",
+    "description": "Issue 已解除阻塞。",
     "fields": [
       {
         "path": "blocked_issue.number",
@@ -8519,7 +8519,7 @@
       "x-github-delivery": "preview-issue_dependencies.blocked_by_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 依赖 已移除阻塞项",
+      "title": "{{ event.source_name }} · Issue 已解除阻塞",
       "blocks": [
         {
           "id": "subject",
@@ -8562,10 +8562,10 @@
     }
   },
   "issue_dependencies.blocking_added": {
-    "name": "Issue 依赖 已添加被阻塞项",
+    "name": "Issue 被标记为阻塞其他 Issue",
     "group": "Issue",
     "order": 70,
-    "description": "Issue 依赖 已添加被阻塞项。",
+    "description": "Issue 被标记为阻塞其他 Issue。",
     "fields": [
       {
         "path": "blocked_issue.number",
@@ -8633,7 +8633,7 @@
       "x-github-delivery": "preview-issue_dependencies.blocking_added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 依赖 已添加被阻塞项",
+      "title": "{{ event.source_name }} · Issue 被标记为阻塞其他 Issue",
       "blocks": [
         {
           "id": "subject",
@@ -8676,10 +8676,10 @@
     }
   },
   "issue_dependencies.blocking_removed": {
-    "name": "Issue 依赖 已移除被阻塞项",
+    "name": "Issue 已不再阻塞其他 Issue",
     "group": "Issue",
     "order": 71,
-    "description": "Issue 依赖 已移除被阻塞项。",
+    "description": "Issue 已不再阻塞其他 Issue。",
     "fields": [
       {
         "path": "blocked_issue.number",
@@ -8747,7 +8747,7 @@
       "x-github-delivery": "preview-issue_dependencies.blocking_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 依赖 已移除被阻塞项",
+      "title": "{{ event.source_name }} · Issue 已不再阻塞其他 Issue",
       "blocks": [
         {
           "id": "subject",
@@ -8790,10 +8790,10 @@
     }
   },
   "issue_relates_to.relates_to_added": {
-    "name": "Issue 关联 已添加关联",
+    "name": "Issue 已添加关联",
     "group": "Issue",
     "order": 72,
-    "description": "Issue 关联 已添加关联。",
+    "description": "Issue 已添加关联。",
     "fields": [
       {
         "path": "issue.number",
@@ -8861,7 +8861,7 @@
       "x-github-delivery": "preview-issue_relates_to.relates_to_added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 关联 已添加关联",
+      "title": "{{ event.source_name }} · Issue 已添加关联",
       "blocks": [
         {
           "id": "subject",
@@ -8904,10 +8904,10 @@
     }
   },
   "issue_relates_to.relates_to_removed": {
-    "name": "Issue 关联 已移除关联",
+    "name": "Issue 已移除关联",
     "group": "Issue",
     "order": 73,
-    "description": "Issue 关联 已移除关联。",
+    "description": "Issue 已移除关联。",
     "fields": [
       {
         "path": "issue.number",
@@ -8975,7 +8975,7 @@
       "x-github-delivery": "preview-issue_relates_to.relates_to_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Issue 关联 已移除关联",
+      "title": "{{ event.source_name }} · Issue 已移除关联",
       "blocks": [
         {
           "id": "subject",
@@ -9018,10 +9018,10 @@
     }
   },
   "label.created": {
-    "name": "标签 已创建",
+    "name": "标签已创建",
     "group": "Issue",
     "order": 74,
-    "description": "标签 已创建。",
+    "description": "标签已创建。",
     "fields": [
       {
         "path": "label.name",
@@ -9073,7 +9073,7 @@
       "x-github-delivery": "preview-label.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 标签 已创建",
+      "title": "{{ event.source_name }} · 标签已创建",
       "blocks": [
         {
           "id": "subject",
@@ -9110,10 +9110,10 @@
     }
   },
   "label.edited": {
-    "name": "标签 已编辑",
+    "name": "标签已编辑",
     "group": "Issue",
     "order": 75,
-    "description": "标签 已编辑。",
+    "description": "标签已编辑。",
     "fields": [
       {
         "path": "label.name",
@@ -9165,7 +9165,7 @@
       "x-github-delivery": "preview-label.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 标签 已编辑",
+      "title": "{{ event.source_name }} · 标签已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -9202,10 +9202,10 @@
     }
   },
   "label.deleted": {
-    "name": "标签 已删除",
+    "name": "标签已删除",
     "group": "Issue",
     "order": 76,
-    "description": "标签 已删除。",
+    "description": "标签已删除。",
     "fields": [
       {
         "path": "label.name",
@@ -9257,7 +9257,7 @@
       "x-github-delivery": "preview-label.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 标签 已删除",
+      "title": "{{ event.source_name }} · 标签已删除",
       "blocks": [
         {
           "id": "subject",
@@ -9294,10 +9294,10 @@
     }
   },
   "label.archived": {
-    "name": "标签 已归档",
+    "name": "标签已归档",
     "group": "Issue",
     "order": 77,
-    "description": "标签 已归档。",
+    "description": "标签已归档。",
     "fields": [
       {
         "path": "label.name",
@@ -9349,7 +9349,7 @@
       "x-github-delivery": "preview-label.archived"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 标签 已归档",
+      "title": "{{ event.source_name }} · 标签已归档",
       "blocks": [
         {
           "id": "subject",
@@ -9386,10 +9386,10 @@
     }
   },
   "label.unarchived": {
-    "name": "标签 已取消归档",
+    "name": "标签已取消归档",
     "group": "Issue",
     "order": 78,
-    "description": "标签 已取消归档。",
+    "description": "标签已取消归档。",
     "fields": [
       {
         "path": "label.name",
@@ -9441,7 +9441,7 @@
       "x-github-delivery": "preview-label.unarchived"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 标签 已取消归档",
+      "title": "{{ event.source_name }} · 标签已取消归档",
       "blocks": [
         {
           "id": "subject",
@@ -9478,10 +9478,10 @@
     }
   },
   "milestone.created": {
-    "name": "里程碑 已创建",
+    "name": "里程碑已创建",
     "group": "Issue",
     "order": 79,
-    "description": "里程碑 已创建。",
+    "description": "里程碑已创建。",
     "fields": [
       {
         "path": "milestone.title",
@@ -9547,7 +9547,7 @@
       "x-github-delivery": "preview-milestone.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 里程碑 已创建",
+      "title": "{{ event.source_name }} · 里程碑已创建",
       "blocks": [
         {
           "id": "subject",
@@ -9596,10 +9596,10 @@
     }
   },
   "milestone.opened": {
-    "name": "里程碑 已打开",
+    "name": "里程碑已打开",
     "group": "Issue",
     "order": 80,
-    "description": "里程碑 已打开。",
+    "description": "里程碑已打开。",
     "fields": [
       {
         "path": "milestone.title",
@@ -9665,7 +9665,7 @@
       "x-github-delivery": "preview-milestone.opened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 里程碑 已打开",
+      "title": "{{ event.source_name }} · 里程碑已打开",
       "blocks": [
         {
           "id": "subject",
@@ -9714,10 +9714,10 @@
     }
   },
   "milestone.closed": {
-    "name": "里程碑 已关闭",
+    "name": "里程碑已关闭",
     "group": "Issue",
     "order": 81,
-    "description": "里程碑 已关闭。",
+    "description": "里程碑已关闭。",
     "fields": [
       {
         "path": "milestone.title",
@@ -9783,7 +9783,7 @@
       "x-github-delivery": "preview-milestone.closed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 里程碑 已关闭",
+      "title": "{{ event.source_name }} · 里程碑已关闭",
       "blocks": [
         {
           "id": "subject",
@@ -9832,10 +9832,10 @@
     }
   },
   "milestone.edited": {
-    "name": "里程碑 已编辑",
+    "name": "里程碑已编辑",
     "group": "Issue",
     "order": 82,
-    "description": "里程碑 已编辑。",
+    "description": "里程碑已编辑。",
     "fields": [
       {
         "path": "milestone.title",
@@ -9901,7 +9901,7 @@
       "x-github-delivery": "preview-milestone.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 里程碑 已编辑",
+      "title": "{{ event.source_name }} · 里程碑已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -9950,10 +9950,10 @@
     }
   },
   "milestone.deleted": {
-    "name": "里程碑 已删除",
+    "name": "里程碑已删除",
     "group": "Issue",
     "order": 83,
-    "description": "里程碑 已删除。",
+    "description": "里程碑已删除。",
     "fields": [
       {
         "path": "milestone.title",
@@ -10019,7 +10019,7 @@
       "x-github-delivery": "preview-milestone.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 里程碑 已删除",
+      "title": "{{ event.source_name }} · 里程碑已删除",
       "blocks": [
         {
           "id": "subject",
@@ -10068,10 +10068,10 @@
     }
   },
   "discussion.created": {
-    "name": "讨论 已创建",
+    "name": "讨论已创建",
     "group": "讨论",
     "order": 84,
-    "description": "讨论 已创建。",
+    "description": "讨论已创建。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10148,7 +10148,7 @@
       "x-github-delivery": "preview-discussion.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已创建",
+      "title": "{{ event.source_name }} · 讨论已创建",
       "blocks": [
         {
           "id": "subject",
@@ -10197,10 +10197,10 @@
     }
   },
   "discussion.edited": {
-    "name": "讨论 已编辑",
+    "name": "讨论已编辑",
     "group": "讨论",
     "order": 85,
-    "description": "讨论 已编辑。",
+    "description": "讨论已编辑。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10270,7 +10270,7 @@
       "x-github-delivery": "preview-discussion.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已编辑",
+      "title": "{{ event.source_name }} · 讨论已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -10313,10 +10313,10 @@
     }
   },
   "discussion.deleted": {
-    "name": "讨论 已删除",
+    "name": "讨论已删除",
     "group": "讨论",
     "order": 86,
-    "description": "讨论 已删除。",
+    "description": "讨论已删除。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10386,7 +10386,7 @@
       "x-github-delivery": "preview-discussion.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已删除",
+      "title": "{{ event.source_name }} · 讨论已删除",
       "blocks": [
         {
           "id": "subject",
@@ -10429,10 +10429,10 @@
     }
   },
   "discussion.answered": {
-    "name": "讨论 已采纳回答",
+    "name": "讨论已采纳回答",
     "group": "讨论",
     "order": 87,
-    "description": "讨论 已采纳回答。",
+    "description": "讨论已采纳回答。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10520,7 +10520,7 @@
       "x-github-delivery": "preview-discussion.answered"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已采纳回答",
+      "title": "{{ event.source_name }} · 讨论已采纳回答",
       "blocks": [
         {
           "id": "subject",
@@ -10575,10 +10575,10 @@
     }
   },
   "discussion.unanswered": {
-    "name": "讨论 已取消采纳",
+    "name": "讨论已取消采纳",
     "group": "讨论",
     "order": 88,
-    "description": "讨论 已取消采纳。",
+    "description": "讨论已取消采纳。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10648,7 +10648,7 @@
       "x-github-delivery": "preview-discussion.unanswered"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已取消采纳",
+      "title": "{{ event.source_name }} · 讨论已取消采纳",
       "blocks": [
         {
           "id": "subject",
@@ -10691,10 +10691,10 @@
     }
   },
   "discussion.category_changed": {
-    "name": "讨论 已更换分类",
+    "name": "讨论已更换分类",
     "group": "讨论",
     "order": 89,
-    "description": "讨论 已更换分类。",
+    "description": "讨论已更换分类。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10777,7 +10777,7 @@
       "x-github-delivery": "preview-discussion.category_changed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已更换分类",
+      "title": "{{ event.source_name }} · 讨论已更换分类",
       "blocks": [
         {
           "id": "subject",
@@ -10826,10 +10826,10 @@
     }
   },
   "discussion.closed": {
-    "name": "讨论 已关闭",
+    "name": "讨论已关闭",
     "group": "讨论",
     "order": 90,
-    "description": "讨论 已关闭。",
+    "description": "讨论已关闭。",
     "fields": [
       {
         "path": "discussion.number",
@@ -10899,7 +10899,7 @@
       "x-github-delivery": "preview-discussion.closed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已关闭",
+      "title": "{{ event.source_name }} · 讨论已关闭",
       "blocks": [
         {
           "id": "subject",
@@ -10942,10 +10942,10 @@
     }
   },
   "discussion.reopened": {
-    "name": "讨论 已重新打开",
+    "name": "讨论已重新打开",
     "group": "讨论",
     "order": 91,
-    "description": "讨论 已重新打开。",
+    "description": "讨论已重新打开。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11015,7 +11015,7 @@
       "x-github-delivery": "preview-discussion.reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已重新打开",
+      "title": "{{ event.source_name }} · 讨论已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -11058,10 +11058,10 @@
     }
   },
   "discussion.labeled": {
-    "name": "讨论 已添加标签",
+    "name": "讨论已添加标签",
     "group": "讨论",
     "order": 92,
-    "description": "讨论 已添加标签。",
+    "description": "讨论已添加标签。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11140,7 +11140,7 @@
       "x-github-delivery": "preview-discussion.labeled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已添加标签",
+      "title": "{{ event.source_name }} · 讨论已添加标签",
       "blocks": [
         {
           "id": "subject",
@@ -11189,10 +11189,10 @@
     }
   },
   "discussion.unlabeled": {
-    "name": "讨论 已移除标签",
+    "name": "讨论已移除标签",
     "group": "讨论",
     "order": 93,
-    "description": "讨论 已移除标签。",
+    "description": "讨论已移除标签。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11271,7 +11271,7 @@
       "x-github-delivery": "preview-discussion.unlabeled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已移除标签",
+      "title": "{{ event.source_name }} · 讨论已移除标签",
       "blocks": [
         {
           "id": "subject",
@@ -11320,10 +11320,10 @@
     }
   },
   "discussion.locked": {
-    "name": "讨论 已锁定",
+    "name": "讨论已锁定",
     "group": "讨论",
     "order": 94,
-    "description": "讨论 已锁定。",
+    "description": "讨论已锁定。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11393,7 +11393,7 @@
       "x-github-delivery": "preview-discussion.locked"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已锁定",
+      "title": "{{ event.source_name }} · 讨论已锁定",
       "blocks": [
         {
           "id": "subject",
@@ -11436,10 +11436,10 @@
     }
   },
   "discussion.unlocked": {
-    "name": "讨论 已解锁",
+    "name": "讨论已解锁",
     "group": "讨论",
     "order": 95,
-    "description": "讨论 已解锁。",
+    "description": "讨论已解锁。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11509,7 +11509,7 @@
       "x-github-delivery": "preview-discussion.unlocked"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已解锁",
+      "title": "{{ event.source_name }} · 讨论已解锁",
       "blocks": [
         {
           "id": "subject",
@@ -11552,10 +11552,10 @@
     }
   },
   "discussion.pinned": {
-    "name": "讨论 已置顶",
+    "name": "讨论已置顶",
     "group": "讨论",
     "order": 96,
-    "description": "讨论 已置顶。",
+    "description": "讨论已置顶。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11625,7 +11625,7 @@
       "x-github-delivery": "preview-discussion.pinned"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已置顶",
+      "title": "{{ event.source_name }} · 讨论已置顶",
       "blocks": [
         {
           "id": "subject",
@@ -11668,10 +11668,10 @@
     }
   },
   "discussion.unpinned": {
-    "name": "讨论 已取消置顶",
+    "name": "讨论已取消置顶",
     "group": "讨论",
     "order": 97,
-    "description": "讨论 已取消置顶。",
+    "description": "讨论已取消置顶。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11741,7 +11741,7 @@
       "x-github-delivery": "preview-discussion.unpinned"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已取消置顶",
+      "title": "{{ event.source_name }} · 讨论已取消置顶",
       "blocks": [
         {
           "id": "subject",
@@ -11784,10 +11784,10 @@
     }
   },
   "discussion.transferred": {
-    "name": "讨论 已转移",
+    "name": "讨论已转移",
     "group": "讨论",
     "order": 98,
-    "description": "讨论 已转移。",
+    "description": "讨论已转移。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11868,7 +11868,7 @@
       "x-github-delivery": "preview-discussion.transferred"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论 已转移",
+      "title": "{{ event.source_name }} · 讨论已转移",
       "blocks": [
         {
           "id": "subject",
@@ -11917,10 +11917,10 @@
     }
   },
   "discussion_comment.created": {
-    "name": "讨论评论 已创建",
+    "name": "讨论评论已创建",
     "group": "讨论",
     "order": 99,
-    "description": "讨论评论 已创建。",
+    "description": "讨论评论已创建。",
     "fields": [
       {
         "path": "discussion.number",
@@ -11990,7 +11990,7 @@
       "x-github-delivery": "preview-discussion_comment.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论评论 已创建",
+      "title": "{{ event.source_name }} · 讨论评论已创建",
       "blocks": [
         {
           "id": "subject",
@@ -12033,10 +12033,10 @@
     }
   },
   "discussion_comment.edited": {
-    "name": "讨论评论 已编辑",
+    "name": "讨论评论已编辑",
     "group": "讨论",
     "order": 100,
-    "description": "讨论评论 已编辑。",
+    "description": "讨论评论已编辑。",
     "fields": [
       {
         "path": "discussion.number",
@@ -12106,7 +12106,7 @@
       "x-github-delivery": "preview-discussion_comment.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论评论 已编辑",
+      "title": "{{ event.source_name }} · 讨论评论已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -12149,10 +12149,10 @@
     }
   },
   "discussion_comment.deleted": {
-    "name": "讨论评论 已删除",
+    "name": "讨论评论已删除",
     "group": "讨论",
     "order": 101,
-    "description": "讨论评论 已删除。",
+    "description": "讨论评论已删除。",
     "fields": [
       {
         "path": "discussion.number",
@@ -12222,7 +12222,7 @@
       "x-github-delivery": "preview-discussion_comment.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 讨论评论 已删除",
+      "title": "{{ event.source_name }} · 讨论评论已删除",
       "blocks": [
         {
           "id": "subject",
@@ -12265,10 +12265,10 @@
     }
   },
   "workflow_run.requested": {
-    "name": "工作流运行 已触发",
+    "name": "工作流运行已触发",
     "group": "持续集成",
     "order": 102,
-    "description": "工作流运行 已触发。",
+    "description": "工作流运行已触发。",
     "fields": [
       {
         "path": "workflow_run.name",
@@ -12350,7 +12350,7 @@
       "x-github-delivery": "preview-workflow_run.requested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流运行 已触发",
+      "title": "{{ event.source_name }} · 工作流运行已触发",
       "blocks": [
         {
           "id": "subject",
@@ -12405,10 +12405,10 @@
     }
   },
   "workflow_run.in_progress": {
-    "name": "工作流运行 运行中",
+    "name": "工作流正在运行",
     "group": "持续集成",
     "order": 103,
-    "description": "工作流运行 运行中。",
+    "description": "工作流正在运行。",
     "fields": [
       {
         "path": "workflow_run.name",
@@ -12483,7 +12483,7 @@
       "x-github-delivery": "preview-workflow_run.in_progress"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流运行 运行中",
+      "title": "{{ event.source_name }} · 工作流正在运行",
       "blocks": [
         {
           "id": "subject",
@@ -12532,10 +12532,10 @@
     }
   },
   "workflow_run.completed": {
-    "name": "工作流运行 已结束",
+    "name": "工作流运行已结束",
     "group": "持续集成",
     "order": 104,
-    "description": "工作流运行 已结束。",
+    "description": "工作流运行已结束。",
     "fields": [
       {
         "path": "workflow_run.name",
@@ -12624,7 +12624,7 @@
       "x-github-delivery": "preview-workflow_run.completed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流运行 已结束",
+      "title": "{{ event.source_name }} · 工作流运行已结束",
       "blocks": [
         {
           "id": "subject",
@@ -12685,10 +12685,10 @@
     }
   },
   "workflow_job.queued": {
-    "name": "工作流任务 已排队",
+    "name": "工作流任务已排队",
     "group": "持续集成",
     "order": 105,
-    "description": "工作流任务 已排队。",
+    "description": "工作流任务已排队。",
     "fields": [
       {
         "path": "workflow_job.workflow_name",
@@ -12754,7 +12754,7 @@
       "x-github-delivery": "preview-workflow_job.queued"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流任务 已排队",
+      "title": "{{ event.source_name }} · 工作流任务已排队",
       "blocks": [
         {
           "id": "subject",
@@ -12797,10 +12797,10 @@
     }
   },
   "workflow_job.waiting": {
-    "name": "工作流任务 等待中",
+    "name": "工作流任务等待中",
     "group": "持续集成",
     "order": 106,
-    "description": "工作流任务 等待中。",
+    "description": "工作流任务等待中。",
     "fields": [
       {
         "path": "workflow_job.workflow_name",
@@ -12866,7 +12866,7 @@
       "x-github-delivery": "preview-workflow_job.waiting"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流任务 等待中",
+      "title": "{{ event.source_name }} · 工作流任务等待中",
       "blocks": [
         {
           "id": "subject",
@@ -12909,10 +12909,10 @@
     }
   },
   "workflow_job.in_progress": {
-    "name": "工作流任务 运行中",
+    "name": "工作流任务运行中",
     "group": "持续集成",
     "order": 107,
-    "description": "工作流任务 运行中。",
+    "description": "工作流任务运行中。",
     "fields": [
       {
         "path": "workflow_job.workflow_name",
@@ -12978,7 +12978,7 @@
       "x-github-delivery": "preview-workflow_job.in_progress"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流任务 运行中",
+      "title": "{{ event.source_name }} · 工作流任务运行中",
       "blocks": [
         {
           "id": "subject",
@@ -13021,10 +13021,10 @@
     }
   },
   "workflow_job.completed": {
-    "name": "工作流任务 已结束",
+    "name": "工作流任务已结束",
     "group": "持续集成",
     "order": 108,
-    "description": "工作流任务 已结束。",
+    "description": "工作流任务已结束。",
     "fields": [
       {
         "path": "workflow_job.workflow_name",
@@ -13097,7 +13097,7 @@
       "x-github-delivery": "preview-workflow_job.completed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 工作流任务 已结束",
+      "title": "{{ event.source_name }} · 工作流任务已结束",
       "blocks": [
         {
           "id": "subject",
@@ -13235,10 +13235,10 @@
     }
   },
   "check_run.created": {
-    "name": "检查运行 已创建",
+    "name": "检查运行已创建",
     "group": "持续集成",
     "order": 110,
-    "description": "检查运行 已创建。",
+    "description": "检查运行已创建。",
     "fields": [
       {
         "path": "check_run.name",
@@ -13306,7 +13306,7 @@
       "x-github-delivery": "preview-check_run.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查运行 已创建",
+      "title": "{{ event.source_name }} · 检查运行已创建",
       "blocks": [
         {
           "id": "subject",
@@ -13355,10 +13355,10 @@
     }
   },
   "check_run.completed": {
-    "name": "检查运行 已结束",
+    "name": "检查运行已结束",
     "group": "持续集成",
     "order": 111,
-    "description": "检查运行 已结束。",
+    "description": "检查运行已结束。",
     "fields": [
       {
         "path": "check_run.name",
@@ -13433,7 +13433,7 @@
       "x-github-delivery": "preview-check_run.completed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查运行 已结束",
+      "title": "{{ event.source_name }} · 检查运行已结束",
       "blocks": [
         {
           "id": "subject",
@@ -13488,10 +13488,10 @@
     }
   },
   "check_run.rerequested": {
-    "name": "检查运行 请求重新运行",
+    "name": "检查运行已请求重跑",
     "group": "持续集成",
     "order": 112,
-    "description": "检查运行 请求重新运行。",
+    "description": "检查运行已请求重跑。",
     "fields": [
       {
         "path": "check_run.name",
@@ -13559,7 +13559,7 @@
       "x-github-delivery": "preview-check_run.rerequested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查运行 请求重新运行",
+      "title": "{{ event.source_name }} · 检查运行已请求重跑",
       "blocks": [
         {
           "id": "subject",
@@ -13608,10 +13608,10 @@
     }
   },
   "check_run.requested_action": {
-    "name": "检查运行 请求操作",
+    "name": "检查运行已请求操作",
     "group": "持续集成",
     "order": 113,
-    "description": "检查运行 请求操作。",
+    "description": "检查运行已请求操作。",
     "fields": [
       {
         "path": "check_run.name",
@@ -13688,7 +13688,7 @@
       "x-github-delivery": "preview-check_run.requested_action"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查运行 请求操作",
+      "title": "{{ event.source_name }} · 检查运行已请求操作",
       "blocks": [
         {
           "id": "subject",
@@ -13743,10 +13743,10 @@
     }
   },
   "check_suite.requested": {
-    "name": "检查套件 已请求",
+    "name": "检查套件已请求",
     "group": "持续集成",
     "order": 114,
-    "description": "检查套件 已请求。",
+    "description": "检查套件已请求。",
     "fields": [
       {
         "path": "check_suite.app.name",
@@ -13814,7 +13814,7 @@
       "x-github-delivery": "preview-check_suite.requested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查套件 已请求",
+      "title": "{{ event.source_name }} · 检查套件已请求",
       "blocks": [
         {
           "id": "subject",
@@ -13863,10 +13863,10 @@
     }
   },
   "check_suite.rerequested": {
-    "name": "检查套件 请求重新运行",
+    "name": "检查套件已请求重跑",
     "group": "持续集成",
     "order": 115,
-    "description": "检查套件 请求重新运行。",
+    "description": "检查套件已请求重跑。",
     "fields": [
       {
         "path": "check_suite.app.name",
@@ -13934,7 +13934,7 @@
       "x-github-delivery": "preview-check_suite.rerequested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查套件 请求重新运行",
+      "title": "{{ event.source_name }} · 检查套件已请求重跑",
       "blocks": [
         {
           "id": "subject",
@@ -13983,10 +13983,10 @@
     }
   },
   "check_suite.completed": {
-    "name": "检查套件 已结束",
+    "name": "检查套件已结束",
     "group": "持续集成",
     "order": 116,
-    "description": "检查套件 已结束。",
+    "description": "检查套件已结束。",
     "fields": [
       {
         "path": "check_suite.app.name",
@@ -14061,7 +14061,7 @@
       "x-github-delivery": "preview-check_suite.completed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 检查套件 已结束",
+      "title": "{{ event.source_name }} · 检查套件已结束",
       "blocks": [
         {
           "id": "subject",
@@ -14251,10 +14251,10 @@
     }
   },
   "deployment.created": {
-    "name": "部署 已创建",
+    "name": "部署已创建",
     "group": "部署与发布",
     "order": 118,
-    "description": "部署 已创建。",
+    "description": "部署已创建。",
     "fields": [
       {
         "path": "deployment.environment",
@@ -14322,7 +14322,7 @@
       "x-github-delivery": "preview-deployment.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署 已创建",
+      "title": "{{ event.source_name }} · 部署已创建",
       "blocks": [
         {
           "id": "subject",
@@ -14371,10 +14371,10 @@
     }
   },
   "deployment_status.created": {
-    "name": "部署状态 已更新",
+    "name": "部署状态已更新",
     "group": "部署与发布",
     "order": 119,
-    "description": "部署状态 已更新。",
+    "description": "部署状态已更新。",
     "fields": [
       {
         "path": "deployment.environment",
@@ -14442,7 +14442,7 @@
       "x-github-delivery": "preview-deployment_status.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署状态 已更新",
+      "title": "{{ event.source_name }} · 部署状态已更新",
       "blocks": [
         {
           "id": "subject",
@@ -14491,10 +14491,10 @@
     }
   },
   "deployment_review.requested": {
-    "name": "部署审批 等待审批",
+    "name": "部署等待审批",
     "group": "部署与发布",
     "order": 120,
-    "description": "部署审批 等待审批。",
+    "description": "部署等待审批。",
     "fields": [
       {
         "path": "workflow_run.name",
@@ -14562,7 +14562,7 @@
       "x-github-delivery": "preview-deployment_review.requested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署审批 等待审批",
+      "title": "{{ event.source_name }} · 部署等待审批",
       "blocks": [
         {
           "id": "subject",
@@ -14611,10 +14611,10 @@
     }
   },
   "deployment_review.approved": {
-    "name": "部署审批 已批准",
+    "name": "部署审批已通过",
     "group": "部署与发布",
     "order": 121,
-    "description": "部署审批 已批准。",
+    "description": "部署审批已通过。",
     "fields": [
       {
         "path": "workflow_run.name",
@@ -14693,7 +14693,7 @@
       "x-github-delivery": "preview-deployment_review.approved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署审批 已批准",
+      "title": "{{ event.source_name }} · 部署审批已通过",
       "blocks": [
         {
           "id": "subject",
@@ -14748,10 +14748,10 @@
     }
   },
   "deployment_review.rejected": {
-    "name": "部署审批 已拒绝",
+    "name": "部署审批已拒绝",
     "group": "部署与发布",
     "order": 122,
-    "description": "部署审批 已拒绝。",
+    "description": "部署审批已拒绝。",
     "fields": [
       {
         "path": "workflow_run.name",
@@ -14830,7 +14830,7 @@
       "x-github-delivery": "preview-deployment_review.rejected"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署审批 已拒绝",
+      "title": "{{ event.source_name }} · 部署审批已拒绝",
       "blocks": [
         {
           "id": "subject",
@@ -14885,10 +14885,10 @@
     }
   },
   "deployment_protection_rule.requested": {
-    "name": "部署保护规则 等待判定",
+    "name": "部署等待保护规则判定",
     "group": "部署与发布",
     "order": 123,
-    "description": "部署保护规则 等待判定。",
+    "description": "部署等待保护规则判定。",
     "fields": [
       {
         "path": "environment",
@@ -14947,7 +14947,7 @@
       "x-github-delivery": "preview-deployment_protection_rule.requested"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署保护规则 等待判定",
+      "title": "{{ event.source_name }} · 部署等待保护规则判定",
       "blocks": [
         {
           "id": "subject",
@@ -15921,10 +15921,10 @@
     }
   },
   "package.published": {
-    "name": "软件包 已发布",
+    "name": "软件包已发布",
     "group": "部署与发布",
     "order": 131,
-    "description": "软件包 已发布。",
+    "description": "软件包已发布。",
     "fields": [
       {
         "path": "package.name",
@@ -15985,7 +15985,7 @@
       "x-github-delivery": "preview-package.published"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 软件包 已发布",
+      "title": "{{ event.source_name }} · 软件包已发布",
       "blocks": [
         {
           "id": "subject",
@@ -16028,10 +16028,10 @@
     }
   },
   "package.updated": {
-    "name": "软件包 已更新",
+    "name": "软件包已更新",
     "group": "部署与发布",
     "order": 132,
-    "description": "软件包 已更新。",
+    "description": "软件包已更新。",
     "fields": [
       {
         "path": "package.name",
@@ -16092,7 +16092,7 @@
       "x-github-delivery": "preview-package.updated"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 软件包 已更新",
+      "title": "{{ event.source_name }} · 软件包已更新",
       "blocks": [
         {
           "id": "subject",
@@ -16135,10 +16135,10 @@
     }
   },
   "registry_package.published": {
-    "name": "Registry 软件包 已发布",
+    "name": "Registry 软件包已发布",
     "group": "部署与发布",
     "order": 133,
-    "description": "Registry 软件包 已发布。",
+    "description": "Registry 软件包已发布。",
     "fields": [
       {
         "path": "registry_package.name",
@@ -16199,7 +16199,7 @@
       "x-github-delivery": "preview-registry_package.published"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Registry 软件包 已发布",
+      "title": "{{ event.source_name }} · Registry 软件包已发布",
       "blocks": [
         {
           "id": "subject",
@@ -16242,10 +16242,10 @@
     }
   },
   "registry_package.updated": {
-    "name": "Registry 软件包 已更新",
+    "name": "Registry 软件包已更新",
     "group": "部署与发布",
     "order": 134,
-    "description": "Registry 软件包 已更新。",
+    "description": "Registry 软件包已更新。",
     "fields": [
       {
         "path": "registry_package.name",
@@ -16306,7 +16306,7 @@
       "x-github-delivery": "preview-registry_package.updated"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Registry 软件包 已更新",
+      "title": "{{ event.source_name }} · Registry 软件包已更新",
       "blocks": [
         {
           "id": "subject",
@@ -16470,10 +16470,10 @@
     }
   },
   "code_scanning_alert.created": {
-    "name": "代码扫描告警 新告警",
+    "name": "代码扫描告警已产生",
     "group": "安全",
     "order": 136,
-    "description": "代码扫描告警 新告警。",
+    "description": "代码扫描告警已产生。",
     "fields": [
       {
         "path": "alert.number",
@@ -16552,7 +16552,7 @@
       "x-github-delivery": "preview-code_scanning_alert.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 新告警",
+      "title": "{{ event.source_name }} · 代码扫描告警已产生",
       "blocks": [
         {
           "id": "subject",
@@ -16601,10 +16601,10 @@
     }
   },
   "code_scanning_alert.fixed": {
-    "name": "代码扫描告警 已修复",
+    "name": "代码扫描告警已修复",
     "group": "安全",
     "order": 137,
-    "description": "代码扫描告警 已修复。",
+    "description": "代码扫描告警已修复。",
     "fields": [
       {
         "path": "alert.number",
@@ -16683,7 +16683,7 @@
       "x-github-delivery": "preview-code_scanning_alert.fixed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 已修复",
+      "title": "{{ event.source_name }} · 代码扫描告警已修复",
       "blocks": [
         {
           "id": "subject",
@@ -16732,10 +16732,10 @@
     }
   },
   "code_scanning_alert.closed_by_user": {
-    "name": "代码扫描告警 已手动关闭",
+    "name": "代码扫描告警已手动关闭",
     "group": "安全",
     "order": 138,
-    "description": "代码扫描告警 已手动关闭。",
+    "description": "代码扫描告警已手动关闭。",
     "fields": [
       {
         "path": "alert.number",
@@ -16814,7 +16814,7 @@
       "x-github-delivery": "preview-code_scanning_alert.closed_by_user"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 已手动关闭",
+      "title": "{{ event.source_name }} · 代码扫描告警已手动关闭",
       "blocks": [
         {
           "id": "subject",
@@ -16863,10 +16863,10 @@
     }
   },
   "code_scanning_alert.reopened": {
-    "name": "代码扫描告警 已重新打开",
+    "name": "代码扫描告警已重新打开",
     "group": "安全",
     "order": 139,
-    "description": "代码扫描告警 已重新打开。",
+    "description": "代码扫描告警已重新打开。",
     "fields": [
       {
         "path": "alert.number",
@@ -16945,7 +16945,7 @@
       "x-github-delivery": "preview-code_scanning_alert.reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 已重新打开",
+      "title": "{{ event.source_name }} · 代码扫描告警已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -16994,10 +16994,10 @@
     }
   },
   "code_scanning_alert.reopened_by_user": {
-    "name": "代码扫描告警 已手动重新打开",
+    "name": "代码扫描告警已手动重新打开",
     "group": "安全",
     "order": 140,
-    "description": "代码扫描告警 已手动重新打开。",
+    "description": "代码扫描告警已手动重新打开。",
     "fields": [
       {
         "path": "alert.number",
@@ -17076,7 +17076,7 @@
       "x-github-delivery": "preview-code_scanning_alert.reopened_by_user"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 已手动重新打开",
+      "title": "{{ event.source_name }} · 代码扫描告警已手动重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -17125,10 +17125,10 @@
     }
   },
   "code_scanning_alert.appeared_in_branch": {
-    "name": "代码扫描告警 出现在新分支",
+    "name": "代码扫描告警出现在新分支",
     "group": "安全",
     "order": 141,
-    "description": "代码扫描告警 出现在新分支。",
+    "description": "代码扫描告警出现在新分支。",
     "fields": [
       {
         "path": "alert.number",
@@ -17207,7 +17207,7 @@
       "x-github-delivery": "preview-code_scanning_alert.appeared_in_branch"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 出现在新分支",
+      "title": "{{ event.source_name }} · 代码扫描告警出现在新分支",
       "blocks": [
         {
           "id": "subject",
@@ -17256,10 +17256,10 @@
     }
   },
   "code_scanning_alert.updated_assignment": {
-    "name": "代码扫描告警 处理人已变更",
+    "name": "代码扫描告警处理人已变更",
     "group": "安全",
     "order": 142,
-    "description": "代码扫描告警 处理人已变更。",
+    "description": "代码扫描告警处理人已变更。",
     "fields": [
       {
         "path": "alert.number",
@@ -17338,7 +17338,7 @@
       "x-github-delivery": "preview-code_scanning_alert.updated_assignment"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 代码扫描告警 处理人已变更",
+      "title": "{{ event.source_name }} · 代码扫描告警处理人已变更",
       "blocks": [
         {
           "id": "subject",
@@ -17387,10 +17387,10 @@
     }
   },
   "dependabot_alert.created": {
-    "name": "Dependabot 告警 新告警",
+    "name": "Dependabot 告警已产生",
     "group": "安全",
     "order": 143,
-    "description": "Dependabot 告警 新告警。",
+    "description": "Dependabot 告警已产生。",
     "fields": [
       {
         "path": "alert.number",
@@ -17478,7 +17478,7 @@
       "x-github-delivery": "preview-dependabot_alert.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 新告警",
+      "title": "{{ event.source_name }} · Dependabot 告警已产生",
       "blocks": [
         {
           "id": "subject",
@@ -17533,10 +17533,10 @@
     }
   },
   "dependabot_alert.fixed": {
-    "name": "Dependabot 告警 已修复",
+    "name": "Dependabot 告警已修复",
     "group": "安全",
     "order": 144,
-    "description": "Dependabot 告警 已修复。",
+    "description": "Dependabot 告警已修复。",
     "fields": [
       {
         "path": "alert.number",
@@ -17624,7 +17624,7 @@
       "x-github-delivery": "preview-dependabot_alert.fixed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 已修复",
+      "title": "{{ event.source_name }} · Dependabot 告警已修复",
       "blocks": [
         {
           "id": "subject",
@@ -17679,10 +17679,10 @@
     }
   },
   "dependabot_alert.dismissed": {
-    "name": "Dependabot 告警 已忽略",
+    "name": "Dependabot 告警已忽略",
     "group": "安全",
     "order": 145,
-    "description": "Dependabot 告警 已忽略。",
+    "description": "Dependabot 告警已忽略。",
     "fields": [
       {
         "path": "alert.number",
@@ -17770,7 +17770,7 @@
       "x-github-delivery": "preview-dependabot_alert.dismissed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 已忽略",
+      "title": "{{ event.source_name }} · Dependabot 告警已忽略",
       "blocks": [
         {
           "id": "subject",
@@ -17825,10 +17825,10 @@
     }
   },
   "dependabot_alert.reopened": {
-    "name": "Dependabot 告警 已重新打开",
+    "name": "Dependabot 告警已重新打开",
     "group": "安全",
     "order": 146,
-    "description": "Dependabot 告警 已重新打开。",
+    "description": "Dependabot 告警已重新打开。",
     "fields": [
       {
         "path": "alert.number",
@@ -17916,7 +17916,7 @@
       "x-github-delivery": "preview-dependabot_alert.reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 已重新打开",
+      "title": "{{ event.source_name }} · Dependabot 告警已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -17971,10 +17971,10 @@
     }
   },
   "dependabot_alert.reintroduced": {
-    "name": "Dependabot 告警 再次出现",
+    "name": "Dependabot 告警再次出现",
     "group": "安全",
     "order": 147,
-    "description": "Dependabot 告警 再次出现。",
+    "description": "Dependabot 告警再次出现。",
     "fields": [
       {
         "path": "alert.number",
@@ -18062,7 +18062,7 @@
       "x-github-delivery": "preview-dependabot_alert.reintroduced"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 再次出现",
+      "title": "{{ event.source_name }} · Dependabot 告警再次出现",
       "blocks": [
         {
           "id": "subject",
@@ -18117,10 +18117,10 @@
     }
   },
   "dependabot_alert.auto_dismissed": {
-    "name": "Dependabot 告警 已自动忽略",
+    "name": "Dependabot 告警已自动忽略",
     "group": "安全",
     "order": 148,
-    "description": "Dependabot 告警 已自动忽略。",
+    "description": "Dependabot 告警已自动忽略。",
     "fields": [
       {
         "path": "alert.number",
@@ -18208,7 +18208,7 @@
       "x-github-delivery": "preview-dependabot_alert.auto_dismissed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 已自动忽略",
+      "title": "{{ event.source_name }} · Dependabot 告警已自动忽略",
       "blocks": [
         {
           "id": "subject",
@@ -18263,10 +18263,10 @@
     }
   },
   "dependabot_alert.auto_reopened": {
-    "name": "Dependabot 告警 已自动重新打开",
+    "name": "Dependabot 告警已自动重新打开",
     "group": "安全",
     "order": 149,
-    "description": "Dependabot 告警 已自动重新打开。",
+    "description": "Dependabot 告警已自动重新打开。",
     "fields": [
       {
         "path": "alert.number",
@@ -18354,7 +18354,7 @@
       "x-github-delivery": "preview-dependabot_alert.auto_reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 已自动重新打开",
+      "title": "{{ event.source_name }} · Dependabot 告警已自动重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -18409,10 +18409,10 @@
     }
   },
   "dependabot_alert.assignees_changed": {
-    "name": "Dependabot 告警 处理人已变更",
+    "name": "Dependabot 告警处理人已变更",
     "group": "安全",
     "order": 150,
-    "description": "Dependabot 告警 处理人已变更。",
+    "description": "Dependabot 告警处理人已变更。",
     "fields": [
       {
         "path": "alert.number",
@@ -18500,7 +18500,7 @@
       "x-github-delivery": "preview-dependabot_alert.assignees_changed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Dependabot 告警 处理人已变更",
+      "title": "{{ event.source_name }} · Dependabot 告警处理人已变更",
       "blocks": [
         {
           "id": "subject",
@@ -18555,10 +18555,10 @@
     }
   },
   "secret_scanning_alert.created": {
-    "name": "密钥扫描告警 新告警",
+    "name": "密钥扫描告警已产生",
     "group": "安全",
     "order": 151,
-    "description": "密钥扫描告警 新告警。",
+    "description": "密钥扫描告警已产生。",
     "fields": [
       {
         "path": "alert.number",
@@ -18624,7 +18624,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 新告警",
+      "title": "{{ event.source_name }} · 密钥扫描告警已产生",
       "blocks": [
         {
           "id": "subject",
@@ -18667,10 +18667,10 @@
     }
   },
   "secret_scanning_alert.resolved": {
-    "name": "密钥扫描告警 已解决",
+    "name": "密钥扫描告警已解决",
     "group": "安全",
     "order": 152,
-    "description": "密钥扫描告警 已解决。",
+    "description": "密钥扫描告警已解决。",
     "fields": [
       {
         "path": "alert.number",
@@ -18736,7 +18736,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.resolved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 已解决",
+      "title": "{{ event.source_name }} · 密钥扫描告警已解决",
       "blocks": [
         {
           "id": "subject",
@@ -18779,10 +18779,10 @@
     }
   },
   "secret_scanning_alert.reopened": {
-    "name": "密钥扫描告警 已重新打开",
+    "name": "密钥扫描告警已重新打开",
     "group": "安全",
     "order": 153,
-    "description": "密钥扫描告警 已重新打开。",
+    "description": "密钥扫描告警已重新打开。",
     "fields": [
       {
         "path": "alert.number",
@@ -18848,7 +18848,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 已重新打开",
+      "title": "{{ event.source_name }} · 密钥扫描告警已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -18891,10 +18891,10 @@
     }
   },
   "secret_scanning_alert.publicly_leaked": {
-    "name": "密钥扫描告警 已公开泄露",
+    "name": "密钥扫描告警已公开泄露",
     "group": "安全",
     "order": 154,
-    "description": "密钥扫描告警 已公开泄露。",
+    "description": "密钥扫描告警已公开泄露。",
     "fields": [
       {
         "path": "alert.number",
@@ -18960,7 +18960,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.publicly_leaked"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 已公开泄露",
+      "title": "{{ event.source_name }} · 密钥扫描告警已公开泄露",
       "blocks": [
         {
           "id": "subject",
@@ -19003,10 +19003,10 @@
     }
   },
   "secret_scanning_alert.validated": {
-    "name": "密钥扫描告警 有效性已验证",
+    "name": "密钥扫描告警有效性已验证",
     "group": "安全",
     "order": 155,
-    "description": "密钥扫描告警 有效性已验证。",
+    "description": "密钥扫描告警有效性已验证。",
     "fields": [
       {
         "path": "alert.number",
@@ -19072,7 +19072,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.validated"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 有效性已验证",
+      "title": "{{ event.source_name }} · 密钥扫描告警有效性已验证",
       "blocks": [
         {
           "id": "subject",
@@ -19115,10 +19115,10 @@
     }
   },
   "secret_scanning_alert.assigned": {
-    "name": "密钥扫描告警 已指派",
+    "name": "密钥扫描告警已指派",
     "group": "安全",
     "order": 156,
-    "description": "密钥扫描告警 已指派。",
+    "description": "密钥扫描告警已指派。",
     "fields": [
       {
         "path": "alert.number",
@@ -19184,7 +19184,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.assigned"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 已指派",
+      "title": "{{ event.source_name }} · 密钥扫描告警已指派",
       "blocks": [
         {
           "id": "subject",
@@ -19227,10 +19227,10 @@
     }
   },
   "secret_scanning_alert.unassigned": {
-    "name": "密钥扫描告警 已取消指派",
+    "name": "密钥扫描告警已取消指派",
     "group": "安全",
     "order": 157,
-    "description": "密钥扫描告警 已取消指派。",
+    "description": "密钥扫描告警已取消指派。",
     "fields": [
       {
         "path": "alert.number",
@@ -19296,7 +19296,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.unassigned"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 已取消指派",
+      "title": "{{ event.source_name }} · 密钥扫描告警已取消指派",
       "blocks": [
         {
           "id": "subject",
@@ -19339,10 +19339,10 @@
     }
   },
   "secret_scanning_alert.metadata_created": {
-    "name": "密钥扫描告警 元数据已创建",
+    "name": "密钥扫描告警元数据已创建",
     "group": "安全",
     "order": 158,
-    "description": "密钥扫描告警 元数据已创建。",
+    "description": "密钥扫描告警元数据已创建。",
     "fields": [
       {
         "path": "alert.number",
@@ -19408,7 +19408,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.metadata_created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 元数据已创建",
+      "title": "{{ event.source_name }} · 密钥扫描告警元数据已创建",
       "blocks": [
         {
           "id": "subject",
@@ -19451,10 +19451,10 @@
     }
   },
   "secret_scanning_alert.metadata_removed": {
-    "name": "密钥扫描告警 元数据已移除",
+    "name": "密钥扫描告警元数据已移除",
     "group": "安全",
     "order": 159,
-    "description": "密钥扫描告警 元数据已移除。",
+    "description": "密钥扫描告警元数据已移除。",
     "fields": [
       {
         "path": "alert.number",
@@ -19520,7 +19520,7 @@
       "x-github-delivery": "preview-secret_scanning_alert.metadata_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描告警 元数据已移除",
+      "title": "{{ event.source_name }} · 密钥扫描告警元数据已移除",
       "blocks": [
         {
           "id": "subject",
@@ -19563,10 +19563,10 @@
     }
   },
   "secret_scanning_alert_location.created": {
-    "name": "密钥泄露位置 已发现",
+    "name": "密钥泄露位置已发现",
     "group": "安全",
     "order": 160,
-    "description": "密钥泄露位置 已发现。",
+    "description": "密钥泄露位置已发现。",
     "fields": [
       {
         "path": "alert.number",
@@ -19636,7 +19636,7 @@
       "x-github-delivery": "preview-secret_scanning_alert_location.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥泄露位置 已发现",
+      "title": "{{ event.source_name }} · 密钥泄露位置已发现",
       "blocks": [
         {
           "id": "subject",
@@ -19679,10 +19679,10 @@
     }
   },
   "secret_scanning_scan.completed": {
-    "name": "密钥扫描 已完成",
+    "name": "密钥扫描已完成",
     "group": "安全",
     "order": 161,
-    "description": "密钥扫描 已完成。",
+    "description": "密钥扫描已完成。",
     "fields": [
       {
         "path": "type",
@@ -19739,7 +19739,7 @@
       "x-github-delivery": "preview-secret_scanning_scan.completed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 密钥扫描 已完成",
+      "title": "{{ event.source_name }} · 密钥扫描已完成",
       "blocks": [
         {
           "id": "subject",
@@ -19782,10 +19782,10 @@
     }
   },
   "repository_advisory.published": {
-    "name": "仓库安全公告 已发布",
+    "name": "仓库安全公告已发布",
     "group": "安全",
     "order": 162,
-    "description": "仓库安全公告 已发布。",
+    "description": "仓库安全公告已发布。",
     "fields": [
       {
         "path": "repository_advisory.summary",
@@ -19844,7 +19844,7 @@
       "x-github-delivery": "preview-repository_advisory.published"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库安全公告 已发布",
+      "title": "{{ event.source_name }} · 仓库安全公告已发布",
       "blocks": [
         {
           "id": "subject",
@@ -19887,10 +19887,10 @@
     }
   },
   "repository_advisory.reported": {
-    "name": "仓库安全公告 收到报告",
+    "name": "收到安全漏洞报告",
     "group": "安全",
     "order": 163,
-    "description": "仓库安全公告 收到报告。",
+    "description": "收到安全漏洞报告。",
     "fields": [
       {
         "path": "repository_advisory.summary",
@@ -19949,7 +19949,7 @@
       "x-github-delivery": "preview-repository_advisory.reported"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库安全公告 收到报告",
+      "title": "{{ event.source_name }} · 收到安全漏洞报告",
       "blocks": [
         {
           "id": "subject",
@@ -19992,10 +19992,10 @@
     }
   },
   "repository_vulnerability_alert.create": {
-    "name": "依赖漏洞告警（旧版） 新告警",
+    "name": "依赖漏洞告警（旧版）已产生",
     "group": "安全",
     "order": 164,
-    "description": "依赖漏洞告警（旧版） 新告警。",
+    "description": "依赖漏洞告警（旧版）已产生。",
     "fields": [
       {
         "path": "alert.affected_package_name",
@@ -20068,7 +20068,7 @@
       "x-github-delivery": "preview-repository_vulnerability_alert.create"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版） 新告警",
+      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版）已产生",
       "blocks": [
         {
           "id": "subject",
@@ -20123,10 +20123,10 @@
     }
   },
   "repository_vulnerability_alert.dismiss": {
-    "name": "依赖漏洞告警（旧版） 已忽略",
+    "name": "依赖漏洞告警（旧版）已忽略",
     "group": "安全",
     "order": 165,
-    "description": "依赖漏洞告警（旧版） 已忽略。",
+    "description": "依赖漏洞告警（旧版）已忽略。",
     "fields": [
       {
         "path": "alert.affected_package_name",
@@ -20199,7 +20199,7 @@
       "x-github-delivery": "preview-repository_vulnerability_alert.dismiss"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版） 已忽略",
+      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版）已忽略",
       "blocks": [
         {
           "id": "subject",
@@ -20254,10 +20254,10 @@
     }
   },
   "repository_vulnerability_alert.reopen": {
-    "name": "依赖漏洞告警（旧版） 已重新打开",
+    "name": "依赖漏洞告警（旧版）已重新打开",
     "group": "安全",
     "order": 166,
-    "description": "依赖漏洞告警（旧版） 已重新打开。",
+    "description": "依赖漏洞告警（旧版）已重新打开。",
     "fields": [
       {
         "path": "alert.affected_package_name",
@@ -20330,7 +20330,7 @@
       "x-github-delivery": "preview-repository_vulnerability_alert.reopen"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版） 已重新打开",
+      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版）已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -20385,10 +20385,10 @@
     }
   },
   "repository_vulnerability_alert.resolve": {
-    "name": "依赖漏洞告警（旧版） 已解决",
+    "name": "依赖漏洞告警（旧版）已解决",
     "group": "安全",
     "order": 167,
-    "description": "依赖漏洞告警（旧版） 已解决。",
+    "description": "依赖漏洞告警（旧版）已解决。",
     "fields": [
       {
         "path": "alert.affected_package_name",
@@ -20461,7 +20461,7 @@
       "x-github-delivery": "preview-repository_vulnerability_alert.resolve"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版） 已解决",
+      "title": "{{ event.source_name }} · 依赖漏洞告警（旧版）已解决",
       "blocks": [
         {
           "id": "subject",
@@ -20516,10 +20516,10 @@
     }
   },
   "security_advisory.published": {
-    "name": "GitHub 安全公告 已发布",
+    "name": "GitHub 安全公告已发布",
     "group": "安全",
     "order": 168,
-    "description": "GitHub 安全公告 已发布。",
+    "description": "GitHub 安全公告已发布。",
     "fields": [
       {
         "path": "security_advisory.summary",
@@ -20553,7 +20553,7 @@
       "x-github-delivery": "preview-security_advisory.published"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub 安全公告 已发布",
+      "title": "{{ event.source_name }} · GitHub 安全公告已发布",
       "blocks": [
         {
           "id": "subject",
@@ -20584,10 +20584,10 @@
     }
   },
   "security_advisory.updated": {
-    "name": "GitHub 安全公告 已更新",
+    "name": "GitHub 安全公告已更新",
     "group": "安全",
     "order": 169,
-    "description": "GitHub 安全公告 已更新。",
+    "description": "GitHub 安全公告已更新。",
     "fields": [
       {
         "path": "security_advisory.summary",
@@ -20621,7 +20621,7 @@
       "x-github-delivery": "preview-security_advisory.updated"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub 安全公告 已更新",
+      "title": "{{ event.source_name }} · GitHub 安全公告已更新",
       "blocks": [
         {
           "id": "subject",
@@ -20652,10 +20652,10 @@
     }
   },
   "security_advisory.withdrawn": {
-    "name": "GitHub 安全公告 已撤回",
+    "name": "GitHub 安全公告已撤回",
     "group": "安全",
     "order": 170,
-    "description": "GitHub 安全公告 已撤回。",
+    "description": "GitHub 安全公告已撤回。",
     "fields": [
       {
         "path": "security_advisory.summary",
@@ -20689,7 +20689,7 @@
       "x-github-delivery": "preview-security_advisory.withdrawn"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub 安全公告 已撤回",
+      "title": "{{ event.source_name }} · GitHub 安全公告已撤回",
       "blocks": [
         {
           "id": "subject",
@@ -20789,10 +20789,10 @@
     }
   },
   "repository.created": {
-    "name": "仓库 已创建",
+    "name": "仓库已创建",
     "group": "仓库",
     "order": 172,
-    "description": "仓库 已创建。",
+    "description": "仓库已创建。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -20842,7 +20842,7 @@
       "x-github-delivery": "preview-repository.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已创建",
+      "title": "{{ event.source_name }} · 仓库已创建",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -20879,10 +20879,10 @@
     }
   },
   "repository.deleted": {
-    "name": "仓库 已删除",
+    "name": "仓库已删除",
     "group": "仓库",
     "order": 173,
-    "description": "仓库 已删除。",
+    "description": "仓库已删除。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -20932,7 +20932,7 @@
       "x-github-delivery": "preview-repository.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已删除",
+      "title": "{{ event.source_name }} · 仓库已删除",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -20969,10 +20969,10 @@
     }
   },
   "repository.archived": {
-    "name": "仓库 已归档",
+    "name": "仓库已归档",
     "group": "仓库",
     "order": 174,
-    "description": "仓库 已归档。",
+    "description": "仓库已归档。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21022,7 +21022,7 @@
       "x-github-delivery": "preview-repository.archived"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已归档",
+      "title": "{{ event.source_name }} · 仓库已归档",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21059,10 +21059,10 @@
     }
   },
   "repository.unarchived": {
-    "name": "仓库 已取消归档",
+    "name": "仓库已取消归档",
     "group": "仓库",
     "order": 175,
-    "description": "仓库 已取消归档。",
+    "description": "仓库已取消归档。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21112,7 +21112,7 @@
       "x-github-delivery": "preview-repository.unarchived"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已取消归档",
+      "title": "{{ event.source_name }} · 仓库已取消归档",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21149,10 +21149,10 @@
     }
   },
   "repository.edited": {
-    "name": "仓库 已编辑",
+    "name": "仓库已编辑",
     "group": "仓库",
     "order": 176,
-    "description": "仓库 已编辑。",
+    "description": "仓库已编辑。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21202,7 +21202,7 @@
       "x-github-delivery": "preview-repository.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已编辑",
+      "title": "{{ event.source_name }} · 仓库已编辑",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21239,10 +21239,10 @@
     }
   },
   "repository.renamed": {
-    "name": "仓库 已重命名",
+    "name": "仓库已重命名",
     "group": "仓库",
     "order": 177,
-    "description": "仓库 已重命名。",
+    "description": "仓库已重命名。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21305,7 +21305,7 @@
       "x-github-delivery": "preview-repository.renamed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已重命名",
+      "title": "{{ event.source_name }} · 仓库已重命名",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21348,10 +21348,10 @@
     }
   },
   "repository.transferred": {
-    "name": "仓库 已转移",
+    "name": "仓库已转移",
     "group": "仓库",
     "order": 178,
-    "description": "仓库 已转移。",
+    "description": "仓库已转移。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21425,7 +21425,7 @@
       "x-github-delivery": "preview-repository.transferred"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已转移",
+      "title": "{{ event.source_name }} · 仓库已转移",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21474,10 +21474,10 @@
     }
   },
   "repository.publicized": {
-    "name": "仓库 已公开",
+    "name": "仓库已公开",
     "group": "仓库",
     "order": 179,
-    "description": "仓库 已公开。",
+    "description": "仓库已公开。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21527,7 +21527,7 @@
       "x-github-delivery": "preview-repository.publicized"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已公开",
+      "title": "{{ event.source_name }} · 仓库已公开",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21564,10 +21564,10 @@
     }
   },
   "repository.privatized": {
-    "name": "仓库 已设为私有",
+    "name": "仓库已设为私有",
     "group": "仓库",
     "order": 180,
-    "description": "仓库 已设为私有。",
+    "description": "仓库已设为私有。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21617,7 +21617,7 @@
       "x-github-delivery": "preview-repository.privatized"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库 已设为私有",
+      "title": "{{ event.source_name }} · 仓库已设为私有",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21654,10 +21654,10 @@
     }
   },
   "branch_protection_rule.created": {
-    "name": "分支保护规则 已创建",
+    "name": "分支保护规则已创建",
     "group": "仓库",
     "order": 181,
-    "description": "分支保护规则 已创建。",
+    "description": "分支保护规则已创建。",
     "fields": [
       {
         "path": "rule.name",
@@ -21702,7 +21702,7 @@
       "x-github-delivery": "preview-branch_protection_rule.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 分支保护规则 已创建",
+      "title": "{{ event.source_name }} · 分支保护规则已创建",
       "blocks": [
         {
           "id": "subject",
@@ -21733,10 +21733,10 @@
     }
   },
   "branch_protection_rule.edited": {
-    "name": "分支保护规则 已编辑",
+    "name": "分支保护规则已编辑",
     "group": "仓库",
     "order": 182,
-    "description": "分支保护规则 已编辑。",
+    "description": "分支保护规则已编辑。",
     "fields": [
       {
         "path": "rule.name",
@@ -21781,7 +21781,7 @@
       "x-github-delivery": "preview-branch_protection_rule.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 分支保护规则 已编辑",
+      "title": "{{ event.source_name }} · 分支保护规则已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -21812,10 +21812,10 @@
     }
   },
   "branch_protection_rule.deleted": {
-    "name": "分支保护规则 已删除",
+    "name": "分支保护规则已删除",
     "group": "仓库",
     "order": 183,
-    "description": "分支保护规则 已删除。",
+    "description": "分支保护规则已删除。",
     "fields": [
       {
         "path": "rule.name",
@@ -21860,7 +21860,7 @@
       "x-github-delivery": "preview-branch_protection_rule.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 分支保护规则 已删除",
+      "title": "{{ event.source_name }} · 分支保护规则已删除",
       "blocks": [
         {
           "id": "subject",
@@ -21891,10 +21891,10 @@
     }
   },
   "branch_protection_configuration.enabled": {
-    "name": "分支保护 已启用",
+    "name": "分支保护已启用",
     "group": "仓库",
     "order": 184,
-    "description": "分支保护 已启用。",
+    "description": "分支保护已启用。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21930,7 +21930,7 @@
       "x-github-delivery": "preview-branch_protection_configuration.enabled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 分支保护 已启用",
+      "title": "{{ event.source_name }} · 分支保护已启用",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -21955,10 +21955,10 @@
     }
   },
   "branch_protection_configuration.disabled": {
-    "name": "分支保护 已停用",
+    "name": "分支保护已停用",
     "group": "仓库",
     "order": 185,
-    "description": "分支保护 已停用。",
+    "description": "分支保护已停用。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -21994,7 +21994,7 @@
       "x-github-delivery": "preview-branch_protection_configuration.disabled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 分支保护 已停用",
+      "title": "{{ event.source_name }} · 分支保护已停用",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -22019,10 +22019,10 @@
     }
   },
   "repository_ruleset.created": {
-    "name": "仓库规则集 已创建",
+    "name": "仓库规则集已创建",
     "group": "仓库",
     "order": 186,
-    "description": "仓库规则集 已创建。",
+    "description": "仓库规则集已创建。",
     "fields": [
       {
         "path": "repository_ruleset.name",
@@ -22081,7 +22081,7 @@
       "x-github-delivery": "preview-repository_ruleset.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库规则集 已创建",
+      "title": "{{ event.source_name }} · 仓库规则集已创建",
       "blocks": [
         {
           "id": "subject",
@@ -22124,10 +22124,10 @@
     }
   },
   "repository_ruleset.edited": {
-    "name": "仓库规则集 已编辑",
+    "name": "仓库规则集已编辑",
     "group": "仓库",
     "order": 187,
-    "description": "仓库规则集 已编辑。",
+    "description": "仓库规则集已编辑。",
     "fields": [
       {
         "path": "repository_ruleset.name",
@@ -22186,7 +22186,7 @@
       "x-github-delivery": "preview-repository_ruleset.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库规则集 已编辑",
+      "title": "{{ event.source_name }} · 仓库规则集已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -22229,10 +22229,10 @@
     }
   },
   "repository_ruleset.deleted": {
-    "name": "仓库规则集 已删除",
+    "name": "仓库规则集已删除",
     "group": "仓库",
     "order": 188,
-    "description": "仓库规则集 已删除。",
+    "description": "仓库规则集已删除。",
     "fields": [
       {
         "path": "repository_ruleset.name",
@@ -22291,7 +22291,7 @@
       "x-github-delivery": "preview-repository_ruleset.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库规则集 已删除",
+      "title": "{{ event.source_name }} · 仓库规则集已删除",
       "blocks": [
         {
           "id": "subject",
@@ -22334,10 +22334,10 @@
     }
   },
   "deploy_key.created": {
-    "name": "部署密钥 已添加",
+    "name": "部署密钥已添加",
     "group": "仓库",
     "order": 189,
-    "description": "部署密钥 已添加。",
+    "description": "部署密钥已添加。",
     "fields": [
       {
         "path": "key.title",
@@ -22389,7 +22389,7 @@
       "x-github-delivery": "preview-deploy_key.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署密钥 已添加",
+      "title": "{{ event.source_name }} · 部署密钥已添加",
       "blocks": [
         {
           "id": "subject",
@@ -22426,10 +22426,10 @@
     }
   },
   "deploy_key.deleted": {
-    "name": "部署密钥 已删除",
+    "name": "部署密钥已删除",
     "group": "仓库",
     "order": 190,
-    "description": "部署密钥 已删除。",
+    "description": "部署密钥已删除。",
     "fields": [
       {
         "path": "key.title",
@@ -22481,7 +22481,7 @@
       "x-github-delivery": "preview-deploy_key.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 部署密钥 已删除",
+      "title": "{{ event.source_name }} · 部署密钥已删除",
       "blocks": [
         {
           "id": "subject",
@@ -22518,10 +22518,10 @@
     }
   },
   "custom_property_values.updated": {
-    "name": "仓库自定义属性 已更新",
+    "name": "仓库自定义属性已更新",
     "group": "仓库",
     "order": 191,
-    "description": "仓库自定义属性 已更新。",
+    "description": "仓库自定义属性已更新。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -22571,7 +22571,7 @@
       "x-github-delivery": "preview-custom_property_values.updated"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库自定义属性 已更新",
+      "title": "{{ event.source_name }} · 仓库自定义属性已更新",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -22836,10 +22836,10 @@
     }
   },
   "star.created": {
-    "name": "Star 新增 Star",
+    "name": "新增 Star",
     "group": "仓库",
     "order": 195,
-    "description": "Star 新增 Star。",
+    "description": "新增 Star。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -22882,7 +22882,7 @@
       "x-github-delivery": "preview-star.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Star 新增 Star",
+      "title": "{{ event.source_name }} · 新增 Star",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -22913,10 +22913,10 @@
     }
   },
   "star.deleted": {
-    "name": "Star 取消 Star",
+    "name": "取消 Star",
     "group": "仓库",
     "order": 196,
-    "description": "Star 取消 Star。",
+    "description": "取消 Star。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -22959,7 +22959,7 @@
       "x-github-delivery": "preview-star.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Star 取消 Star",
+      "title": "{{ event.source_name }} · 取消 Star",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -22990,10 +22990,10 @@
     }
   },
   "watch.started": {
-    "name": "关注 新增关注",
+    "name": "新增关注",
     "group": "仓库",
     "order": 197,
-    "description": "关注 新增关注。",
+    "description": "新增关注。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -23036,7 +23036,7 @@
       "x-github-delivery": "preview-watch.started"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 关注 新增关注",
+      "title": "{{ event.source_name }} · 新增关注",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -23067,10 +23067,10 @@
     }
   },
   "fork": {
-    "name": "Fork",
+    "name": "仓库被 Fork",
     "group": "仓库",
     "order": 198,
-    "description": "Fork。",
+    "description": "仓库被 Fork。",
     "fields": [
       {
         "path": "forkee.full_name",
@@ -23114,7 +23114,7 @@
       "x-github-delivery": "preview-fork"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Fork",
+      "title": "{{ event.source_name }} · 仓库被 Fork",
       "blocks": [
         {
           "id": "subject",
@@ -23145,10 +23145,10 @@
     }
   },
   "member.added": {
-    "name": "仓库协作者 已添加",
+    "name": "仓库协作者已添加",
     "group": "仓库",
     "order": 199,
-    "description": "仓库协作者 已添加。",
+    "description": "仓库协作者已添加。",
     "fields": [
       {
         "path": "member.login",
@@ -23204,7 +23204,7 @@
       "x-github-delivery": "preview-member.added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库协作者 已添加",
+      "title": "{{ event.source_name }} · 仓库协作者已添加",
       "blocks": [
         {
           "id": "subject",
@@ -23241,10 +23241,10 @@
     }
   },
   "member.edited": {
-    "name": "仓库协作者 权限已变更",
+    "name": "仓库协作者权限已变更",
     "group": "仓库",
     "order": 200,
-    "description": "仓库协作者 权限已变更。",
+    "description": "仓库协作者权限已变更。",
     "fields": [
       {
         "path": "member.login",
@@ -23289,7 +23289,7 @@
       "x-github-delivery": "preview-member.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库协作者 权限已变更",
+      "title": "{{ event.source_name }} · 仓库协作者权限已变更",
       "blocks": [
         {
           "id": "subject",
@@ -23320,10 +23320,10 @@
     }
   },
   "member.removed": {
-    "name": "仓库协作者 已移除",
+    "name": "仓库协作者已移除",
     "group": "仓库",
     "order": 201,
-    "description": "仓库协作者 已移除。",
+    "description": "仓库协作者已移除。",
     "fields": [
       {
         "path": "member.login",
@@ -23368,7 +23368,7 @@
       "x-github-delivery": "preview-member.removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 仓库协作者 已移除",
+      "title": "{{ event.source_name }} · 仓库协作者已移除",
       "blocks": [
         {
           "id": "subject",
@@ -23477,10 +23477,10 @@
     }
   },
   "organization.member_added": {
-    "name": "组织成员 成员已加入",
+    "name": "组织成员已加入",
     "group": "组织与团队",
     "order": 203,
-    "description": "组织成员 成员已加入。",
+    "description": "组织成员已加入。",
     "fields": [
       {
         "path": "organization.login",
@@ -23527,7 +23527,7 @@
       "x-github-delivery": "preview-organization.member_added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织成员 成员已加入",
+      "title": "{{ event.source_name }} · 组织成员已加入",
       "blocks": [
         {
           "id": "organization_login",
@@ -23564,10 +23564,10 @@
     }
   },
   "organization.member_removed": {
-    "name": "组织成员 成员已移除",
+    "name": "组织成员已移除",
     "group": "组织与团队",
     "order": 204,
-    "description": "组织成员 成员已移除。",
+    "description": "组织成员已移除。",
     "fields": [
       {
         "path": "organization.login",
@@ -23614,7 +23614,7 @@
       "x-github-delivery": "preview-organization.member_removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织成员 成员已移除",
+      "title": "{{ event.source_name }} · 组织成员已移除",
       "blocks": [
         {
           "id": "organization_login",
@@ -23651,10 +23651,10 @@
     }
   },
   "organization.member_invited": {
-    "name": "组织成员 已邀请成员",
+    "name": "组织已邀请成员",
     "group": "组织与团队",
     "order": 205,
-    "description": "组织成员 已邀请成员。",
+    "description": "组织已邀请成员。",
     "fields": [
       {
         "path": "organization.login",
@@ -23699,7 +23699,7 @@
       "x-github-delivery": "preview-organization.member_invited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织成员 已邀请成员",
+      "title": "{{ event.source_name }} · 组织已邀请成员",
       "blocks": [
         {
           "id": "organization_login",
@@ -23736,10 +23736,10 @@
     }
   },
   "organization.renamed": {
-    "name": "组织成员 组织已重命名",
+    "name": "组织已重命名",
     "group": "组织与团队",
     "order": 206,
-    "description": "组织成员 组织已重命名。",
+    "description": "组织已重命名。",
     "fields": [
       {
         "path": "organization.login",
@@ -23779,7 +23779,7 @@
       "x-github-delivery": "preview-organization.renamed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织成员 组织已重命名",
+      "title": "{{ event.source_name }} · 组织已重命名",
       "blocks": [
         {
           "id": "organization_login",
@@ -23810,10 +23810,10 @@
     }
   },
   "organization.deleted": {
-    "name": "组织成员 组织已删除",
+    "name": "组织已删除",
     "group": "组织与团队",
     "order": 207,
-    "description": "组织成员 组织已删除。",
+    "description": "组织已删除。",
     "fields": [
       {
         "path": "organization.login",
@@ -23842,7 +23842,7 @@
       "x-github-delivery": "preview-organization.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织成员 组织已删除",
+      "title": "{{ event.source_name }} · 组织已删除",
       "blocks": [
         {
           "id": "organization_login",
@@ -23867,10 +23867,10 @@
     }
   },
   "membership.added": {
-    "name": "团队成员 已加入",
+    "name": "团队成员已加入",
     "group": "组织与团队",
     "order": 208,
-    "description": "团队成员 已加入。",
+    "description": "团队成员已加入。",
     "fields": [
       {
         "path": "member.login",
@@ -23924,7 +23924,7 @@
       "x-github-delivery": "preview-membership.added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队成员 已加入",
+      "title": "{{ event.source_name }} · 团队成员已加入",
       "blocks": [
         {
           "id": "subject",
@@ -23961,10 +23961,10 @@
     }
   },
   "membership.removed": {
-    "name": "团队成员 已移除",
+    "name": "团队成员已移除",
     "group": "组织与团队",
     "order": 209,
-    "description": "团队成员 已移除。",
+    "description": "团队成员已移除。",
     "fields": [
       {
         "path": "member.login",
@@ -24018,7 +24018,7 @@
       "x-github-delivery": "preview-membership.removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队成员 已移除",
+      "title": "{{ event.source_name }} · 团队成员已移除",
       "blocks": [
         {
           "id": "subject",
@@ -24055,10 +24055,10 @@
     }
   },
   "team.created": {
-    "name": "团队 已创建",
+    "name": "团队已创建",
     "group": "组织与团队",
     "order": 210,
-    "description": "团队 已创建。",
+    "description": "团队已创建。",
     "fields": [
       {
         "path": "team.name",
@@ -24119,7 +24119,7 @@
       "x-github-delivery": "preview-team.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队 已创建",
+      "title": "{{ event.source_name }} · 团队已创建",
       "blocks": [
         {
           "id": "subject",
@@ -24162,10 +24162,10 @@
     }
   },
   "team.deleted": {
-    "name": "团队 已删除",
+    "name": "团队已删除",
     "group": "组织与团队",
     "order": 211,
-    "description": "团队 已删除。",
+    "description": "团队已删除。",
     "fields": [
       {
         "path": "team.name",
@@ -24226,7 +24226,7 @@
       "x-github-delivery": "preview-team.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队 已删除",
+      "title": "{{ event.source_name }} · 团队已删除",
       "blocks": [
         {
           "id": "subject",
@@ -24269,10 +24269,10 @@
     }
   },
   "team.edited": {
-    "name": "团队 已编辑",
+    "name": "团队已编辑",
     "group": "组织与团队",
     "order": 212,
-    "description": "团队 已编辑。",
+    "description": "团队已编辑。",
     "fields": [
       {
         "path": "team.name",
@@ -24333,7 +24333,7 @@
       "x-github-delivery": "preview-team.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队 已编辑",
+      "title": "{{ event.source_name }} · 团队已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -24376,10 +24376,10 @@
     }
   },
   "team.added_to_repository": {
-    "name": "团队 已加入仓库",
+    "name": "团队已加入仓库",
     "group": "组织与团队",
     "order": 213,
-    "description": "团队 已加入仓库。",
+    "description": "团队已加入仓库。",
     "fields": [
       {
         "path": "team.name",
@@ -24440,7 +24440,7 @@
       "x-github-delivery": "preview-team.added_to_repository"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队 已加入仓库",
+      "title": "{{ event.source_name }} · 团队已加入仓库",
       "blocks": [
         {
           "id": "subject",
@@ -24483,10 +24483,10 @@
     }
   },
   "team.removed_from_repository": {
-    "name": "团队 已移出仓库",
+    "name": "团队已移出仓库",
     "group": "组织与团队",
     "order": 214,
-    "description": "团队 已移出仓库。",
+    "description": "团队已移出仓库。",
     "fields": [
       {
         "path": "team.name",
@@ -24547,7 +24547,7 @@
       "x-github-delivery": "preview-team.removed_from_repository"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 团队 已移出仓库",
+      "title": "{{ event.source_name }} · 团队已移出仓库",
       "blocks": [
         {
           "id": "subject",
@@ -24590,10 +24590,10 @@
     }
   },
   "org_block.blocked": {
-    "name": "组织封禁 已封禁用户",
+    "name": "组织已封禁用户",
     "group": "组织与团队",
     "order": 215,
-    "description": "组织封禁 已封禁用户。",
+    "description": "组织已封禁用户。",
     "fields": [
       {
         "path": "blocked_user.login",
@@ -24638,7 +24638,7 @@
       "x-github-delivery": "preview-org_block.blocked"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织封禁 已封禁用户",
+      "title": "{{ event.source_name }} · 组织已封禁用户",
       "blocks": [
         {
           "id": "subject",
@@ -24669,10 +24669,10 @@
     }
   },
   "org_block.unblocked": {
-    "name": "组织封禁 已解封用户",
+    "name": "组织已解封用户",
     "group": "组织与团队",
     "order": 216,
-    "description": "组织封禁 已解封用户。",
+    "description": "组织已解封用户。",
     "fields": [
       {
         "path": "blocked_user.login",
@@ -24717,7 +24717,7 @@
       "x-github-delivery": "preview-org_block.unblocked"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织封禁 已解封用户",
+      "title": "{{ event.source_name }} · 组织已解封用户",
       "blocks": [
         {
           "id": "subject",
@@ -24748,10 +24748,10 @@
     }
   },
   "custom_property.created": {
-    "name": "组织自定义属性 已创建",
+    "name": "组织自定义属性已创建",
     "group": "组织与团队",
     "order": 217,
-    "description": "组织自定义属性 已创建。",
+    "description": "组织自定义属性已创建。",
     "fields": [
       {
         "path": "definition.property_name",
@@ -24796,7 +24796,7 @@
       "x-github-delivery": "preview-custom_property.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织自定义属性 已创建",
+      "title": "{{ event.source_name }} · 组织自定义属性已创建",
       "blocks": [
         {
           "id": "subject",
@@ -24826,10 +24826,10 @@
     }
   },
   "custom_property.updated": {
-    "name": "组织自定义属性 已更新",
+    "name": "组织自定义属性已更新",
     "group": "组织与团队",
     "order": 218,
-    "description": "组织自定义属性 已更新。",
+    "description": "组织自定义属性已更新。",
     "fields": [
       {
         "path": "definition.property_name",
@@ -24874,7 +24874,7 @@
       "x-github-delivery": "preview-custom_property.updated"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织自定义属性 已更新",
+      "title": "{{ event.source_name }} · 组织自定义属性已更新",
       "blocks": [
         {
           "id": "subject",
@@ -24904,10 +24904,10 @@
     }
   },
   "custom_property.deleted": {
-    "name": "组织自定义属性 已删除",
+    "name": "组织自定义属性已删除",
     "group": "组织与团队",
     "order": 219,
-    "description": "组织自定义属性 已删除。",
+    "description": "组织自定义属性已删除。",
     "fields": [
       {
         "path": "definition.property_name",
@@ -24945,7 +24945,7 @@
       "x-github-delivery": "preview-custom_property.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织自定义属性 已删除",
+      "title": "{{ event.source_name }} · 组织自定义属性已删除",
       "blocks": [
         {
           "id": "subject",
@@ -24969,10 +24969,10 @@
     }
   },
   "custom_property.promote_to_enterprise": {
-    "name": "组织自定义属性 已提升到企业",
+    "name": "组织自定义属性已提升到企业",
     "group": "组织与团队",
     "order": 220,
-    "description": "组织自定义属性 已提升到企业。",
+    "description": "组织自定义属性已提升到企业。",
     "fields": [
       {
         "path": "definition.property_name",
@@ -25017,7 +25017,7 @@
       "x-github-delivery": "preview-custom_property.promote_to_enterprise"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 组织自定义属性 已提升到企业",
+      "title": "{{ event.source_name }} · 组织自定义属性已提升到企业",
       "blocks": [
         {
           "id": "subject",
@@ -25047,10 +25047,10 @@
     }
   },
   "personal_access_token_request.created": {
-    "name": "访问令牌申请 新申请",
+    "name": "收到访问令牌申请",
     "group": "组织与团队",
     "order": 221,
-    "description": "访问令牌申请 新申请。",
+    "description": "收到访问令牌申请。",
     "fields": [
       {
         "path": "personal_access_token_request.owner.login",
@@ -25104,7 +25104,7 @@
       "x-github-delivery": "preview-personal_access_token_request.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 访问令牌申请 新申请",
+      "title": "{{ event.source_name }} · 收到访问令牌申请",
       "blocks": [
         {
           "id": "subject",
@@ -25140,10 +25140,10 @@
     }
   },
   "personal_access_token_request.approved": {
-    "name": "访问令牌申请 已批准",
+    "name": "访问令牌申请已批准",
     "group": "组织与团队",
     "order": 222,
-    "description": "访问令牌申请 已批准。",
+    "description": "访问令牌申请已批准。",
     "fields": [
       {
         "path": "personal_access_token_request.owner.login",
@@ -25197,7 +25197,7 @@
       "x-github-delivery": "preview-personal_access_token_request.approved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 访问令牌申请 已批准",
+      "title": "{{ event.source_name }} · 访问令牌申请已批准",
       "blocks": [
         {
           "id": "subject",
@@ -25233,10 +25233,10 @@
     }
   },
   "personal_access_token_request.denied": {
-    "name": "访问令牌申请 已拒绝",
+    "name": "访问令牌申请已拒绝",
     "group": "组织与团队",
     "order": 223,
-    "description": "访问令牌申请 已拒绝。",
+    "description": "访问令牌申请已拒绝。",
     "fields": [
       {
         "path": "personal_access_token_request.owner.login",
@@ -25290,7 +25290,7 @@
       "x-github-delivery": "preview-personal_access_token_request.denied"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 访问令牌申请 已拒绝",
+      "title": "{{ event.source_name }} · 访问令牌申请已拒绝",
       "blocks": [
         {
           "id": "subject",
@@ -25326,10 +25326,10 @@
     }
   },
   "personal_access_token_request.cancelled": {
-    "name": "访问令牌申请 已取消",
+    "name": "访问令牌申请已取消",
     "group": "组织与团队",
     "order": 224,
-    "description": "访问令牌申请 已取消。",
+    "description": "访问令牌申请已取消。",
     "fields": [
       {
         "path": "personal_access_token_request.owner.login",
@@ -25383,7 +25383,7 @@
       "x-github-delivery": "preview-personal_access_token_request.cancelled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 访问令牌申请 已取消",
+      "title": "{{ event.source_name }} · 访问令牌申请已取消",
       "blocks": [
         {
           "id": "subject",
@@ -25419,10 +25419,10 @@
     }
   },
   "project.created": {
-    "name": "项目（经典） 已创建",
+    "name": "项目（经典）已创建",
     "group": "项目",
     "order": 225,
-    "description": "项目（经典） 已创建。",
+    "description": "项目（经典）已创建。",
     "fields": [
       {
         "path": "project.name",
@@ -25467,7 +25467,7 @@
       "x-github-delivery": "preview-project.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目（经典） 已创建",
+      "title": "{{ event.source_name }} · 项目（经典）已创建",
       "blocks": [
         {
           "id": "subject",
@@ -25498,10 +25498,10 @@
     }
   },
   "project.edited": {
-    "name": "项目（经典） 已编辑",
+    "name": "项目（经典）已编辑",
     "group": "项目",
     "order": 226,
-    "description": "项目（经典） 已编辑。",
+    "description": "项目（经典）已编辑。",
     "fields": [
       {
         "path": "project.name",
@@ -25546,7 +25546,7 @@
       "x-github-delivery": "preview-project.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目（经典） 已编辑",
+      "title": "{{ event.source_name }} · 项目（经典）已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -25577,10 +25577,10 @@
     }
   },
   "project.closed": {
-    "name": "项目（经典） 已关闭",
+    "name": "项目（经典）已关闭",
     "group": "项目",
     "order": 227,
-    "description": "项目（经典） 已关闭。",
+    "description": "项目（经典）已关闭。",
     "fields": [
       {
         "path": "project.name",
@@ -25625,7 +25625,7 @@
       "x-github-delivery": "preview-project.closed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目（经典） 已关闭",
+      "title": "{{ event.source_name }} · 项目（经典）已关闭",
       "blocks": [
         {
           "id": "subject",
@@ -25656,10 +25656,10 @@
     }
   },
   "project.reopened": {
-    "name": "项目（经典） 已重新打开",
+    "name": "项目（经典）已重新打开",
     "group": "项目",
     "order": 228,
-    "description": "项目（经典） 已重新打开。",
+    "description": "项目（经典）已重新打开。",
     "fields": [
       {
         "path": "project.name",
@@ -25704,7 +25704,7 @@
       "x-github-delivery": "preview-project.reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目（经典） 已重新打开",
+      "title": "{{ event.source_name }} · 项目（经典）已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -25735,10 +25735,10 @@
     }
   },
   "project.deleted": {
-    "name": "项目（经典） 已删除",
+    "name": "项目（经典）已删除",
     "group": "项目",
     "order": 229,
-    "description": "项目（经典） 已删除。",
+    "description": "项目（经典）已删除。",
     "fields": [
       {
         "path": "project.name",
@@ -25783,7 +25783,7 @@
       "x-github-delivery": "preview-project.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目（经典） 已删除",
+      "title": "{{ event.source_name }} · 项目（经典）已删除",
       "blocks": [
         {
           "id": "subject",
@@ -25814,10 +25814,10 @@
     }
   },
   "project_card.created": {
-    "name": "项目卡片（经典） 已创建",
+    "name": "项目卡片（经典）已创建",
     "group": "项目",
     "order": 230,
-    "description": "项目卡片（经典） 已创建。",
+    "description": "项目卡片（经典）已创建。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -25855,7 +25855,7 @@
       "x-github-delivery": "preview-project_card.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目卡片（经典） 已创建",
+      "title": "{{ event.source_name }} · 项目卡片（经典）已创建",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -25879,10 +25879,10 @@
     }
   },
   "project_card.edited": {
-    "name": "项目卡片（经典） 已编辑",
+    "name": "项目卡片（经典）已编辑",
     "group": "项目",
     "order": 231,
-    "description": "项目卡片（经典） 已编辑。",
+    "description": "项目卡片（经典）已编辑。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -25920,7 +25920,7 @@
       "x-github-delivery": "preview-project_card.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目卡片（经典） 已编辑",
+      "title": "{{ event.source_name }} · 项目卡片（经典）已编辑",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -25944,10 +25944,10 @@
     }
   },
   "project_card.moved": {
-    "name": "项目卡片（经典） 已移动",
+    "name": "项目卡片（经典）已移动",
     "group": "项目",
     "order": 232,
-    "description": "项目卡片（经典） 已移动。",
+    "description": "项目卡片（经典）已移动。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -25985,7 +25985,7 @@
       "x-github-delivery": "preview-project_card.moved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目卡片（经典） 已移动",
+      "title": "{{ event.source_name }} · 项目卡片（经典）已移动",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -26009,10 +26009,10 @@
     }
   },
   "project_card.converted": {
-    "name": "项目卡片（经典） 已转为 Issue",
+    "name": "项目卡片（经典）已转为 Issue",
     "group": "项目",
     "order": 233,
-    "description": "项目卡片（经典） 已转为 Issue。",
+    "description": "项目卡片（经典）已转为 Issue。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -26050,7 +26050,7 @@
       "x-github-delivery": "preview-project_card.converted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目卡片（经典） 已转为 Issue",
+      "title": "{{ event.source_name }} · 项目卡片（经典）已转为 Issue",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -26074,10 +26074,10 @@
     }
   },
   "project_card.deleted": {
-    "name": "项目卡片（经典） 已删除",
+    "name": "项目卡片（经典）已删除",
     "group": "项目",
     "order": 234,
-    "description": "项目卡片（经典） 已删除。",
+    "description": "项目卡片（经典）已删除。",
     "fields": [
       {
         "path": "repository.full_name",
@@ -26115,7 +26115,7 @@
       "x-github-delivery": "preview-project_card.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目卡片（经典） 已删除",
+      "title": "{{ event.source_name }} · 项目卡片（经典）已删除",
       "blocks": [
         {
           "id": "repository_full_name",
@@ -26139,10 +26139,10 @@
     }
   },
   "project_column.created": {
-    "name": "项目列（经典） 已创建",
+    "name": "项目列（经典）已创建",
     "group": "项目",
     "order": 235,
-    "description": "项目列（经典） 已创建。",
+    "description": "项目列（经典）已创建。",
     "fields": [
       {
         "path": "project_column.name",
@@ -26180,7 +26180,7 @@
       "x-github-delivery": "preview-project_column.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目列（经典） 已创建",
+      "title": "{{ event.source_name }} · 项目列（经典）已创建",
       "blocks": [
         {
           "id": "subject",
@@ -26204,10 +26204,10 @@
     }
   },
   "project_column.edited": {
-    "name": "项目列（经典） 已编辑",
+    "name": "项目列（经典）已编辑",
     "group": "项目",
     "order": 236,
-    "description": "项目列（经典） 已编辑。",
+    "description": "项目列（经典）已编辑。",
     "fields": [
       {
         "path": "project_column.name",
@@ -26245,7 +26245,7 @@
       "x-github-delivery": "preview-project_column.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目列（经典） 已编辑",
+      "title": "{{ event.source_name }} · 项目列（经典）已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -26269,10 +26269,10 @@
     }
   },
   "project_column.moved": {
-    "name": "项目列（经典） 已移动",
+    "name": "项目列（经典）已移动",
     "group": "项目",
     "order": 237,
-    "description": "项目列（经典） 已移动。",
+    "description": "项目列（经典）已移动。",
     "fields": [
       {
         "path": "project_column.name",
@@ -26310,7 +26310,7 @@
       "x-github-delivery": "preview-project_column.moved"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目列（经典） 已移动",
+      "title": "{{ event.source_name }} · 项目列（经典）已移动",
       "blocks": [
         {
           "id": "subject",
@@ -26334,10 +26334,10 @@
     }
   },
   "project_column.deleted": {
-    "name": "项目列（经典） 已删除",
+    "name": "项目列（经典）已删除",
     "group": "项目",
     "order": 238,
-    "description": "项目列（经典） 已删除。",
+    "description": "项目列（经典）已删除。",
     "fields": [
       {
         "path": "project_column.name",
@@ -26375,7 +26375,7 @@
       "x-github-delivery": "preview-project_column.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目列（经典） 已删除",
+      "title": "{{ event.source_name }} · 项目列（经典）已删除",
       "blocks": [
         {
           "id": "subject",
@@ -26399,10 +26399,10 @@
     }
   },
   "projects_v2.created": {
-    "name": "项目 已创建",
+    "name": "项目已创建",
     "group": "项目",
     "order": 239,
-    "description": "项目 已创建。",
+    "description": "项目已创建。",
     "fields": [
       {
         "path": "projects_v2.title",
@@ -26447,7 +26447,7 @@
       "x-github-delivery": "preview-projects_v2.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目 已创建",
+      "title": "{{ event.source_name }} · 项目已创建",
       "blocks": [
         {
           "id": "subject",
@@ -26477,10 +26477,10 @@
     }
   },
   "projects_v2.edited": {
-    "name": "项目 已编辑",
+    "name": "项目已编辑",
     "group": "项目",
     "order": 240,
-    "description": "项目 已编辑。",
+    "description": "项目已编辑。",
     "fields": [
       {
         "path": "projects_v2.title",
@@ -26525,7 +26525,7 @@
       "x-github-delivery": "preview-projects_v2.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目 已编辑",
+      "title": "{{ event.source_name }} · 项目已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -26555,10 +26555,10 @@
     }
   },
   "projects_v2.closed": {
-    "name": "项目 已关闭",
+    "name": "项目已关闭",
     "group": "项目",
     "order": 241,
-    "description": "项目 已关闭。",
+    "description": "项目已关闭。",
     "fields": [
       {
         "path": "projects_v2.title",
@@ -26603,7 +26603,7 @@
       "x-github-delivery": "preview-projects_v2.closed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目 已关闭",
+      "title": "{{ event.source_name }} · 项目已关闭",
       "blocks": [
         {
           "id": "subject",
@@ -26633,10 +26633,10 @@
     }
   },
   "projects_v2.reopened": {
-    "name": "项目 已重新打开",
+    "name": "项目已重新打开",
     "group": "项目",
     "order": 242,
-    "description": "项目 已重新打开。",
+    "description": "项目已重新打开。",
     "fields": [
       {
         "path": "projects_v2.title",
@@ -26681,7 +26681,7 @@
       "x-github-delivery": "preview-projects_v2.reopened"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目 已重新打开",
+      "title": "{{ event.source_name }} · 项目已重新打开",
       "blocks": [
         {
           "id": "subject",
@@ -26711,10 +26711,10 @@
     }
   },
   "projects_v2.deleted": {
-    "name": "项目 已删除",
+    "name": "项目已删除",
     "group": "项目",
     "order": 243,
-    "description": "项目 已删除。",
+    "description": "项目已删除。",
     "fields": [
       {
         "path": "projects_v2.title",
@@ -26759,7 +26759,7 @@
       "x-github-delivery": "preview-projects_v2.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目 已删除",
+      "title": "{{ event.source_name }} · 项目已删除",
       "blocks": [
         {
           "id": "subject",
@@ -26789,10 +26789,10 @@
     }
   },
   "projects_v2_item.created": {
-    "name": "项目条目 已添加",
+    "name": "项目条目已添加",
     "group": "项目",
     "order": 244,
-    "description": "项目条目 已添加。",
+    "description": "项目条目已添加。",
     "fields": [
       {
         "path": "organization.login",
@@ -26830,7 +26830,7 @@
       "x-github-delivery": "preview-projects_v2_item.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已添加",
+      "title": "{{ event.source_name }} · 项目条目已添加",
       "blocks": [
         {
           "id": "organization_login",
@@ -26854,10 +26854,10 @@
     }
   },
   "projects_v2_item.edited": {
-    "name": "项目条目 已编辑",
+    "name": "项目条目已编辑",
     "group": "项目",
     "order": 245,
-    "description": "项目条目 已编辑。",
+    "description": "项目条目已编辑。",
     "fields": [
       {
         "path": "organization.login",
@@ -26895,7 +26895,7 @@
       "x-github-delivery": "preview-projects_v2_item.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已编辑",
+      "title": "{{ event.source_name }} · 项目条目已编辑",
       "blocks": [
         {
           "id": "organization_login",
@@ -26919,10 +26919,10 @@
     }
   },
   "projects_v2_item.archived": {
-    "name": "项目条目 已归档",
+    "name": "项目条目已归档",
     "group": "项目",
     "order": 246,
-    "description": "项目条目 已归档。",
+    "description": "项目条目已归档。",
     "fields": [
       {
         "path": "organization.login",
@@ -26960,7 +26960,7 @@
       "x-github-delivery": "preview-projects_v2_item.archived"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已归档",
+      "title": "{{ event.source_name }} · 项目条目已归档",
       "blocks": [
         {
           "id": "organization_login",
@@ -26984,10 +26984,10 @@
     }
   },
   "projects_v2_item.restored": {
-    "name": "项目条目 已恢复",
+    "name": "项目条目已恢复",
     "group": "项目",
     "order": 247,
-    "description": "项目条目 已恢复。",
+    "description": "项目条目已恢复。",
     "fields": [
       {
         "path": "organization.login",
@@ -27025,7 +27025,7 @@
       "x-github-delivery": "preview-projects_v2_item.restored"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已恢复",
+      "title": "{{ event.source_name }} · 项目条目已恢复",
       "blocks": [
         {
           "id": "organization_login",
@@ -27049,10 +27049,10 @@
     }
   },
   "projects_v2_item.converted": {
-    "name": "项目条目 已转为 Issue",
+    "name": "项目条目已转为 Issue",
     "group": "项目",
     "order": 248,
-    "description": "项目条目 已转为 Issue。",
+    "description": "项目条目已转为 Issue。",
     "fields": [
       {
         "path": "organization.login",
@@ -27090,7 +27090,7 @@
       "x-github-delivery": "preview-projects_v2_item.converted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已转为 Issue",
+      "title": "{{ event.source_name }} · 项目条目已转为 Issue",
       "blocks": [
         {
           "id": "organization_login",
@@ -27114,10 +27114,10 @@
     }
   },
   "projects_v2_item.reordered": {
-    "name": "项目条目 已调整顺序",
+    "name": "项目条目已调整顺序",
     "group": "项目",
     "order": 249,
-    "description": "项目条目 已调整顺序。",
+    "description": "项目条目已调整顺序。",
     "fields": [
       {
         "path": "organization.login",
@@ -27155,7 +27155,7 @@
       "x-github-delivery": "preview-projects_v2_item.reordered"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已调整顺序",
+      "title": "{{ event.source_name }} · 项目条目已调整顺序",
       "blocks": [
         {
           "id": "organization_login",
@@ -27179,10 +27179,10 @@
     }
   },
   "projects_v2_item.deleted": {
-    "name": "项目条目 已删除",
+    "name": "项目条目已删除",
     "group": "项目",
     "order": 250,
-    "description": "项目条目 已删除。",
+    "description": "项目条目已删除。",
     "fields": [
       {
         "path": "organization.login",
@@ -27220,7 +27220,7 @@
       "x-github-delivery": "preview-projects_v2_item.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目条目 已删除",
+      "title": "{{ event.source_name }} · 项目条目已删除",
       "blocks": [
         {
           "id": "organization_login",
@@ -27244,10 +27244,10 @@
     }
   },
   "projects_v2_status_update.created": {
-    "name": "项目状态更新 已发布",
+    "name": "项目状态更新已发布",
     "group": "项目",
     "order": 251,
-    "description": "项目状态更新 已发布。",
+    "description": "项目状态更新已发布。",
     "fields": [
       {
         "path": "projects_v2_status_update.status",
@@ -27299,7 +27299,7 @@
       "x-github-delivery": "preview-projects_v2_status_update.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目状态更新 已发布",
+      "title": "{{ event.source_name }} · 项目状态更新已发布",
       "blocks": [
         {
           "id": "subject",
@@ -27335,10 +27335,10 @@
     }
   },
   "projects_v2_status_update.edited": {
-    "name": "项目状态更新 已编辑",
+    "name": "项目状态更新已编辑",
     "group": "项目",
     "order": 252,
-    "description": "项目状态更新 已编辑。",
+    "description": "项目状态更新已编辑。",
     "fields": [
       {
         "path": "projects_v2_status_update.status",
@@ -27390,7 +27390,7 @@
       "x-github-delivery": "preview-projects_v2_status_update.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目状态更新 已编辑",
+      "title": "{{ event.source_name }} · 项目状态更新已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -27426,10 +27426,10 @@
     }
   },
   "projects_v2_status_update.deleted": {
-    "name": "项目状态更新 已删除",
+    "name": "项目状态更新已删除",
     "group": "项目",
     "order": 253,
-    "description": "项目状态更新 已删除。",
+    "description": "项目状态更新已删除。",
     "fields": [
       {
         "path": "projects_v2_status_update.status",
@@ -27481,7 +27481,7 @@
       "x-github-delivery": "preview-projects_v2_status_update.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 项目状态更新 已删除",
+      "title": "{{ event.source_name }} · 项目状态更新已删除",
       "blocks": [
         {
           "id": "subject",
@@ -27517,10 +27517,10 @@
     }
   },
   "installation.created": {
-    "name": "GitHub App 安装 已安装",
+    "name": "GitHub App 已安装",
     "group": "应用与赞助",
     "order": 254,
-    "description": "GitHub App 安装 已安装。",
+    "description": "GitHub App 已安装。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -27572,7 +27572,7 @@
       "x-github-delivery": "preview-installation.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 安装 已安装",
+      "title": "{{ event.source_name }} · GitHub App 已安装",
       "blocks": [
         {
           "id": "subject",
@@ -27609,10 +27609,10 @@
     }
   },
   "installation.deleted": {
-    "name": "GitHub App 安装 已卸载",
+    "name": "GitHub App 已卸载",
     "group": "应用与赞助",
     "order": 255,
-    "description": "GitHub App 安装 已卸载。",
+    "description": "GitHub App 已卸载。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -27664,7 +27664,7 @@
       "x-github-delivery": "preview-installation.deleted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 安装 已卸载",
+      "title": "{{ event.source_name }} · GitHub App 已卸载",
       "blocks": [
         {
           "id": "subject",
@@ -27701,10 +27701,10 @@
     }
   },
   "installation.suspend": {
-    "name": "GitHub App 安装 已暂停",
+    "name": "GitHub App 已暂停",
     "group": "应用与赞助",
     "order": 256,
-    "description": "GitHub App 安装 已暂停。",
+    "description": "GitHub App 已暂停。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -27756,7 +27756,7 @@
       "x-github-delivery": "preview-installation.suspend"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 安装 已暂停",
+      "title": "{{ event.source_name }} · GitHub App 已暂停",
       "blocks": [
         {
           "id": "subject",
@@ -27793,10 +27793,10 @@
     }
   },
   "installation.unsuspend": {
-    "name": "GitHub App 安装 已恢复",
+    "name": "GitHub App 已恢复",
     "group": "应用与赞助",
     "order": 257,
-    "description": "GitHub App 安装 已恢复。",
+    "description": "GitHub App 已恢复。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -27848,7 +27848,7 @@
       "x-github-delivery": "preview-installation.unsuspend"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 安装 已恢复",
+      "title": "{{ event.source_name }} · GitHub App 已恢复",
       "blocks": [
         {
           "id": "subject",
@@ -27885,10 +27885,10 @@
     }
   },
   "installation.new_permissions_accepted": {
-    "name": "GitHub App 安装 已接受新权限",
+    "name": "GitHub App 已接受新权限",
     "group": "应用与赞助",
     "order": 258,
-    "description": "GitHub App 安装 已接受新权限。",
+    "description": "GitHub App 已接受新权限。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -27940,7 +27940,7 @@
       "x-github-delivery": "preview-installation.new_permissions_accepted"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 安装 已接受新权限",
+      "title": "{{ event.source_name }} · GitHub App 已接受新权限",
       "blocks": [
         {
           "id": "subject",
@@ -27977,10 +27977,10 @@
     }
   },
   "installation_repositories.added": {
-    "name": "GitHub App 仓库授权 已添加仓库",
+    "name": "GitHub App 授权仓库已添加",
     "group": "应用与赞助",
     "order": 259,
-    "description": "GitHub App 仓库授权 已添加仓库。",
+    "description": "GitHub App 授权仓库已添加。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -28046,7 +28046,7 @@
       "x-github-delivery": "preview-installation_repositories.added"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 仓库授权 已添加仓库",
+      "title": "{{ event.source_name }} · GitHub App 授权仓库已添加",
       "blocks": [
         {
           "id": "subject",
@@ -28083,10 +28083,10 @@
     }
   },
   "installation_repositories.removed": {
-    "name": "GitHub App 仓库授权 已移除仓库",
+    "name": "GitHub App 授权仓库已移除",
     "group": "应用与赞助",
     "order": 260,
-    "description": "GitHub App 仓库授权 已移除仓库。",
+    "description": "GitHub App 授权仓库已移除。",
     "fields": [
       {
         "path": "installation.account.login",
@@ -28152,7 +28152,7 @@
       "x-github-delivery": "preview-installation_repositories.removed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 仓库授权 已移除仓库",
+      "title": "{{ event.source_name }} · GitHub App 授权仓库已移除",
       "blocks": [
         {
           "id": "subject",
@@ -28189,10 +28189,10 @@
     }
   },
   "installation_target.renamed": {
-    "name": "GitHub App 安装账号 已重命名",
+    "name": "GitHub App 安装账号已重命名",
     "group": "应用与赞助",
     "order": 261,
-    "description": "GitHub App 安装账号 已重命名。",
+    "description": "GitHub App 安装账号已重命名。",
     "fields": [
       {
         "path": "account.login",
@@ -28230,7 +28230,7 @@
       "x-github-delivery": "preview-installation_target.renamed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 安装账号 已重命名",
+      "title": "{{ event.source_name }} · GitHub App 安装账号已重命名",
       "blocks": [
         {
           "id": "subject",
@@ -28254,10 +28254,10 @@
     }
   },
   "github_app_authorization.revoked": {
-    "name": "GitHub App 授权 已撤销",
+    "name": "GitHub App 授权已撤销",
     "group": "应用与赞助",
     "order": 262,
-    "description": "GitHub App 授权 已撤销。",
+    "description": "GitHub App 授权已撤销。",
     "fields": [
       {
         "path": "sender.login",
@@ -28277,7 +28277,7 @@
       "x-github-delivery": "preview-github_app_authorization.revoked"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · GitHub App 授权 已撤销",
+      "title": "{{ event.source_name }} · GitHub App 授权已撤销",
       "blocks": [
         {
           "id": "subject",
@@ -28289,10 +28289,10 @@
     }
   },
   "marketplace_purchase.purchased": {
-    "name": "Marketplace 订阅 已购买",
+    "name": "Marketplace 订阅已购买",
     "group": "应用与赞助",
     "order": 263,
-    "description": "Marketplace 订阅 已购买。",
+    "description": "Marketplace 订阅已购买。",
     "fields": [
       {
         "path": "marketplace_purchase.account.login",
@@ -28337,7 +28337,7 @@
       "x-github-delivery": "preview-marketplace_purchase.purchased"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Marketplace 订阅 已购买",
+      "title": "{{ event.source_name }} · Marketplace 订阅已购买",
       "blocks": [
         {
           "id": "subject",
@@ -28367,10 +28367,10 @@
     }
   },
   "marketplace_purchase.changed": {
-    "name": "Marketplace 订阅 已变更",
+    "name": "Marketplace 订阅已变更",
     "group": "应用与赞助",
     "order": 264,
-    "description": "Marketplace 订阅 已变更。",
+    "description": "Marketplace 订阅已变更。",
     "fields": [
       {
         "path": "marketplace_purchase.account.login",
@@ -28415,7 +28415,7 @@
       "x-github-delivery": "preview-marketplace_purchase.changed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Marketplace 订阅 已变更",
+      "title": "{{ event.source_name }} · Marketplace 订阅已变更",
       "blocks": [
         {
           "id": "subject",
@@ -28445,10 +28445,10 @@
     }
   },
   "marketplace_purchase.cancelled": {
-    "name": "Marketplace 订阅 已取消",
+    "name": "Marketplace 订阅已取消",
     "group": "应用与赞助",
     "order": 265,
-    "description": "Marketplace 订阅 已取消。",
+    "description": "Marketplace 订阅已取消。",
     "fields": [
       {
         "path": "marketplace_purchase.account.login",
@@ -28493,7 +28493,7 @@
       "x-github-delivery": "preview-marketplace_purchase.cancelled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Marketplace 订阅 已取消",
+      "title": "{{ event.source_name }} · Marketplace 订阅已取消",
       "blocks": [
         {
           "id": "subject",
@@ -28523,10 +28523,10 @@
     }
   },
   "marketplace_purchase.pending_change": {
-    "name": "Marketplace 订阅 待变更",
+    "name": "Marketplace 订阅待变更",
     "group": "应用与赞助",
     "order": 266,
-    "description": "Marketplace 订阅 待变更。",
+    "description": "Marketplace 订阅待变更。",
     "fields": [
       {
         "path": "marketplace_purchase.account.login",
@@ -28571,7 +28571,7 @@
       "x-github-delivery": "preview-marketplace_purchase.pending_change"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Marketplace 订阅 待变更",
+      "title": "{{ event.source_name }} · Marketplace 订阅待变更",
       "blocks": [
         {
           "id": "subject",
@@ -28601,10 +28601,10 @@
     }
   },
   "marketplace_purchase.pending_change_cancelled": {
-    "name": "Marketplace 订阅 已取消待变更",
+    "name": "Marketplace 订阅已取消待变更",
     "group": "应用与赞助",
     "order": 267,
-    "description": "Marketplace 订阅 已取消待变更。",
+    "description": "Marketplace 订阅已取消待变更。",
     "fields": [
       {
         "path": "marketplace_purchase.account.login",
@@ -28649,7 +28649,7 @@
       "x-github-delivery": "preview-marketplace_purchase.pending_change_cancelled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · Marketplace 订阅 已取消待变更",
+      "title": "{{ event.source_name }} · Marketplace 订阅已取消待变更",
       "blocks": [
         {
           "id": "subject",
@@ -28679,10 +28679,10 @@
     }
   },
   "sponsorship.created": {
-    "name": "赞助 新赞助",
+    "name": "新增赞助",
     "group": "应用与赞助",
     "order": 268,
-    "description": "赞助 新赞助。",
+    "description": "新增赞助。",
     "fields": [
       {
         "path": "sponsorship.sponsor.login",
@@ -28729,7 +28729,7 @@
       "x-github-delivery": "preview-sponsorship.created"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 赞助 新赞助",
+      "title": "{{ event.source_name }} · 新增赞助",
       "blocks": [
         {
           "id": "subject",
@@ -28760,10 +28760,10 @@
     }
   },
   "sponsorship.edited": {
-    "name": "赞助 已编辑",
+    "name": "赞助已编辑",
     "group": "应用与赞助",
     "order": 269,
-    "description": "赞助 已编辑。",
+    "description": "赞助已编辑。",
     "fields": [
       {
         "path": "sponsorship.sponsor.login",
@@ -28810,7 +28810,7 @@
       "x-github-delivery": "preview-sponsorship.edited"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 赞助 已编辑",
+      "title": "{{ event.source_name }} · 赞助已编辑",
       "blocks": [
         {
           "id": "subject",
@@ -28841,10 +28841,10 @@
     }
   },
   "sponsorship.cancelled": {
-    "name": "赞助 已取消",
+    "name": "赞助已取消",
     "group": "应用与赞助",
     "order": 270,
-    "description": "赞助 已取消。",
+    "description": "赞助已取消。",
     "fields": [
       {
         "path": "sponsorship.sponsor.login",
@@ -28891,7 +28891,7 @@
       "x-github-delivery": "preview-sponsorship.cancelled"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 赞助 已取消",
+      "title": "{{ event.source_name }} · 赞助已取消",
       "blocks": [
         {
           "id": "subject",
@@ -28922,10 +28922,10 @@
     }
   },
   "sponsorship.pending_cancellation": {
-    "name": "赞助 即将取消",
+    "name": "赞助即将取消",
     "group": "应用与赞助",
     "order": 271,
-    "description": "赞助 即将取消。",
+    "description": "赞助即将取消。",
     "fields": [
       {
         "path": "sponsorship.sponsor.login",
@@ -28979,7 +28979,7 @@
       "x-github-delivery": "preview-sponsorship.pending_cancellation"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 赞助 即将取消",
+      "title": "{{ event.source_name }} · 赞助即将取消",
       "blocks": [
         {
           "id": "subject",
@@ -29016,10 +29016,10 @@
     }
   },
   "sponsorship.tier_changed": {
-    "name": "赞助 档位已变更",
+    "name": "赞助档位已变更",
     "group": "应用与赞助",
     "order": 272,
-    "description": "赞助 档位已变更。",
+    "description": "赞助档位已变更。",
     "fields": [
       {
         "path": "sponsorship.sponsor.login",
@@ -29079,7 +29079,7 @@
       "x-github-delivery": "preview-sponsorship.tier_changed"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 赞助 档位已变更",
+      "title": "{{ event.source_name }} · 赞助档位已变更",
       "blocks": [
         {
           "id": "subject",
@@ -29116,10 +29116,10 @@
     }
   },
   "sponsorship.pending_tier_change": {
-    "name": "赞助 档位即将变更",
+    "name": "赞助档位即将变更",
     "group": "应用与赞助",
     "order": 273,
-    "description": "赞助 档位即将变更。",
+    "description": "赞助档位即将变更。",
     "fields": [
       {
         "path": "sponsorship.sponsor.login",
@@ -29186,7 +29186,7 @@
       "x-github-delivery": "preview-sponsorship.pending_tier_change"
     },
     "content_template": {
-      "title": "{{ event.source_name }} · 赞助 档位即将变更",
+      "title": "{{ event.source_name }} · 赞助档位即将变更",
       "blocks": [
         {
           "id": "subject",
