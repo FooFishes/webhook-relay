@@ -58,6 +58,22 @@ Compose 默认仅将服务发布到宿主机的 `127.0.0.1:8080`。公网部署�
 
 数据保存在 `relay-data` 命名卷。容器以非 root 用户运行，使用只读根文件系统和可写数据卷。服务仅支持单实例使用一个数据库文件。
 
+### 发布到服务器
+
+[`scripts/deploy.sh`](scripts/deploy.sh) 一条命令完成发布：上传源码在服务器构建（或 `DEPLOY_BUILD=local` 本机构建后传镜像），由服务器上的 [`relayctl`](deploy/relayctl) 停服备份数据卷、切换镜像、等待健康检查；新版本起不来时自动还原数据并回到旧版本。
+
+```bash
+# 仅首次：配置 ssh 目标
+cp deploy/target.env.example deploy/target.env
+
+scripts/deploy.sh             # 发布当前工作区，tag 形如 20261115-035459-4e23b34[-dirty]
+scripts/deploy.sh status      # 当前版本、可用镜像与备份
+scripts/deploy.sh logs 100    # 服务器日志
+scripts/deploy.sh rollback    # 回到上一次发布前的镜像和数据（之后写入的数据会丢失）
+```
+
+服务器部署目录（默认 `/opt/webhook-relay`）需事先放好 `.env`（`RELAY_ADMIN_TOKEN`、`RELAY_MASTER_KEY`、`RELAY_PUBLIC_URL`，以及宿主端口 `RELAY_HOST_PORT`）。`RELAY_IMAGE_TAG` 由 `relayctl` 维护，[`deploy/compose.yaml`](deploy/compose.yaml) 每次发布时同步，不要在服务器上手改。默认保留最近 5 个镜像和 10 份备份（`backups/`）。也可以登录服务器直接执行 `sudo /opt/webhook-relay/relayctl status`。
+
 ### 接通 Apple → 飞书
 
 1. 在控制台的「密钥」中添加 Apple Webhook Secret、完整的飞书机器人 Webhook URL，以及可选的飞书签名密钥。

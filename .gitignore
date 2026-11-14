@@ -11,3 +11,4 @@
 *.tsbuildinfo
 *.db.lock
 __pycache__/
+/deploy/target.env

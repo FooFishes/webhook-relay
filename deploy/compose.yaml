@@ -1,0 +1,35 @@
+# 服务器端 Compose 文件，由 scripts/deploy.sh 同步到部署目录，不要在服务器上手工修改。
+# 镜像 tag 与宿主端口来自同目录 .env：RELAY_IMAGE_TAG 由 relayctl 维护，RELAY_HOST_PORT 按服务器设置。
+name: webhook-relay
+services:
+  relay:
+    image: webhook-relay:${RELAY_IMAGE_TAG:?由 relayctl deploy 写入}
+    pull_policy: never
+    container_name: webhook-relay
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:${RELAY_HOST_PORT:-8080}:8080"
+    environment:
+      RELAY_BIND: 0.0.0.0:8080
+      DATABASE_URL: sqlite:///app/data/relay.db
+      RELAY_ADMIN_TOKEN: ${RELAY_ADMIN_TOKEN:?Run python3 scripts/init_env.py first}
+      RELAY_MASTER_KEY: ${RELAY_MASTER_KEY:?Run python3 scripts/init_env.py first}
+      RELAY_PUBLIC_URL: ${RELAY_PUBLIC_URL:-http://localhost:8080}
+      RUST_LOG: ${RUST_LOG:-webhook_relay=info}
+    volumes:
+      - relay-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  relay-data:
