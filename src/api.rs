@@ -68,6 +68,9 @@ pub fn router(s: AppState, web_dir: &str) -> Router {
         .route("/deliveries", get(deliveries))
         .route("/deliveries/{id}/attempts", get(attempts))
         .route("/deliveries/{id}/retry", post(retry))
+        .route("/aggregates", get(aggregates))
+        .route("/aggregates/{id}", get(aggregate))
+        .route("/aggregation/replay", post(replay))
         .route("/audit", get(audits))
         .route_layer(middleware::from_fn_with_state(s.clone(), authenticate));
     Router::new()
@@ -123,7 +126,7 @@ async fn authenticate(State(s): State<AppState>, req: Request, next: Next) -> Re
 }
 async fn meta(State(s): State<AppState>) -> Json<Value> {
     Json(
-        json!({"public_url":s.public_url,"default_template":serde_json::from_str::<Value>(crate::providers::feishu::DEFAULT_TEMPLATE).unwrap(),"source_providers":registry::sources(),"destination_providers":registry::destinations(),"message_presets":crate::providers::presets::catalog(),"pair_presets":crate::providers::message::pair_presets()}),
+        json!({"public_url":s.public_url,"default_template":serde_json::from_str::<Value>(crate::providers::feishu::DEFAULT_TEMPLATE).unwrap(),"source_providers":registry::sources(),"destination_providers":registry::destinations(),"message_presets":crate::providers::presets::catalog(),"pair_presets":crate::providers::message::pair_presets(),"aggregation_presets":aggregation::presets()}),
     )
 }
 async fn list_resources(
@@ -579,7 +582,90 @@ async fn events(State(s): State<AppState>, Query(p): Query<Page>) -> Result<Json
 }
 async fn deliveries(State(s): State<AppState>, Query(p): Query<Page>) -> Result<Json<Value>> {
     let rows=sqlx::query("SELECT rowid AS cursor,* FROM deliveries WHERE rowid < ? AND (? IS NULL OR id=?) AND (? IS NULL OR status=? OR (?='queued' AND status IN ('pending','retrying','sending'))) AND (? IS NULL OR route_id=?) AND (? IS NULL OR destination_id=?) AND (? IS NULL OR event_id=?) ORDER BY rowid DESC LIMIT ?").bind(p.before.unwrap_or(i64::MAX)).bind(&p.id).bind(&p.id).bind(&p.status).bind(&p.status).bind(&p.status).bind(&p.route_id).bind(&p.route_id).bind(&p.destination_id).bind(&p.destination_id).bind(&p.event_id).bind(&p.event_id).bind(p.limit()).fetch_all(&s.db).await?;
-    Ok(Json(json!(rows.iter().map(|r|json!({"cursor":r.get::<i64,_>("cursor"),"id":r.get::<String,_>("id"),"event_id":r.get::<String,_>("event_id"),"route_id":r.get::<String,_>("route_id"),"destination_id":r.get::<String,_>("destination_id"),"status":r.get::<String,_>("status"),"attempts":r.get::<i64,_>("attempts"),"max_attempts":r.get::<i64,_>("max_attempts"),"last_error":r.get::<Option<String>,_>("last_error"),"next_attempt_at":r.get::<i64,_>("next_attempt_at"),"updated_at":r.get::<i64,_>("updated_at"),"created_at":r.get::<i64,_>("created_at")})).collect::<Vec<_>>())))
+    Ok(Json(json!(rows.iter().map(|r|json!({"cursor":r.get::<i64,_>("cursor"),"id":r.get::<String,_>("id"),"event_id":r.get::<String,_>("event_id"),"route_id":r.get::<String,_>("route_id"),"destination_id":r.get::<String,_>("destination_id"),"status":r.get::<String,_>("status"),"attempts":r.get::<i64,_>("attempts"),"max_attempts":r.get::<i64,_>("max_attempts"),"last_error":r.get::<Option<String>,_>("last_error"),"next_attempt_at":r.get::<i64,_>("next_attempt_at"),"updated_at":r.get::<i64,_>("updated_at"),"created_at":r.get::<i64,_>("created_at"),"aggregate_id":r.get::<Option<String>,_>("aggregate_id")})).collect::<Vec<_>>())))
+}
+fn aggregate_json(r: &sqlx::sqlite::SqliteRow) -> Value {
+    json!({"cursor":r.get::<i64,_>("cursor"),"id":r.get::<String,_>("id"),"route_id":r.get::<String,_>("route_id"),"rule_id":r.get::<String,_>("rule_id"),"state":r.get::<String,_>("state"),"event_count":r.get::<i64,_>("event_count"),"opened_at":r.get::<i64,_>("opened_at"),"last_event_at":r.get::<i64,_>("last_event_at"),"due_at":r.get::<i64,_>("due_at"),"flush_reason":r.get::<Option<String>,_>("flush_reason"),"flushed_at":r.get::<Option<i64>,_>("flushed_at"),"created_at":r.get::<i64,_>("opened_at")})
+}
+async fn aggregates(State(s): State<AppState>, Query(p): Query<Page>) -> Result<Json<Value>> {
+    let rows=sqlx::query("SELECT rowid AS cursor,id,route_id,rule_id,state,event_count,opened_at,last_event_at,due_at,flush_reason,flushed_at FROM aggregates WHERE rowid < ? AND (? IS NULL OR route_id=?) AND (? IS NULL OR state=?) ORDER BY rowid DESC LIMIT ?").bind(p.before.unwrap_or(i64::MAX)).bind(&p.route_id).bind(&p.route_id).bind(&p.status).bind(&p.status).bind(p.limit()).fetch_all(&s.db).await?;
+    Ok(Json(json!(
+        rows.iter().map(aggregate_json).collect::<Vec<_>>()
+    )))
+}
+async fn aggregate(State(s): State<AppState>, Path(id): Path<String>) -> Result<Json<Value>> {
+    let row=sqlx::query("SELECT rowid AS cursor,id,route_id,rule_id,state,event_count,opened_at,last_event_at,due_at,flush_reason,flushed_at FROM aggregates WHERE id=?").bind(&id).fetch_one(&s.db).await?;
+    let members=sqlx::query("SELECT m.event_id,m.seq,e.event_type,e.created_at FROM aggregate_members m JOIN events e ON e.id=m.event_id WHERE m.aggregate_id=? ORDER BY m.seq").bind(&id).fetch_all(&s.db).await?;
+    let deliveries: Vec<String> =
+        sqlx::query_scalar("SELECT id FROM deliveries WHERE aggregate_id=? ORDER BY rowid")
+            .bind(&id)
+            .fetch_all(&s.db)
+            .await?;
+    let mut value = aggregate_json(&row);
+    value["members"]=json!(members.iter().map(|m|json!({"event_id":m.get::<String,_>("event_id"),"seq":m.get::<i64,_>("seq"),"event_type":m.get::<String,_>("event_type"),"created_at":m.get::<i64,_>("created_at")})).collect::<Vec<_>>());
+    value["deliveries"] = json!(deliveries);
+    Ok(Json(value))
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Replay {
+    source_id: String,
+    destination_provider: String,
+    aggregation: Value,
+    #[serde(default)]
+    event_types: Vec<String>,
+    limit: Option<i64>,
+}
+/// Replays the source's recent events through an unsaved aggregation config.
+async fn replay(State(s): State<AppState>, Json(p): Json<Replay>) -> Result<Json<Value>> {
+    let source = s.resource(&p.source_id).await?;
+    if source.kind != "sources" {
+        return Err(bad("来源不存在"));
+    }
+    let source_config: Value = serde_json::from_str(&source.config)?;
+    let provider = config::field(&source_config, "provider")?;
+    let descriptor = registry::source(provider)?.descriptor();
+    let destination =
+        registry::destination(&p.destination_provider).map_err(|e| bad(e.to_string()))?;
+    let policy = aggregation::resolve(&p.aggregation, provider).map_err(|e| bad(e.to_string()))?;
+    aggregation::validate(&policy, &descriptor, destination).map_err(|e| bad(e.to_string()))?;
+    let rows = sqlx::query("SELECT id,provider_id,event_type,payload,created_at FROM events WHERE source_id=? ORDER BY rowid DESC LIMIT ?")
+        .bind(&p.source_id).bind(p.limit.unwrap_or(200).clamp(1, 500)).fetch_all(&s.db).await?;
+    let mut events = Vec::new();
+    for row in rows.iter().rev() {
+        let event_type: String = row.get("event_type");
+        if !p.event_types.is_empty() && !p.event_types.contains(&event_type) {
+            continue;
+        }
+        let raw: Value = serde_json::from_str(&s.vault.open(&row.get::<String, _>("payload"))?)?;
+        events.push((
+            row.get::<i64, _>("created_at"),
+            crate::model::RelayEvent {
+                id: row.get("provider_id"),
+                event_type,
+                source_name: source.name.clone(),
+                summary: String::new(),
+                raw,
+            },
+        ));
+    }
+    let groups = aggregation::simulate(&policy, &events);
+    let grouped: usize = groups.iter().map(|g| g.members.len()).sum();
+    let now = model::now();
+    let rendered = groups.iter().map(|g| {
+        let rule = policy.rules.iter().find(|r| r.id == g.rule).unwrap();
+        let payload = aggregation::render(rule, &g.state, g.reason, destination);
+        let notices = g.notices.iter().map(|(at, notice)| {
+            let payload = aggregation::render_notice(rule, notice, &g.state, destination);
+            json!({"at":at,"id":notice.id,"payload":payload.as_ref().ok(),"error":payload.err().map(|e|e.to_string())})
+        }).collect::<Vec<_>>();
+        json!({"rule_id":g.rule,"rule_name":rule.name,"events":g.members.iter().map(|i|json!({"event_type":events[*i].1.event_type,"at":events[*i].0})).collect::<Vec<_>>(),
+               "opened_at":g.state.opened_at,"flushed_at":g.flushed_at,"pending":g.flushed_at>now,"reason":g.reason,
+               "payload":payload.as_ref().ok(),"error":payload.err().map(|e|e.to_string()),"notices":notices})
+    }).collect::<Vec<_>>();
+    Ok(Json(
+        json!({"events":events.len(),"grouped":grouped,"singles":events.len()-grouped,"messages":events.len()-grouped+groups.len()+groups.iter().map(|g|g.notices.len()).sum::<usize>(),"groups":rendered}),
+    ))
 }
 async fn attempts(State(s): State<AppState>, Path(id): Path<String>) -> Result<Json<Value>> {
     let rows = sqlx::query("SELECT * FROM attempts WHERE delivery_id=? ORDER BY id DESC LIMIT 200")
