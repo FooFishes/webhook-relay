@@ -49,10 +49,39 @@ pub enum Slot {
         #[serde(default, rename = "final")]
         terminal: Vec<Value>,
     },
+    /// Every write becomes a new item; only the latest `limit` items are kept.
+    Append {
+        from: Vec<Binding>,
+        #[serde(default = "default_append_limit")]
+        limit: usize,
+    },
+    /// Counts matching events without keeping them.
+    Count {
+        from: Vec<Binding>,
+    },
     Derive {
         op: DeriveOp,
         of: Vec<String>,
     },
+}
+fn default_append_limit() -> usize {
+    50
+}
+impl Slot {
+    pub(crate) fn bindings(&self) -> &[Binding] {
+        match self {
+            Slot::First { from }
+            | Slot::Last { from }
+            | Slot::Keyed { from, .. }
+            | Slot::Append { from, .. }
+            | Slot::Count { from } => from,
+            Slot::Derive { .. } => &[],
+        }
+    }
+    /// Slots whose value is a list of items, so predicates and blocks can read them.
+    pub(crate) fn has_items(&self) -> bool {
+        !matches!(self, Slot::Count { .. } | Slot::Derive { .. })
+    }
 }
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -67,6 +96,7 @@ pub struct Binding {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<When>,
+    #[serde(default)]
     pub map: BTreeMap<String, String>,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -336,18 +366,22 @@ pub fn validate(
                             .split_once('.')
                             .ok_or_else(|| anyhow!("derive source must be slot.field"))?;
                         ensure!(
-                            !field.is_empty()
-                                && rule
-                                    .slots
-                                    .get(slot)
-                                    .is_some_and(|s| !matches!(s, Slot::Derive { .. })),
+                            !field.is_empty() && rule.slots.get(slot).is_some_and(Slot::has_items),
                             "derive refers to an unknown slot: {slot}"
                         );
                     }
                 }
-                Slot::First { from } | Slot::Last { from } | Slot::Keyed { from, .. } => {
+                slot => {
+                    let from = slot.bindings();
                     ensure!(!from.is_empty(), "slot {name} has no binding");
+                    if let Slot::Append { limit, .. } = slot {
+                        ensure!((1..=200).contains(limit), "append limit must be 1..200");
+                    }
                     for binding in from {
+                        ensure!(
+                            !matches!(slot, Slot::Count { .. }) || binding.map.is_empty(),
+                            "count slots do not map fields"
+                        );
                         ensure!(
                             in_group(&binding.event),
                             "binding event is outside the group: {}",
@@ -428,9 +462,7 @@ pub fn validate(
 
 fn check_predicate(rule: &Rule, predicate: &Predicate) -> Result<()> {
     ensure!(
-        rule.slots
-            .get(&predicate.slot)
-            .is_some_and(|s| !matches!(s, Slot::Derive { .. })),
+        rule.slots.get(&predicate.slot).is_some_and(Slot::has_items),
         "predicate refers to an unknown slot: {}",
         predicate.slot
     );
@@ -501,17 +533,17 @@ fn check_container(rule: &Rule, container: &Container, descriptor: &Value) -> Re
                 .get(bind)
                 .ok_or_else(|| anyhow!("block binds an unknown slot: {bind}"))?;
             ensure!(
-                !matches!(slot, Slot::Derive { .. }),
-                "derived slots are read through `slots`, not bound"
+                slot.has_items(),
+                "count and derived slots are read through `slots`, not bound"
             );
         }
         if block.kind == "repeat" {
             ensure!(
-                block
-                    .bind
-                    .as_ref()
-                    .is_some_and(|b| matches!(rule.slots[b], Slot::Keyed { .. })),
-                "repeat blocks must bind a keyed slot"
+                block.bind.as_ref().is_some_and(|b| matches!(
+                    rule.slots[b],
+                    Slot::Keyed { .. } | Slot::Append { .. }
+                )),
+                "repeat blocks must bind a keyed or append slot"
             );
         }
         ensure!(

@@ -93,6 +93,8 @@ pub struct Notice {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct GroupState {
     pub slots: BTreeMap<String, Vec<Item>>,
+    #[serde(default)]
+    pub counts: BTreeMap<String, u64>,
     pub event_count: u32,
     pub opened_at: i64,
     pub last_event_at: i64,
@@ -111,12 +113,9 @@ impl GroupState {
     /// One placeholder item per slot, with every mapped field null.
     pub(crate) fn preview(rule: &Rule) -> Self {
         let mut state = Self::open(0);
-        for (name, slot) in &rule.slots {
-            let (Slot::First { from } | Slot::Last { from } | Slot::Keyed { from, .. }) = slot
-            else {
-                continue;
-            };
-            let fields = from
+        for (name, slot) in rule.slots.iter().filter(|(_, slot)| slot.has_items()) {
+            let fields = slot
+                .bindings()
                 .iter()
                 .flat_map(|b| b.map.keys())
                 .map(|field| (field.clone(), Value::Null))
@@ -136,20 +135,26 @@ impl GroupState {
         self.event_count += 1;
         self.last_event_at = now;
         for (name, slot) in &rule.slots {
-            let (from, terminal): (&[Binding], &[Value]) = match slot {
-                Slot::First { from } | Slot::Last { from } => (from, &[]),
-                Slot::Keyed { from, terminal } => (from, terminal),
-                Slot::Derive { .. } => continue,
+            let terminal: &[Value] = match slot {
+                Slot::Keyed { terminal, .. } => terminal,
+                _ => &[],
             };
-            for binding in from
+            for binding in slot
+                .bindings()
                 .iter()
                 .filter(|b| matches(&b.event, &event.event_type) && accepts(b, &event.raw))
             {
+                if let Slot::Count { .. } = slot {
+                    *self.counts.entry(name.clone()).or_default() += 1;
+                    continue;
+                }
                 let key = match &binding.key {
                     Some(pointer) => match event.raw.pointer(pointer).and_then(scalar) {
                         Some(key) => key,
                         None => continue,
                     },
+                    // Append items are distinct by arrival; first and last hold a single item.
+                    None if matches!(slot, Slot::Append { .. }) => self.event_count.to_string(),
                     None => String::new(),
                 };
                 let fields = binding
@@ -165,6 +170,11 @@ impl GroupState {
                     Some(_) if matches!(slot, Slot::First { .. }) => {}
                     Some(item) => item.merge(fields, terminal, now),
                     None => items.push(Item::new(key, fields, now)),
+                }
+                if let Slot::Append { limit, .. } = slot
+                    && items.len() > *limit
+                {
+                    items.remove(0);
                 }
             }
         }
@@ -251,7 +261,10 @@ impl GroupState {
                     Slot::First { .. } | Slot::Last { .. } => {
                         items.first().map(Item::view).unwrap_or(Value::Null)
                     }
-                    Slot::Keyed { .. } => Value::Array(items.iter().map(Item::view).collect()),
+                    Slot::Keyed { .. } | Slot::Append { .. } => {
+                        Value::Array(items.iter().map(Item::view).collect())
+                    }
+                    Slot::Count { .. } => json!(self.counts.get(name).copied().unwrap_or(0)),
                     Slot::Derive { op, of } => self.derive(*op, of),
                 };
                 (name.clone(), value)
