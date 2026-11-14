@@ -2,6 +2,7 @@
 mod render;
 mod simulate;
 mod state;
+pub mod store;
 
 pub use render::{render, render_notice};
 pub use simulate::{SimGroup, simulate};

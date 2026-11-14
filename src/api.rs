@@ -1,8 +1,8 @@
 use crate::{
-    config,
-    model::{self, DeliverySnapshot, Resource, ResourceInput},
+    aggregation, config,
+    model::{self, Resource, ResourceInput},
     providers::{registry, template},
-    store::{AppState, audit, public_resource},
+    store::{AppState, Target, audit, public_resource, queue_delivery},
 };
 use axum::{
     Json, Router,
@@ -276,7 +276,12 @@ fn audit_config(kind: &str, config: &Value) -> Value {
         return json!({"has_value":true});
     }
     let mut result = config.clone();
-    for key in ["payload_template", "event_templates", "message_policy"] {
+    for key in [
+        "payload_template",
+        "event_templates",
+        "message_policy",
+        "aggregation",
+    ] {
         if let Some(template) = result.as_object_mut().and_then(|o| o.remove(key)) {
             result[format!("{key}_sha256")] =
                 hex::encode(Sha256::digest(template.to_string().as_bytes())).into();
@@ -304,11 +309,11 @@ async fn delete_resource(
             ));
         }
     }
-    let pending:i64=sqlx::query_scalar("SELECT count(*) FROM deliveries WHERE (route_id=? OR destination_id=?) AND status IN ('pending','sending','retrying')").bind(&id).bind(&id).fetch_one(&s.db).await?;
+    let pending:i64=sqlx::query_scalar("SELECT (SELECT count(*) FROM deliveries WHERE (route_id=? OR destination_id=?) AND status IN ('pending','sending','retrying'))+(SELECT count(*) FROM aggregates WHERE route_id=? AND state='open')").bind(&id).bind(&id).bind(&id).fetch_one(&s.db).await?;
     if pending > 0 {
         return Err(ApiError(
             StatusCode::CONFLICT,
-            "该资源仍有未完成的投递任务".into(),
+            "该资源仍有未完成的投递任务或未发出的聚合消息".into(),
         ));
     }
     let mut tx = s.db.begin().await?;
@@ -467,6 +472,7 @@ async fn receive(
     }
     let event_id = model::id();
     let mut jobs = Vec::new();
+    let mut grouped = Vec::new();
     for route in s.resources("routes").await? {
         let rc: Value = serde_json::from_str(&route.config)?;
         if !config::enabled(&rc) || rc["source_id"].as_str() != Some(&id) {
@@ -485,6 +491,27 @@ async fn receive(
         }
         let destination_provider = config::field(&dc, "provider")?;
         let adapter = registry::destination(destination_provider)?;
+        let descriptor = adapter.descriptor();
+        let target = Target {
+            route_id: route.id.clone(),
+            destination_id: d.id.clone(),
+            max_attempts: rc["max_attempts"].as_i64().unwrap_or(5),
+            provider: destination_provider.to_owned(),
+            url: config::secret_for_role(&s, &dc, &descriptor, "endpoint")
+                .await?
+                .ok_or_else(|| bad("目标缺少 Webhook 地址"))?,
+            signing_secret: config::secret_for_role(&s, &dc, &descriptor, "signing").await?,
+            route_revision: route.revision,
+            destination_revision: d.revision,
+        };
+        // Saved configs are validated, so a policy that no longer resolves falls back to single delivery.
+        let policy = rc
+            .get("aggregation")
+            .and_then(|value| aggregation::resolve(value, provider_id).ok());
+        if let Some((rule, key)) = policy.as_ref().and_then(|p| p.classify(&event)) {
+            grouped.push((rule.clone(), key, target));
+            continue;
+        }
         let payload = if rc.get("message_policy").is_some()
             || (rc.get("event_templates").is_none() && rc.get("payload_template").is_none())
         {
@@ -505,53 +532,27 @@ async fn receive(
             };
             template::render_for(selected_template, &event, adapter)
         };
-        let (payload, error) = match payload {
-            Ok(p) => (p, None),
-            Err(_) => (Value::Null, Some("template_render_failed")),
-        };
-        let snapshot = DeliverySnapshot {
-            provider: destination_provider.to_owned(),
-            url: config::secret_for_role(
-                &s,
-                &dc,
-                &registry::destination(destination_provider)?.descriptor(),
-                "endpoint",
-            )
-            .await?
-            .ok_or_else(|| bad("目标缺少 Webhook 地址"))?,
-            signing_secret: config::secret_for_role(
-                &s,
-                &dc,
-                &registry::destination(destination_provider)?.descriptor(),
-                "signing",
-            )
-            .await?,
-            payload,
-            route_revision: route.revision,
-            destination_revision: d.revision,
-        };
-        jobs.push((
-            route.id,
-            d.id,
-            rc["max_attempts"].as_i64().unwrap_or(5),
-            s.vault.seal(&serde_json::to_string(&snapshot)?)?,
-            error,
-        ));
+        jobs.push((target, payload));
     }
     let mut tx = s.db.begin().await?;
     sqlx::query("INSERT INTO events(id,source_id,provider_id,event_type,payload,body_sha256,created_at) VALUES(?,?,?,?,?,?,?)")
         .bind(&event_id).bind(&id).bind(&event.id).bind(&event.event_type).bind(s.vault.seal(std::str::from_utf8(&raw).map_err(|_|bad("payload must be UTF-8"))?)?).bind(body_hash).bind(model::now()).execute(&mut *tx).await?;
-    for (route_id, destination_id, max_attempts, snapshot, error) in &jobs {
-        let delivery_id = model::id();
-        sqlx::query("INSERT INTO deliveries(id,event_id,route_id,destination_id,snapshot,status,max_attempts,next_attempt_at,created_at,updated_at,last_error) VALUES(?,?,?,?,?,?,?,?,?,?,?)")
-            .bind(&delivery_id).bind(&event_id).bind(route_id).bind(destination_id).bind(snapshot).bind(if error.is_some(){"failed"}else{"pending"}).bind(max_attempts).bind(model::now()).bind(model::now()).bind(model::now()).bind(error).execute(&mut *tx).await?;
-        audit(&mut tx,"system",if error.is_some(){"delivery.failed"}else{"delivery.queued"},&delivery_id,json!({"event_id":event_id,"route_id":route_id,"destination_id":destination_id,"error":error})).await?;
+    let deliveries = jobs.len();
+    for (target, payload) in jobs {
+        queue_delivery(&mut tx, &s.vault, &target, &event_id, None, payload).await?;
     }
-    audit(&mut tx,provider_id,"webhook.accepted",&id,json!({"event_id":event_id,"event_type":event.event_type,"deliveries":jobs.len(),"signature":"verified"})).await?;
+    let mut aggregates = Vec::new();
+    for (rule, key, target) in &grouped {
+        aggregates.push(
+            aggregation::store::attach(&mut tx, &s, rule, key, target.clone(), &event, &event_id)
+                .await?,
+        );
+    }
+    audit(&mut tx,provider_id,"webhook.accepted",&id,json!({"event_id":event_id,"event_type":event.event_type,"deliveries":deliveries,"aggregates":aggregates,"signature":"verified"})).await?;
     tx.commit().await?;
     Ok((
         StatusCode::ACCEPTED,
-        Json(json!({"event_id":event_id,"deliveries":jobs.len()})),
+        Json(json!({"event_id":event_id,"deliveries":deliveries,"aggregates":aggregates})),
     ))
 }
 #[derive(Deserialize)]

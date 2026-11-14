@@ -1,4 +1,5 @@
 use crate::{
+    aggregation,
     providers::{message, registry, template},
     store::AppState,
 };
@@ -51,6 +52,7 @@ pub async fn validate(s: &AppState, kind: &str, c: &Value) -> Result<()> {
             "payload_template",
             "event_templates",
             "message_policy",
+            "aggregation",
             "max_attempts",
             "enabled",
         ]
@@ -149,6 +151,17 @@ pub async fn validate(s: &AppState, kind: &str, c: &Value) -> Result<()> {
                 }
             } else {
                 template::validate_for(&c["payload_template"], destination)?;
+            }
+            if let Some(value) = c.get("aggregation") {
+                let source = s.resource(field(c, "source_id")?).await?;
+                let source_config: Value = serde_json::from_str(&source.config)?;
+                let provider = field(&source_config, "provider")?;
+                let policy = aggregation::resolve(value, provider)?;
+                aggregation::validate(
+                    &policy,
+                    &registry::source(provider)?.descriptor(),
+                    destination,
+                )?;
             }
         }
         _ => unreachable!(),

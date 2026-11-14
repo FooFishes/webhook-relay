@@ -1,8 +1,9 @@
 use crate::{
     crypto::Vault,
-    model::{Resource, now},
+    model::{DeliverySnapshot, Resource, now},
 };
 use anyhow::Result;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sqlx::{
     Sqlite, SqlitePool, Transaction,
@@ -49,6 +50,61 @@ pub async fn audit(
         .execute(&mut **tx)
         .await?;
     Ok(())
+}
+/// Where and how a delivery is sent, captured when the delivery or group is created.
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Target {
+    pub route_id: String,
+    pub destination_id: String,
+    pub max_attempts: i64,
+    pub provider: String,
+    pub url: String,
+    pub signing_secret: Option<String>,
+    pub route_revision: i64,
+    pub destination_revision: i64,
+}
+/// Queues one delivery. A render error becomes a failed delivery so the mistake stays visible.
+pub async fn queue_delivery(
+    tx: &mut Transaction<'_, Sqlite>,
+    vault: &Vault,
+    target: &Target,
+    event_id: &str,
+    aggregate_id: Option<&str>,
+    payload: Result<Value>,
+) -> Result<String> {
+    let (payload, error) = match payload {
+        Ok(payload) => (payload, None),
+        Err(_) => (Value::Null, Some("template_render_failed")),
+    };
+    let snapshot = DeliverySnapshot {
+        provider: target.provider.clone(),
+        url: target.url.clone(),
+        signing_secret: target.signing_secret.clone(),
+        payload,
+        route_revision: target.route_revision,
+        destination_revision: target.destination_revision,
+    };
+    let id = crate::model::id();
+    let at = now();
+    sqlx::query("INSERT INTO deliveries(id,event_id,route_id,destination_id,snapshot,status,max_attempts,next_attempt_at,created_at,updated_at,last_error,aggregate_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")
+        .bind(&id).bind(event_id).bind(&target.route_id).bind(&target.destination_id)
+        .bind(vault.seal(&serde_json::to_string(&snapshot)?)?)
+        .bind(if error.is_some() { "failed" } else { "pending" })
+        .bind(target.max_attempts).bind(at).bind(at).bind(at).bind(error).bind(aggregate_id)
+        .execute(&mut **tx).await?;
+    audit(
+        tx,
+        "system",
+        if error.is_some() {
+            "delivery.failed"
+        } else {
+            "delivery.queued"
+        },
+        &id,
+        json!({"event_id":event_id,"route_id":target.route_id,"destination_id":target.destination_id,"aggregate_id":aggregate_id,"error":error}),
+    )
+    .await?;
+    Ok(id)
 }
 impl AppState {
     pub async fn resource(&self, id: &str) -> std::result::Result<Resource, sqlx::Error> {

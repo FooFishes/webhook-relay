@@ -122,6 +122,7 @@ pub async fn run(s: AppState) -> Result<()> {
         // Globally conservative pacing: at most 80 sends/minute, also covering two
         // destination resources that refer to the same bot. Deliberate v1 tradeoff.
         tokio::time::sleep(Duration::from_millis(750)).await;
+        crate::aggregation::store::flush_due(&s).await?;
         let selected = sqlx::query("SELECT d.* FROM deliveries d JOIN resources r ON r.id=d.route_id JOIN resources t ON t.id=d.destination_id WHERE d.status IN ('pending','retrying') AND d.next_attempt_at<=? AND json_extract(r.config,'$.enabled')=1 AND json_extract(t.config,'$.enabled')=1 ORDER BY d.next_attempt_at,d.created_at LIMIT 1")
             .bind(model::now()).fetch_optional(&s.db).await?;
         let Some(row) = selected else { continue };
