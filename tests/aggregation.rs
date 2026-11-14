@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 use webhook_relay::{
     aggregation::{self, FlushReason, Policy},
     model::RelayEvent,
-    providers::{SourceAdapter, feishu::Feishu, github::GitHub},
+    providers::{SourceAdapter, feishu::Feishu, github::GitHub, registry},
 };
 
 const PUSH_AT: i64 = 1794686621;
@@ -178,7 +178,12 @@ fn presets_validate_and_broken_references_are_rejected() {
             &preset.source_provider,
         )
         .unwrap();
-        aggregation::validate(&policy, &github, &Feishu).unwrap();
+        let source = registry::source(&preset.source_provider)
+            .unwrap()
+            .descriptor();
+        if let Err(error) = aggregation::validate(&policy, &source, &Feishu) {
+            panic!("{}: {error}", preset.id);
+        }
     }
     let mut rule = serde_json::to_value(&pipeline(json!({})).rules[0]).unwrap();
     rule["container"]["blocks"][1]["bind"] = json!("missing");
@@ -190,5 +195,128 @@ fn presets_validate_and_broken_references_are_rejected() {
             "github"
         )
         .is_err()
+    );
+}
+
+fn at(seconds: i64, event_type: &str, raw: Value) -> (i64, RelayEvent) {
+    let event = RelayEvent {
+        id: format!("{event_type}-{seconds}"),
+        event_type: event_type.into(),
+        source_name: "来源".into(),
+        summary: String::new(),
+        raw,
+    };
+    (seconds, event)
+}
+
+fn fold(
+    preset: &str,
+    source: &str,
+    events: &[(i64, RelayEvent)],
+) -> (aggregation::SimGroup, Vec<String>) {
+    let policy = aggregation::resolve(&json!({"rules":[{"preset":preset}]}), source).unwrap();
+    let groups = aggregation::simulate(&policy, events);
+    assert_eq!(groups.len(), 1, "{preset} folds the burst into one group");
+    let group = groups.into_iter().next().unwrap();
+    let payload =
+        aggregation::render(&policy.rules[0], &group.state, group.reason, &Feishu).unwrap();
+    (group, texts(&payload))
+}
+
+#[test]
+fn other_presets_fold_their_bursts() {
+    let repo = json!({"full_name": "octo-org/hello-world", "html_url": "https://github.com/octo-org/hello-world", "stargazers_count": 12});
+    let url = "https://github.com/octo-org/hello-world/pull/42";
+    let pr = json!({"number": 42, "title": "修复登录页", "html_url": url, "user": {"login": "alice"}, "head": {"ref": "fix/login"}, "base": {"ref": "main"}});
+    let (group, texts) = fold(
+        "github.pr_activity",
+        "github",
+        &[
+            at(
+                0,
+                "pull_request.opened",
+                json!({"action": "opened", "pull_request": pr, "repository": repo, "sender": {"login": "alice"}}),
+            ),
+            at(
+                1,
+                "pull_request.review_requested",
+                json!({"action": "review_requested", "pull_request": pr, "repository": repo, "sender": {"login": "alice"}, "requested_reviewer": {"login": "bob"}}),
+            ),
+            at(
+                30,
+                "pull_request_review.submitted",
+                json!({"action": "submitted", "pull_request": pr, "repository": repo, "review": {"id": 7, "user": {"login": "bob"}, "state": "approved", "body": "LGTM"}}),
+            ),
+            at(
+                60,
+                "issue_comment.created",
+                json!({"action": "created", "issue": {"number": 42, "title": "修复登录页", "html_url": url, "pull_request": {"html_url": url}}, "repository": repo, "comment": {"user": {"login": "carol"}, "body": "感谢"}}),
+            ),
+        ],
+    );
+    assert_eq!((group.flushed_at, group.reason), (180, FlushReason::Idle));
+    assert_eq!(
+        texts[..6],
+        [
+            "octo-org/hello-world #42 修复登录页",
+            "alice · fix/login → main",
+            "alice 打开了\nalice 请求评审 bob",
+            "✅ 批准 · bob：LGTM",
+            "💬 carol：感谢",
+            "共 4 条事件",
+        ]
+    );
+
+    let star = |seconds, login: &str| {
+        at(
+            seconds,
+            "star.created",
+            json!({"action": "created", "repository": repo, "sender": {"login": login}}),
+        )
+    };
+    let (_, texts) = fold(
+        "github.repo_attention",
+        "github",
+        &[
+            star(0, "a"),
+            star(10, "b"),
+            star(20, "a"),
+            at(
+                30,
+                "fork",
+                json!({"forkee": {}, "repository": repo, "sender": {"login": "c"}}),
+            ),
+        ],
+    );
+    assert_eq!(
+        texts[1..4],
+        ["⭐ +3 · 🍴 +1", "来自：a、b、c", "当前共 12 个 Star"]
+    );
+
+    let version = |seconds, old: &str, new: &str| {
+        at(
+            seconds,
+            "appStoreVersionAppVersionStateUpdated",
+            json!({"data": {
+        "type": "appStoreVersionAppVersionStateUpdated", "attributes": {"oldValue": old, "newValue": new},
+        "relationships": {"instance": {"data": {"id": "version-1"}}}}}),
+        )
+    };
+    let (group, texts) = fold(
+        "apple.version_review",
+        "apple_app_store_connect",
+        &[
+            version(0, "PREPARE_FOR_SUBMISSION", "WAITING_FOR_REVIEW"),
+            version(100, "WAITING_FOR_REVIEW", "IN_REVIEW"),
+            version(200, "IN_REVIEW", "PENDING_DEVELOPER_RELEASE"),
+        ],
+    );
+    assert_eq!(
+        (group.flushed_at, group.reason),
+        (205, FlushReason::Settled)
+    );
+    assert_eq!(
+        texts[1],
+        "状态变化：PREPARE_FOR_SUBMISSION → WAITING_FOR_REVIEW → IN_REVIEW → PENDING_DEVELOPER_RELEASE"
     );
 }

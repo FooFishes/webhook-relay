@@ -1,0 +1,183 @@
+[
+  {
+    "id": "apple.version_review",
+    "source_provider": "apple_app_store_connect",
+    "name": "版本审核进度",
+    "description": "同一个 App 版本连续的状态变化合并为一条状态链，进入审核结果后 5 秒发出",
+    "options": {},
+    "rule": {
+      "name": "版本审核进度",
+      "group": {
+        "match": [
+          "appStoreVersionAppVersionStateUpdated"
+        ],
+        "key": [
+          "/data/relationships/instance/data/id"
+        ]
+      },
+      "slots": {
+        "start": {
+          "reduce": "first",
+          "from": [
+            {
+              "event": "appStoreVersionAppVersionStateUpdated",
+              "map": {
+                "state": "/data/attributes/oldValue"
+              }
+            }
+          ]
+        },
+        "version": {
+          "reduce": "keyed",
+          "from": [
+            {
+              "event": "appStoreVersionAppVersionStateUpdated",
+              "key": "/data/relationships/instance/data/id",
+              "map": {
+                "id": "/data/relationships/instance/data/id",
+                "state": "/data/attributes/newValue",
+                "at": "/data/attributes/timestamp"
+              }
+            }
+          ]
+        }
+      },
+      "close": {
+        "when": {
+          "slot": "version",
+          "any": {
+            "state": [
+              "READY_FOR_SALE",
+              "READY_FOR_DISTRIBUTION",
+              "PENDING_DEVELOPER_RELEASE",
+              "PENDING_APPLE_RELEASE",
+              "REJECTED",
+              "METADATA_REJECTED",
+              "DEVELOPER_REJECTED",
+              "INVALID_BINARY",
+              "REMOVED_FROM_SALE",
+              "DEVELOPER_REMOVED_FROM_SALE"
+            ]
+          }
+        },
+        "settle": 5,
+        "idle": 120,
+        "max_wait": 3600
+      },
+      "container": {
+        "title": "App 版本状态 · {{ (slots.version | last).state if slots.version else '' }}",
+        "accent": "blue",
+        "blocks": [
+          {
+            "id": "chain",
+            "kind": "text",
+            "bind": "version",
+            "label": "状态变化",
+            "text": "{% if slots.start and slots.start.state %}{{ slots.start.state }} → {% endif %}{{ item._history | map(attribute='state') | join(' → ') }}"
+          },
+          {
+            "id": "id",
+            "kind": "text",
+            "bind": "version",
+            "label": "版本编号",
+            "style": "note",
+            "text": "{{ item.id | default('', true) }}"
+          },
+          {
+            "id": "console",
+            "kind": "link",
+            "text": "打开 App Store Connect",
+            "url": "https://appstoreconnect.apple.com/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "apple.build_processing",
+    "source_provider": "apple_app_store_connect",
+    "name": "构建处理",
+    "description": "同一次构建上传的处理进度合并为一条消息，完成或失败后 10 秒发出",
+    "options": {},
+    "rule": {
+      "name": "构建处理",
+      "group": {
+        "match": [
+          "buildUploadStateUpdated"
+        ],
+        "key": [
+          "/data/relationships/instance/data/id"
+        ]
+      },
+      "slots": {
+        "upload": {
+          "reduce": "keyed",
+          "final": [
+            "COMPLETE",
+            "FAILED"
+          ],
+          "from": [
+            {
+              "event": "buildUploadStateUpdated",
+              "key": "/data/relationships/instance/data/id",
+              "map": {
+                "id": "/data/relationships/instance/data/id",
+                "state": "/data/attributes/newState"
+              }
+            }
+          ]
+        }
+      },
+      "close": {
+        "when": {
+          "slot": "upload",
+          "all": {
+            "state": [
+              "COMPLETE",
+              "FAILED"
+            ]
+          }
+        },
+        "settle": 10,
+        "pending": {
+          "slot": "upload",
+          "any": {
+            "state": [
+              "AWAITING_UPLOAD",
+              "PROCESSING"
+            ]
+          }
+        },
+        "idle": 600,
+        "max_wait": 3600
+      },
+      "container": {
+        "title": "构建上传 · {{ {'COMPLETE': '处理完成', 'FAILED': '处理失败', 'PROCESSING': '处理中', 'AWAITING_UPLOAD': '等待上传'}[(slots.upload | last).state] | default('状态更新', true) if slots.upload else '状态更新' }}",
+        "accent": "blue",
+        "blocks": [
+          {
+            "id": "chain",
+            "kind": "text",
+            "bind": "upload",
+            "label": "处理进度",
+            "text": "{{ item._history | map(attribute='state') | join(' → ') }}"
+          },
+          {
+            "id": "id",
+            "kind": "text",
+            "bind": "upload",
+            "label": "上传编号",
+            "style": "note",
+            "text": "{{ item.id | default('', true) }}"
+          },
+          {
+            "id": "console",
+            "kind": "link",
+            "text": "打开 App Store Connect",
+            "url": "https://appstoreconnect.apple.com/"
+          }
+        ]
+      }
+    }
+  }
+]

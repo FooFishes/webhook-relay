@@ -203,10 +203,15 @@ pub struct Preset {
     pub rule: Rule,
 }
 static PRESETS: LazyLock<Vec<Preset>> = LazyLock::new(|| {
-    serde_json::from_str(include_str!(
-        "../providers/presets/github_aggregations.json"
-    ))
-    .expect("built-in aggregation presets")
+    [
+        include_str!("../providers/presets/github_aggregations.json"),
+        include_str!("../providers/presets/apple_aggregations.json"),
+    ]
+    .into_iter()
+    .flat_map(|file| {
+        serde_json::from_str::<Vec<Preset>>(file).expect("built-in aggregation presets")
+    })
+    .collect()
 });
 pub fn presets() -> &'static [Preset] {
     &PRESETS

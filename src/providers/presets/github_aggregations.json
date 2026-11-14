@@ -11,8 +11,23 @@
     "rule": {
       "name": "提交流水线",
       "group": {
-        "match": ["push", "workflow_run.*", "workflow_job.*", "check_run.*", "check_suite.*", "deployment.*", "deployment_status.*"],
-        "key": ["/after", "/workflow_run/head_sha", "/workflow_job/head_sha", "/check_suite/head_sha", "/check_run/head_sha", "/deployment/sha"]
+        "match": [
+          "push",
+          "workflow_run.*",
+          "workflow_job.*",
+          "check_run.*",
+          "check_suite.*",
+          "deployment.*",
+          "deployment_status.*"
+        ],
+        "key": [
+          "/after",
+          "/workflow_run/head_sha",
+          "/workflow_job/head_sha",
+          "/check_suite/head_sha",
+          "/check_run/head_sha",
+          "/deployment/sha"
+        ]
       },
       "slots": {
         "commit": {
@@ -33,7 +48,9 @@
         },
         "runs": {
           "reduce": "keyed",
-          "final": ["completed"],
+          "final": [
+            "completed"
+          ],
           "from": [
             {
               "event": "workflow_run.*",
@@ -51,7 +68,9 @@
         },
         "jobs": {
           "reduce": "keyed",
-          "final": ["completed"],
+          "final": [
+            "completed"
+          ],
           "from": [
             {
               "event": "workflow_job.*",
@@ -66,7 +85,12 @@
             {
               "event": "check_run.*",
               "key": "/check_run/id",
-              "when": { "pointer": "/check_run/app/slug", "not_in": ["github-actions"] },
+              "when": {
+                "pointer": "/check_run/app/slug",
+                "not_in": [
+                  "github-actions"
+                ]
+              },
               "map": {
                 "label": "/check_run/name",
                 "state": "/check_run/status",
@@ -78,7 +102,12 @@
         },
         "deploys": {
           "reduce": "keyed",
-          "final": ["success", "failure", "error", "inactive"],
+          "final": [
+            "success",
+            "failure",
+            "error",
+            "inactive"
+          ],
           "from": [
             {
               "event": "deployment_status.*",
@@ -91,12 +120,36 @@
             }
           ]
         },
-        "result": { "reduce": "derive", "op": "worst", "of": ["jobs.result", "runs.result", "deploys.state"] }
+        "result": {
+          "reduce": "derive",
+          "op": "worst",
+          "of": [
+            "jobs.result",
+            "runs.result",
+            "deploys.state"
+          ]
+        }
       },
       "close": {
-        "when": { "slot": "runs", "all": { "state": "completed" } },
+        "when": {
+          "slot": "runs",
+          "all": {
+            "state": "completed"
+          }
+        },
         "settle": 20,
-        "pending": { "slot": "runs", "any": { "state": ["requested", "queued", "in_progress", "waiting", "pending"] } },
+        "pending": {
+          "slot": "runs",
+          "any": {
+            "state": [
+              "requested",
+              "queued",
+              "in_progress",
+              "waiting",
+              "pending"
+            ]
+          }
+        },
         "idle": 90,
         "max_wait": 7200,
         "max_events": 200,
@@ -104,28 +157,65 @@
           {
             "id": "started",
             "option": "notify_start",
-            "when": { "slot": "commit", "exists": true },
+            "when": {
+              "slot": "commit",
+              "exists": true
+            },
             "container": {
               "title": "{{ slots.commit.repo | default('', true) }} · {{ (slots.commit.ref | default('', true)) | replace('refs/heads/', '') }} 已推送",
               "accent": "blue",
               "blocks": [
-                { "id": "commit", "kind": "text", "bind": "commit", "text": "{{ item.message | default('', true) | first_line }}\n{{ item.author | default('', true) }} · {{ (item.sha | default('', true))[:7] }}" },
-                { "id": "compare", "kind": "link", "bind": "commit", "text": "{% if item.url %}查看提交{% endif %}", "url": "{{ item.url | default('', true) }}" }
+                {
+                  "id": "commit",
+                  "kind": "text",
+                  "bind": "commit",
+                  "text": "{{ item.message | default('', true) | first_line }}\n{{ item.author | default('', true) }} · {{ (item.sha | default('', true))[:7] }}"
+                },
+                {
+                  "id": "compare",
+                  "kind": "link",
+                  "bind": "commit",
+                  "text": "{% if item.url %}查看提交{% endif %}",
+                  "url": "{{ item.url | default('', true) }}"
+                }
               ]
             }
           },
           {
             "id": "job_failed",
             "option": "notify_failure",
-            "when": { "slot": "jobs", "any": { "result": ["failure", "timed_out", "startup_failure"] } },
+            "when": {
+              "slot": "jobs",
+              "any": {
+                "result": [
+                  "failure",
+                  "timed_out",
+                  "startup_failure"
+                ]
+              }
+            },
             "once_per_item": true,
             "container": {
               "title": "{% if slots.commit %}{{ slots.commit.repo | default('', true) }} · {% endif %}{{ item.label | default('任务', true) }} 失败",
               "accent": "red",
               "blocks": [
-                { "id": "commit", "kind": "text", "bind": "commit", "text": "{{ item.message | default('', true) | first_line }}" },
-                { "id": "job", "kind": "text", "text": "{{ item.result | result_icon }} {{ item.label | default('', true) }} · {{ item | duration }}" },
-                { "id": "open", "kind": "link", "text": "{% if item.url %}查看任务{% endif %}", "url": "{{ item.url | default('', true) }}" }
+                {
+                  "id": "commit",
+                  "kind": "text",
+                  "bind": "commit",
+                  "text": "{{ item.message | default('', true) | first_line }}"
+                },
+                {
+                  "id": "job",
+                  "kind": "text",
+                  "text": "{{ item.result | result_icon }} {{ item.label | default('', true) }} · {{ item | duration }}"
+                },
+                {
+                  "id": "open",
+                  "kind": "link",
+                  "text": "{% if item.url %}查看任务{% endif %}",
+                  "url": "{{ item.url | default('', true) }}"
+                }
               ]
             }
           }
@@ -135,15 +225,584 @@
         "title": "{% if slots.commit %}{{ slots.commit.repo | default('', true) }} · {{ (slots.commit.ref | default('', true)) | replace('refs/heads/', '') }}{% elif slots.runs %}{{ slots.runs[0].repo | default('', true) }} · {{ slots.runs[0].branch | default('', true) }}{% else %}提交流水线{% endif %} {{ slots.result | result_icon }}",
         "accent": {
           "slot": "result",
-          "map": { "success": "green", "failure": "red", "error": "red", "timed_out": "red", "startup_failure": "red", "cancelled": "grey", "*": "blue" }
+          "map": {
+            "success": "green",
+            "failure": "red",
+            "error": "red",
+            "timed_out": "red",
+            "startup_failure": "red",
+            "cancelled": "grey",
+            "*": "blue"
+          }
         },
         "blocks": [
-          { "id": "commit", "kind": "text", "bind": "commit", "text": "{{ item.message | default('', true) | first_line }}\n{{ item.author | default('', true) }} · {{ (item.sha | default('', true))[:7] }}" },
-          { "id": "jobs", "kind": "repeat", "bind": "jobs", "text": "{{ item.result | result_icon }} {{ item.label | default('', true) }} · {{ item | duration }}" },
-          { "id": "deploys", "kind": "repeat", "bind": "deploys", "text": "{{ item.state | result_icon }} {{ item.label | default('', true) }} · {{ item.state | default('', true) }}" },
-          { "id": "summary", "kind": "text", "style": "note", "text": "共 {{ group.event_count }} 条事件 · 耗时 {{ group.span | duration }}{% if group.flush_reason == 'max_wait' %} · 仍在进行{% endif %}" },
-          { "id": "run", "kind": "link", "bind": "runs", "text": "{% if item.url %}查看运行{% endif %}", "url": "{{ item.url | default('', true) }}" },
-          { "id": "compare", "kind": "link", "bind": "commit", "text": "{% if item.url %}查看提交{% endif %}", "url": "{{ item.url | default('', true) }}" }
+          {
+            "id": "commit",
+            "kind": "text",
+            "bind": "commit",
+            "text": "{{ item.message | default('', true) | first_line }}\n{{ item.author | default('', true) }} · {{ (item.sha | default('', true))[:7] }}"
+          },
+          {
+            "id": "jobs",
+            "kind": "repeat",
+            "bind": "jobs",
+            "text": "{{ item.result | result_icon }} {{ item.label | default('', true) }} · {{ item | duration }}"
+          },
+          {
+            "id": "deploys",
+            "kind": "repeat",
+            "bind": "deploys",
+            "text": "{{ item.state | result_icon }} {{ item.label | default('', true) }} · {{ item.state | default('', true) }}"
+          },
+          {
+            "id": "summary",
+            "kind": "text",
+            "style": "note",
+            "text": "共 {{ group.event_count }} 条事件 · 耗时 {{ group.span | duration }}{% if group.flush_reason == 'max_wait' %} · 仍在进行{% endif %}"
+          },
+          {
+            "id": "run",
+            "kind": "link",
+            "bind": "runs",
+            "text": "{% if item.url %}查看运行{% endif %}",
+            "url": "{{ item.url | default('', true) }}"
+          },
+          {
+            "id": "compare",
+            "kind": "link",
+            "bind": "commit",
+            "text": "{% if item.url %}查看提交{% endif %}",
+            "url": "{{ item.url | default('', true) }}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "github.pr_activity",
+    "source_provider": "github",
+    "name": "拉取请求动态",
+    "description": "同一个拉取请求短时间内的状态变化、评审和评论合并为一条消息",
+    "options": {},
+    "rule": {
+      "name": "拉取请求动态",
+      "group": {
+        "match": [
+          "pull_request.*",
+          "pull_request_review.*",
+          "pull_request_review_comment.*",
+          "issue_comment.*"
+        ],
+        "key": [
+          "/pull_request/html_url",
+          "/issue/pull_request/html_url"
+        ]
+      },
+      "slots": {
+        "pr": {
+          "reduce": "last",
+          "from": [
+            {
+              "event": "pull_request.*",
+              "map": {
+                "repo": "/repository/full_name",
+                "number": "/pull_request/number",
+                "title": "/pull_request/title",
+                "url": "/pull_request/html_url",
+                "author": "/pull_request/user/login",
+                "head": "/pull_request/head/ref",
+                "base": "/pull_request/base/ref"
+              }
+            },
+            {
+              "event": "pull_request_review.*",
+              "map": {
+                "repo": "/repository/full_name",
+                "number": "/pull_request/number",
+                "title": "/pull_request/title",
+                "url": "/pull_request/html_url"
+              }
+            },
+            {
+              "event": "pull_request_review_comment.*",
+              "map": {
+                "repo": "/repository/full_name",
+                "number": "/pull_request/number",
+                "title": "/pull_request/title",
+                "url": "/pull_request/html_url"
+              }
+            },
+            {
+              "event": "issue_comment.*",
+              "map": {
+                "repo": "/repository/full_name",
+                "number": "/issue/number",
+                "title": "/issue/title",
+                "url": "/issue/html_url"
+              }
+            }
+          ]
+        },
+        "changes": {
+          "reduce": "append",
+          "limit": 20,
+          "from": [
+            {
+              "event": "pull_request.*",
+              "map": {
+                "action": "/action",
+                "actor": "/sender/login",
+                "merged": "/pull_request/merged",
+                "label": "/label/name",
+                "reviewer": "/requested_reviewer/login"
+              }
+            }
+          ]
+        },
+        "reviews": {
+          "reduce": "keyed",
+          "from": [
+            {
+              "event": "pull_request_review.submitted",
+              "key": "/review/id",
+              "map": {
+                "reviewer": "/review/user/login",
+                "state": "/review/state",
+                "body": "/review/body",
+                "url": "/review/html_url"
+              }
+            }
+          ]
+        },
+        "comments": {
+          "reduce": "append",
+          "limit": 20,
+          "from": [
+            {
+              "event": "issue_comment.created",
+              "map": {
+                "author": "/comment/user/login",
+                "body": "/comment/body",
+                "url": "/comment/html_url"
+              }
+            },
+            {
+              "event": "pull_request_review_comment.created",
+              "map": {
+                "author": "/comment/user/login",
+                "body": "/comment/body",
+                "url": "/comment/html_url"
+              }
+            }
+          ]
+        }
+      },
+      "close": {
+        "idle": 120,
+        "max_wait": 900,
+        "max_events": 200
+      },
+      "container": {
+        "title": "{% if slots.pr %}{{ slots.pr.repo | default('', true) }} #{{ slots.pr.number | default('', true) }} {{ slots.pr.title | default('', true) }}{% else %}拉取请求动态{% endif %}",
+        "accent": "purple",
+        "blocks": [
+          {
+            "id": "branch",
+            "kind": "text",
+            "bind": "pr",
+            "text": "{% if item.head %}{{ item.author | default('', true) }} · {{ item.head }} → {{ item.base | default('', true) }}{% endif %}"
+          },
+          {
+            "id": "changes",
+            "kind": "repeat",
+            "bind": "changes",
+            "text": "{% if item.action == 'closed' and item.merged %}{{ item.actor | default('', true) }} 合并了{% else %}{{ item.actor | default('', true) }} {{ {'opened': '打开了', 'closed': '关闭了', 'reopened': '重新打开', 'edited': '编辑了', 'ready_for_review': '标记为可评审', 'converted_to_draft': '转为草稿', 'synchronize': '推送了新提交', 'review_requested': '请求评审', 'review_request_removed': '取消评审请求', 'assigned': '指派了', 'unassigned': '取消指派', 'labeled': '添加标签', 'unlabeled': '移除标签', 'milestoned': '设置里程碑', 'demilestoned': '移除里程碑', 'locked': '锁定了', 'unlocked': '解锁了', 'auto_merge_enabled': '启用自动合并', 'auto_merge_disabled': '关闭自动合并', 'enqueued': '加入合并队列', 'dequeued': '移出合并队列'}[item.action] | default(item.action | default('', true), true) }}{% endif %}{% if item.label %} {{ item.label }}{% endif %}{% if item.reviewer %} {{ item.reviewer }}{% endif %}"
+          },
+          {
+            "id": "reviews",
+            "kind": "repeat",
+            "bind": "reviews",
+            "text": "{{ {'approved': '✅ 批准', 'changes_requested': '❌ 要求修改', 'commented': '💬 评审', 'dismissed': '➖ 已撤销'}[item.state] | default(item.state | default('', true), true) }} · {{ item.reviewer | default('', true) }}{% if item.body %}：{{ (item.body | first_line)[:80] }}{% endif %}"
+          },
+          {
+            "id": "comments",
+            "kind": "repeat",
+            "bind": "comments",
+            "limit": 5,
+            "text": "💬 {{ item.author | default('', true) }}：{{ (item.body | default('', true) | first_line)[:80] }}"
+          },
+          {
+            "id": "summary",
+            "kind": "text",
+            "style": "note",
+            "text": "共 {{ group.event_count }} 条事件"
+          },
+          {
+            "id": "open",
+            "kind": "link",
+            "bind": "pr",
+            "text": "{% if item.url %}查看拉取请求{% endif %}",
+            "url": "{{ item.url | default('', true) }}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "github.issue_opened",
+    "source_provider": "github",
+    "name": "Issue 创建",
+    "description": "创建 Issue 时同时产生的标签、指派等事件合并为一条消息",
+    "options": {},
+    "rule": {
+      "name": "Issue 创建",
+      "group": {
+        "match": [
+          "issues.*"
+        ],
+        "key": [
+          "/issue/html_url"
+        ]
+      },
+      "slots": {
+        "issue": {
+          "reduce": "last",
+          "from": [
+            {
+              "event": "issues.*",
+              "map": {
+                "repo": "/repository/full_name",
+                "number": "/issue/number",
+                "title": "/issue/title",
+                "url": "/issue/html_url",
+                "author": "/issue/user/login"
+              }
+            }
+          ]
+        },
+        "opened": {
+          "reduce": "first",
+          "from": [
+            {
+              "event": "issues.opened",
+              "map": {
+                "actor": "/sender/login",
+                "body": "/issue/body"
+              }
+            }
+          ]
+        },
+        "labels": {
+          "reduce": "keyed",
+          "from": [
+            {
+              "event": "issues.labeled",
+              "key": "/label/name",
+              "map": {
+                "name": "/label/name"
+              }
+            }
+          ]
+        },
+        "assignees": {
+          "reduce": "keyed",
+          "from": [
+            {
+              "event": "issues.assigned",
+              "key": "/assignee/login",
+              "map": {
+                "login": "/assignee/login"
+              }
+            }
+          ]
+        },
+        "changes": {
+          "reduce": "append",
+          "limit": 20,
+          "from": [
+            {
+              "event": "issues.*",
+              "when": {
+                "pointer": "/action",
+                "not_in": [
+                  "opened",
+                  "labeled",
+                  "assigned"
+                ]
+              },
+              "map": {
+                "action": "/action",
+                "actor": "/sender/login"
+              }
+            }
+          ]
+        }
+      },
+      "close": {
+        "idle": 10,
+        "max_wait": 120
+      },
+      "container": {
+        "title": "{% if slots.issue %}{{ slots.issue.repo | default('', true) }} #{{ slots.issue.number | default('', true) }} {{ slots.issue.title | default('', true) }}{% else %}Issue 动态{% endif %}",
+        "accent": "indigo",
+        "blocks": [
+          {
+            "id": "opened",
+            "kind": "text",
+            "bind": "opened",
+            "text": "{{ item.actor | default('', true) }} 创建了 Issue{% if item.body %}\n{{ (item.body | first_line)[:120] }}{% endif %}"
+          },
+          {
+            "id": "labels",
+            "kind": "text",
+            "label": "标签",
+            "text": "{{ slots.labels | map(attribute='name') | reject('none') | join('、') }}"
+          },
+          {
+            "id": "assignees",
+            "kind": "text",
+            "label": "指派",
+            "text": "{{ slots.assignees | map(attribute='login') | reject('none') | join('、') }}"
+          },
+          {
+            "id": "changes",
+            "kind": "repeat",
+            "bind": "changes",
+            "text": "{{ item.actor | default('', true) }} {{ {'closed': '关闭了', 'reopened': '重新打开', 'edited': '编辑了', 'unassigned': '取消指派', 'unlabeled': '移除标签', 'milestoned': '设置里程碑', 'demilestoned': '移除里程碑', 'locked': '锁定了', 'unlocked': '解锁了', 'pinned': '置顶了', 'unpinned': '取消置顶', 'transferred': '转移了', 'typed': '设置类型', 'untyped': '移除类型', 'deleted': '删除了'}[item.action] | default(item.action | default('', true), true) }}"
+          },
+          {
+            "id": "open",
+            "kind": "link",
+            "bind": "issue",
+            "text": "{% if item.url %}查看 Issue{% endif %}",
+            "url": "{{ item.url | default('', true) }}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "github.release",
+    "source_provider": "github",
+    "name": "版本发布",
+    "description": "同一个版本的创建、发布、正式发布事件合并为一条消息",
+    "options": {},
+    "rule": {
+      "name": "版本发布",
+      "group": {
+        "match": [
+          "release.*"
+        ],
+        "key": [
+          "/release/id"
+        ]
+      },
+      "slots": {
+        "release": {
+          "reduce": "last",
+          "from": [
+            {
+              "event": "release.*",
+              "map": {
+                "repo": "/repository/full_name",
+                "name": "/release/name",
+                "tag": "/release/tag_name",
+                "url": "/release/html_url",
+                "author": "/release/author/login",
+                "prerelease": "/release/prerelease",
+                "body": "/release/body"
+              }
+            }
+          ]
+        },
+        "actions": {
+          "reduce": "append",
+          "limit": 10,
+          "from": [
+            {
+              "event": "release.*",
+              "map": {
+                "action": "/action"
+              }
+            }
+          ]
+        }
+      },
+      "close": {
+        "idle": 60,
+        "max_wait": 600
+      },
+      "container": {
+        "title": "{% if slots.release %}{{ slots.release.repo | default('', true) }} 发布 {{ slots.release.name or slots.release.tag | default('', true) }}{% else %}版本发布{% endif %}",
+        "accent": "green",
+        "blocks": [
+          {
+            "id": "tag",
+            "kind": "text",
+            "bind": "release",
+            "text": "{{ item.tag | default('', true) }} · {{ item.author | default('', true) }}{% if item.prerelease %} · 预发布{% endif %}"
+          },
+          {
+            "id": "notes",
+            "kind": "text",
+            "bind": "release",
+            "text": "{{ (item.body | default('', true))[:600] }}"
+          },
+          {
+            "id": "actions",
+            "kind": "text",
+            "style": "note",
+            "text": "{{ slots.actions | map(attribute='action') | reject('none') | join(' → ') }}"
+          },
+          {
+            "id": "open",
+            "kind": "link",
+            "bind": "release",
+            "text": "{% if item.url %}查看版本{% endif %}",
+            "url": "{{ item.url | default('', true) }}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "github.repo_attention",
+    "source_provider": "github",
+    "name": "仓库关注动态",
+    "description": "Star、Fork 和 Watch 按仓库合并，空闲 5 分钟或最长 1 小时发一条",
+    "options": {},
+    "rule": {
+      "name": "仓库关注动态",
+      "group": {
+        "match": [
+          "star.*",
+          "watch.started",
+          "fork"
+        ],
+        "key": [
+          "/repository/full_name"
+        ]
+      },
+      "slots": {
+        "repo": {
+          "reduce": "last",
+          "from": [
+            {
+              "event": "star.*",
+              "map": {
+                "name": "/repository/full_name",
+                "url": "/repository/html_url",
+                "stars": "/repository/stargazers_count"
+              }
+            },
+            {
+              "event": "watch.started",
+              "map": {
+                "name": "/repository/full_name",
+                "url": "/repository/html_url",
+                "stars": "/repository/stargazers_count"
+              }
+            },
+            {
+              "event": "fork",
+              "map": {
+                "name": "/repository/full_name",
+                "url": "/repository/html_url",
+                "stars": "/repository/stargazers_count"
+              }
+            }
+          ]
+        },
+        "starred": {
+          "reduce": "count",
+          "from": [
+            {
+              "event": "star.created"
+            }
+          ]
+        },
+        "unstarred": {
+          "reduce": "count",
+          "from": [
+            {
+              "event": "star.deleted"
+            }
+          ]
+        },
+        "forked": {
+          "reduce": "count",
+          "from": [
+            {
+              "event": "fork"
+            }
+          ]
+        },
+        "watched": {
+          "reduce": "count",
+          "from": [
+            {
+              "event": "watch.started"
+            }
+          ]
+        },
+        "people": {
+          "reduce": "append",
+          "limit": 50,
+          "from": [
+            {
+              "event": "star.created",
+              "map": {
+                "login": "/sender/login"
+              }
+            },
+            {
+              "event": "fork",
+              "map": {
+                "login": "/sender/login"
+              }
+            },
+            {
+              "event": "watch.started",
+              "map": {
+                "login": "/sender/login"
+              }
+            }
+          ]
+        }
+      },
+      "close": {
+        "idle": 300,
+        "max_wait": 3600
+      },
+      "container": {
+        "title": "{% if slots.repo %}{{ slots.repo.name | default('', true) }} {% endif %}关注动态",
+        "accent": "orange",
+        "blocks": [
+          {
+            "id": "counts",
+            "kind": "text",
+            "text": "{{ [('⭐ +' ~ slots.starred) if slots.starred else '', ('取消 Star ' ~ slots.unstarred) if slots.unstarred else '', ('🍴 +' ~ slots.forked) if slots.forked else '', ('👀 +' ~ slots.watched) if slots.watched else ''] | select | join(' · ') }}"
+          },
+          {
+            "id": "people",
+            "kind": "text",
+            "label": "来自",
+            "text": "{{ slots.people | map(attribute='login') | reject('none') | unique | join('、') }}"
+          },
+          {
+            "id": "total",
+            "kind": "text",
+            "bind": "repo",
+            "style": "note",
+            "text": "{% if item.stars is number %}当前共 {{ item.stars }} 个 Star{% endif %}"
+          },
+          {
+            "id": "open",
+            "kind": "link",
+            "bind": "repo",
+            "text": "{% if item.url %}查看仓库{% endif %}",
+            "url": "{{ item.url | default('', true) }}"
+          }
         ]
       }
     }
