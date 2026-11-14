@@ -1,6 +1,6 @@
 # 事件聚合设计
 
-状态：第 1 步（`src/aggregation/` 纯逻辑与“提交流水线”预设）已实现，第 2 步起尚未开始。Route 还不能配置 `aggregation`，接收与投递流程没有变化。
+Route 可以配置 `aggregation`：匹配的事件不再逐条投递，而是归入聚合组，到期后发出一条汇总。规则可以选用内置预设，也可以在控制台中完整自定义。
 
 ## 问题
 
@@ -64,6 +64,8 @@ Container 只引用 Slot 名，不直接读事件。因此结束条件与布局�
 | `first` | 只保留第一次写入 | 对象，未写入时为 `none` |
 | `last` | 每次合并，非空字段覆盖旧值 | 对象，未写入时为 `none` |
 | `keyed` | 按 Binding 的键 upsert，合并规则同 `last`，`state` 字段的变化记入历史 | 列表 |
+| `append` | 每次写入追加一项，只保留最近 `limit` 项（默认 50，1–200） | 列表 |
+| `count` | 只计数匹配的事件，不保存内容，Binding 不能映射字段 | 数字 |
 | `derive` | 由其他 Slot 计算，不绑定事件 | 标量 |
 
 `derive` 目前只有 `worst`：在 `of` 列出的 `slot.field` 中取最严重的结果，严重程度依次为 failure、error、timed_out、startup_failure、cancelled、action_required、stale、success、neutral、skipped，列表外的值（例如 in_progress）忽略。
@@ -76,7 +78,7 @@ Container 只引用 Slot 名，不直接读事件。因此结束条件与布局�
 
 列表中每一项是 Binding 映射出的字段，再加上系统字段 `_key`、`_first_seen`、`_last_seen`（接收时间）和 `_history`（`[{state, at}]`）。`_history` 用于渲染 Apple 审核这类状态链。
 
-`append`（PR 评论）、`count`（同类节流）随第 5 步的预设一起加入。
+谓词和区块绑定只能使用有列表项的 Slot（`first`、`last`、`keyed`、`append`）；`count` 与 `derive` 通过模板中的 `slots.*` 读取。
 
 ### Binding
 
@@ -146,7 +148,7 @@ Container 只引用 Slot 名，不直接读事件。因此结束条件与布局�
 }
 ```
 
-- `kind` 为 `text`、`link` 或 `repeat`。`repeat` 必须绑定 `keyed` Slot，对每一项渲染 `text`，按行拼接，`limit` 默认 20，超出时追加“另有 N 项”。
+- `kind` 为 `text`、`link` 或 `repeat`。`repeat` 必须绑定 `keyed` 或 `append` Slot，对每一项渲染 `text`，按行拼接，`limit` 默认 20，超出时追加“另有 N 项”。
 - `text` / `link` 绑定 Slot 时，`item` 是最新一项，Slot 为空时这个区块不渲染。不绑定时，`item` 只在提醒模板中存在。
 - 渲染后的区块交给 `message::finish`，与单条消息走同一套收尾：丢弃空文本块、校验链接、调用目标的 `render_content`。飞书适配器不需要改动。`style` 写入 `block_styles`，`accent` 可以固定，也可以按 Slot 值映射（`*` 为默认）。
 - 模板变量：`slots.*`、`item`、`group.event_count`、`group.opened_at`、`group.span`（首尾事件时间差，秒）、`group.flush_reason`（提醒中为 none）。
@@ -155,7 +157,7 @@ Container 只引用 Slot 名，不直接读事件。因此结束条件与布局�
 
 ## 预设与自定义
 
-Route 上计划新增 `aggregation`，与 `message_policy` 并列（第 2 步接入）：
+Route 上的 `aggregation` 与 `message_policy` 并列：
 
 ```jsonc
 "aggregation": {
@@ -168,26 +170,22 @@ Route 上计划新增 `aggregation`，与 `message_policy` 并列（第 2 步接
 
 - 每条规则可以引用预设并传入开关（预设升级后自动生效），也可以完整自定义。“复制为自定义”会把预设展开写入 Route。
 - 事件按顺序匹配第一条命中的规则；没有命中的事件照常单条发送。
-- 预设按来源平台存放在 `src/providers/presets/github_aggregations.json`，结构为 `{ id, source_provider, name, description, options, rule }`，开关默认关闭。
+- 预设按来源平台存放在 `src/providers/presets/github_aggregations.json` 与 `apple_aggregations.json`，结构为 `{ id, source_provider, name, description, options, rule }`，开关默认关闭。`/api/meta` 的 `aggregation_presets` 返回全部预设。
+- 只有路由 `event_types` 选中的事件才会进入聚合。控制台在规则用到的事件不在筛选中时给出提示，并可一键加入。
 
 ### 内置预设
 
-已实现：
-
-| 预设 | 分组键 | Slot | 结束 | 开关 |
+| 预设 | 分组键 | 主要 Slot | 结束 | 开关 |
 | --- | --- | --- | --- | --- |
-| GitHub 提交流水线 `github.commit_pipeline` | head sha | commit、runs、jobs、deploys、result | runs 全部完成 + 静默 20s；无进行中的 run 时空闲 90s；最长 2h | `notify_start` 推送后立即提醒；`notify_failure` 任务失败立即提醒 |
+| GitHub 提交流水线 `github.commit_pipeline` | head sha | commit、runs、jobs、deploys、result | runs 全部完成 + 静默 20s；无进行中的 run 时空闲 90s；最长 2h | 推送后立即提醒；任务失败立即提醒 |
+| GitHub 拉取请求动态 `github.pr_activity` | PR 链接 | pr（last）、changes（append）、reviews（keyed）、comments（append） | 空闲 120s，最长 15min | |
+| GitHub Issue 创建 `github.issue_opened` | Issue 链接 | issue、opened、labels、assignees、changes | 空闲 10s，最长 2min | |
+| GitHub 版本发布 `github.release` | release id | release（last）、actions（append） | 空闲 60s，最长 10min | |
+| GitHub 仓库关注动态 `github.repo_attention` | 仓库 | repo、starred / unstarred / forked / watched（count）、people（append） | 空闲 5min，最长 1h | |
+| Apple 版本审核进度 `apple.version_review` | 版本 ID | start（first）、version（keyed，渲染 `_history`） | 进入审核结果后静默 5s；空闲 2min；最长 1h | |
+| Apple 构建处理 `apple.build_processing` | 上传 ID | upload（keyed，`final` 为 COMPLETE / FAILED） | 完成或失败后静默 10s；处理中不按空闲发出；空闲 10min；最长 1h | |
 
-计划中（第 5 步）：
-
-| 预设 | 分组键 | 主要 Slot | 结束 |
-| --- | --- | --- | --- |
-| GitHub PR 动态 | 仓库 + PR 编号 | pr（first）、reviews（keyed）、comments（append）、state（last） | 空闲 120s，最长 15min |
-| GitHub Issue 创建 | 仓库 + Issue 编号 | issue（first）、labels、assignees | 空闲 10s |
-| GitHub 发布 | 仓库 + tag | release（last）、assets（keyed） | 空闲 60s |
-| GitHub 同类节流 | 仓库 + 事件类型 | actors（append）、total（count） | 空闲 60s，最长 10min |
-| Apple 版本审核进度 | `/data/relationships/instance/data/id` | version（keyed，渲染 `_history`） | 空闲 120s；终态立即发出 |
-| Apple 构建处理 | 上传 ID | upload（keyed） | 进入 COMPLETE / FAILED 后静默 10s，最长 1h |
+拉取请求动态以 `/pull_request/html_url` 或 `/issue/pull_request/html_url` 分组，普通 Issue 下的评论取不到键，会交给后续规则或逐条发送。
 
 用导出数据回放“提交流水线”（`tests/aggregation.rs`）：35 条事件归为一组。+1222s `workflow_run.completed` 使 `runs` 全部完成，+1223s 的 `deployment_status` 重新计时，+1243s 发出一条消息：
 
@@ -206,16 +204,18 @@ octocat · 6dcb09b
 
 job 耗时从排队事件算到完成事件，包含排队时间。
 
-### 编辑器（第 3、4 步）
+### 编辑器
 
-Route 编辑页新增“聚合”标签页：
+Route 编辑页的“消息聚合”标签页：
 
-1. **规则列表**：选择预设并调整开关，或新建、复制为自定义。
-2. **分组**：复用 `EventFilter` 选择匹配事件；分组键用字段路径选择器，候选路径来自事件目录的 `sample` 和 `fields`。
-3. **Slot**：每个 Slot 一张卡片，选择 Reducer，添加 Binding（事件、键、字段映射、条件）。
-4. **结束条件**：表单方式填写谓词、settle / idle / max_wait / max_events 和阶段提醒。
-5. **Container**：复用 `MessageStudio`，变量面板列出 Slot；把 Slot 拖进区块即生成 `bind`，keyed Slot 默认生成 `repeat`。
-6. **回放预览**：用本 Route 最近 24h 或最近 N 条真实事件调用 `simulate`，展示“原本 N 条 → M 条”、每组成员、各 Slot 的值、发出时间和原因，并渲染卡片。数据库已保存 `event_type` 和加密原文，足以重建 RelayEvent。
+1. **规则列表**：从预设或空白规则添加，调整顺序，删除；预设显示开关，可“复制为自定义”展开成完整规则。
+2. **分组**：复用 `EventFilter` 选择匹配事件，预设中的 `前缀.*` 作为自定义事件显示；分组键为字段路径列表，输入时提示事件目录中的字段路径。
+3. **数据**：每个 Slot 一张卡片，选择归并方式，编辑来源事件、键、条件与字段映射。
+4. **结束条件**：完成谓词与静默秒数、进行中谓词、空闲、最长等待和事件上限。
+5. **阶段提醒**与**汇总消息**：标题、样式、颜色（固定或按 Slot 值映射）和区块；区块下方列出可用变量，点击插入。
+6. **回放最近事件**：调用回放接口，展示“最近 N 条事件 → M 条消息”和每组的卡片预览。
+
+接收与投递记录的详情会显示所属聚合组：等待中的组显示预计发出时间，已发出的组显示原因，并可展开成员事件。
 
 ## 代码结构
 
@@ -225,9 +225,10 @@ src/aggregation/
   state.rs     GroupState：Binding 写入、Reducer、谓词、due_at、notices、derive
   render.rs    Container 展开为 Content，交给 message::finish
   simulate.rs  虚拟时钟回放，供预览、校验和测试使用
+  store.rs     开组、写入成员、发出汇总与提醒，唯一访问数据库的部分
 ```
 
-核心是纯函数，不访问数据库，也不读系统时钟，`now` 由参数传入：
+除 `store.rs` 外都是纯函数，不访问数据库，也不读系统时钟，`now` 由参数传入：
 
 ```rust
 pub fn resolve(config: &Value, source_provider: &str) -> Result<Policy>;
@@ -236,6 +237,7 @@ pub fn validate(policy: &Policy, source: &Value, destination: &dyn DestinationAd
 
 pub struct GroupState {
     pub slots: BTreeMap<String, Vec<Item>>,  // first / last 最多一项
+    pub counts: BTreeMap<String, u64>,       // count Slot
     pub event_count: u32,
     pub opened_at: i64,
     pub last_event_at: i64,
@@ -255,49 +257,29 @@ pub fn simulate(policy: &Policy, events: &[(i64, RelayEvent)]) -> Vec<SimGroup>;
 
 为此对现有代码做了两处改动：`template::render_with` / `render_str` 接收任意上下文，并新增三个过滤器；`message::finish` 从单条渲染中拆出，供聚合复用。
 
-计划中的调用方：
+调用方：
 
 | 调用方 | 用法 |
 | --- | --- |
-| `api::receive` | 每条 Route 先 `classify`。命中时读出 open 组；若已到期先发出，再新开一组；执行 `apply`，写回组状态和 `due_at`；`apply` 返回提醒时同事务插入一条立即发送的 delivery。未命中走原有单条渲染路径 |
-| `worker::run` | 每轮挑选 delivery 之前执行 `flush_due(now)`：取到期的组，`render` 后插入普通 delivery，组标记为 flushed |
-| 回放预览 API | 从 `events` 表重建 RelayEvent，调用 `simulate` |
-| `config::validate` | 调用 `resolve` 和 `validate` |
+| `api::receive` | 每条 Route 先 `classify`。命中时调用 `store::attach`：同一键的 open 组若已到期先发出，再开新组；执行 `apply`，写回组状态和 `due_at`；提醒在同一事务中生成立即发送的 delivery。未命中走原有单条渲染路径 |
+| `worker::run` | 每轮挑选 delivery 之前调用 `store::flush_due`，持有与接收相同的配置锁，逐个发出到期的组 |
+| `POST /api/aggregation/replay` | 从 `events` 表解密原文，用 `event_type` 和接收时间重建事件后调用 `simulate` |
+| `config::validate` | 保存 Route 时调用 `resolve` 和 `validate` |
+
+投递入队统一走 `store::queue_delivery`，单条投递、汇总和提醒使用同一套快照与审计。
 
 单条事件消息理论上可以看作“只有一条事件、全部为 `last` Slot 的组”，但现有 274 个 GitHub 模板都直接读 `event.raw`，不做迁移，两条路径并存。
 
-## 存储与执行（第 2 步）
+## 存储与执行
 
-新增迁移 `0004_aggregation.sql`：
+迁移 `0004_aggregation.sql` 新增 `aggregates`（`snapshot` 为开组时冻结的规则与投递目标，`group_state` 为序列化的 `GroupState`，二者都加密保存；`group_key` 保存分组键的 SHA-256）和 `aggregate_members`，并重建 `deliveries`：新增 `aggregate_id`，原来的 `UNIQUE(event_id, route_id)` 改为只约束 `aggregate_id IS NULL` 的单条投递，因为同一事件可能既触发提醒又是汇总的最后一个成员。重建在迁移事务中通过 `defer_foreign_keys` 完成，`attempts` 的外键与记录顺序保持不变。
 
-```sql
-CREATE TABLE aggregates (
-  id TEXT PRIMARY KEY, route_id TEXT NOT NULL, rule_id TEXT NOT NULL,
-  group_key TEXT NOT NULL,           -- 分组键的 SHA-256，不存明文
-  state TEXT NOT NULL,               -- open / flushed
-  rule_snapshot TEXT NOT NULL,       -- 加密：开组时冻结的规则与路由版本
-  group_state TEXT NOT NULL,         -- 加密：序列化的 GroupState
-  event_count INTEGER NOT NULL, opened_at INTEGER NOT NULL,
-  last_event_at INTEGER NOT NULL, due_at INTEGER NOT NULL,
-  flush_reason TEXT, flushed_at INTEGER
-);
-CREATE UNIQUE INDEX aggregates_open ON aggregates(route_id, rule_id, group_key) WHERE state = 'open';
-CREATE INDEX aggregates_due ON aggregates(state, due_at);
-CREATE TABLE aggregate_members (
-  aggregate_id TEXT NOT NULL REFERENCES aggregates(id),
-  event_id TEXT NOT NULL REFERENCES events(id),
-  seq INTEGER NOT NULL,
-  PRIMARY KEY (aggregate_id, event_id)
-);
-ALTER TABLE deliveries ADD COLUMN aggregate_id TEXT;
-```
-
-- **事务边界**：事件、组状态、成员关系和审计在同一事务中提交，与现有接收流程一致。
-- **delivery 关联**：汇总的 delivery 以最后一个成员事件作为 `event_id`，并填写 `aggregate_id`。该事件在这条 Route 上没有单条 delivery，因此不与 `UNIQUE(event_id, route_id)` 冲突。阶段提醒使用触发它的事件，同样带上 `aggregate_id`。
-- **晚到事件**：组发出后，同一个键的新事件会新开一组。
-- **重启**：open 组保存在 SQLite，重启后由调度继续处理。只在发出时生成 delivery，不会重复生成汇总；已开始发送的汇总仍是至少一次投递。
-- **配置变更**：组使用开组时冻结的 `rule_snapshot`。Route 被禁用或删除时，立即发出所有 open 组，`flush_reason` 届时新增 `route_changed`。
-- **记录页**：投递详情显示“汇总自 N 条事件”并可展开成员；事件详情显示所属组、组状态和计划发出时间。
+- **事务边界**：事件、组状态、成员关系、提醒投递和审计在同一事务中提交，与现有接收流程一致。
+- **delivery 关联**：汇总以最后一个成员事件作为 `event_id`；提醒使用触发它的事件。二者都带 `aggregate_id`，重试、限速和审计沿用原有投递逻辑。
+- **晚到事件**：组发出后，同一个键的新事件会开新组。
+- **重启**：open 组保存在 SQLite，重启后由 Worker 继续发出；只在发出时生成 delivery，不会重复生成汇总，已开始发送的汇总仍是至少一次投递。
+- **配置变更**：组使用开组时冻结的规则与目标，修改或停用 Route 不影响已开的组；停用 Route 时，发出的汇总和其他投递一样暂停。仍有 open 组的 Route 不能删除。
+- **审计**：`aggregate.opened`、`aggregate.updated`、`aggregate.flushed`，以及汇总和提醒各自的 `delivery.queued`。
 
 ## 取舍
 
@@ -308,10 +290,7 @@ ALTER TABLE deliveries ADD COLUMN aggregate_id TEXT;
 - **不在首版做跨来源关联**：GitHub deploy job 与它触发的 Apple `buildUploadStateUpdated`（cursor 48）没有共同字段，强行关联容易出错。
 - **延迟是代价**：聚合消息必然比逐条发送晚，失败场景用阶段提醒补偿。
 
-## 实施顺序
+## 验证
 
-1. （已完成）`aggregation` 模块与“提交流水线”预设。`tests/fixtures/commit_pipeline.json` 保留导出数据中真实的事件顺序和时间；导出没有请求体，所以 payload 按 GitHub 各事件的字段补齐。测试覆盖：35 → 1，失败提醒只发一次，只有 push 时空闲发出，长时间未完成按 max_wait 发出，晚到的 in_progress 不会重新打开已完成的 run，预设通过校验。
-2. 迁移、`api::receive` 接入、Worker 发出调度、delivery 关联与重启恢复。
-3. 回放预览 API 和“聚合”标签页（先支持选择预设 + 开关）。
-4. 自定义编辑器：Slot / Binding 卡片、结束条件表单、`MessageStudio` 的 Slot 变量与 `repeat` 区块。
-5. 其余 GitHub 与 Apple 预设，以及 `append`、`count` Reducer。
+- `tests/aggregation.rs`：用导出数据的时间线回放“提交流水线”（35 → 1、失败提醒只发一次、只有 push 时空闲发出、max_wait 标注仍在进行、晚到的 in_progress 不会重开已完成的 run），各预设通过校验，其他预设的典型事件串各合并为一条。导出没有请求体，夹具 `tests/fixtures/commit_pipeline.json` 保留真实顺序和时间，payload 按 GitHub 各事件的字段补齐。
+- `scripts/verify_http.py`：真实 HTTP 下验证自定义规则校验、35 条事件归为一组且只发一条汇总、聚合详情与回放、重启后 open 组照常发出、预设提醒立即发送、有 open 组的 Route 不能删除。

@@ -15,17 +15,20 @@ Content-Type: application/json
 | --- | --- | --- |
 | GET | `/healthz` | 进程存活检查 |
 | GET | `/api/overview` | 完整数据库的运行统计与待处理任务 |
-| GET | `/api/meta` | 公网基础地址、Provider 和默认模板 |
+| GET | `/api/meta` | 公网基础地址、Provider、默认模板和聚合预设 |
 | GET | `/api/resources/{kind}` | 列出资源 |
 | POST | `/api/resources/{kind}` | 创建资源 |
 | PUT | `/api/resources/{kind}/{id}` | 更新资源，必须提供旧 `revision` |
-| DELETE | `/api/resources/{kind}/{id}` | 删除无引用、无未完成任务的资源 |
+| DELETE | `/api/resources/{kind}/{id}` | 删除无引用、无未完成任务、无未发出聚合的资源 |
 | POST | `/api/preview` | 转换示例，返回预览；不发出通知 |
 | GET | `/api/events` | 已验签事件元数据 |
 | GET | `/api/deliveries` | 投递任务，不返回快照或密钥 |
 | GET | `/api/deliveries/{id}/attempts` | 最近 200 次发送尝试 |
 | POST | `/api/deliveries/{id}/retry` | 对失败任务增加最多五次投递机会 |
 | GET | `/api/audit` | 审计记录 |
+| GET | `/api/aggregates` | 聚合组列表，可按 `route_id`、`status`（`open` / `flushed`）筛选 |
+| GET | `/api/aggregates/{id}` | 聚合组详情、成员事件与生成的投递 |
+| POST | `/api/aggregation/replay` | 用来源的最近事件回放未保存的聚合配置；不发出通知 |
 | POST | `/hooks/{source_id}` | 按来源实例的适配器接收请求 |
 | POST | `/hooks/apple/{source_id}` | 兼容原有 Apple 回调地址 |
 
@@ -188,6 +191,21 @@ Content-Type: application/json
 
 `event_types` 为空数组时匹配所有事件；最多 500 项。`max_attempts` 是 1–10 的整数。`enabled` 必须显式提供布尔值。
 
+可选的 `aggregation` 把匹配的事件先归入聚合组，到期后发出一条汇总，规则格式见 [aggregation.md](aggregation.md)：
+
+```json
+{
+  "aggregation": {
+    "rules": [
+      {"preset": "github.commit_pipeline", "options": {"notify_failure": true}},
+      {"id": "my_rule", "name": "…", "group": {}, "slots": {}, "close": {}, "container": {}}
+    ]
+  }
+}
+```
+
+保存时展开预设并完整校验：引用的 Slot 必须存在，时间满足 `settle ≤ idle ≤ max_wait ≤ 24h`，并用占位数据渲染汇总和每个提醒。只有 `event_types` 选中的事件才会进入聚合。
+
 ## 预览
 
 ```json
@@ -212,6 +230,24 @@ Content-Type: application/json
 `source_provider` 与 `destination_provider` 指定预览适配器，未注册类型返回 400。`event_type` 让服务端按事件目录补上该事件的 `sample_headers`；GitHub 这类从请求头识别事件的来源必须传入。为兼容旧请求，省略时使用原有 Apple / 飞书组合；WebUI 始终明确传递所选实例的平台。
 
 返回 `{"payload":{...},"event":{...}}`。预览不读 Key、不发送通知；只记录预览动作和事件类型，不将示例原文写入审计。
+
+## 聚合回放与记录
+
+`POST /api/aggregation/replay`：
+
+```json
+{
+  "source_id": "来源 ID",
+  "destination_provider": "feishu",
+  "aggregation": {"rules": [{"preset": "github.commit_pipeline"}]},
+  "event_types": [],
+  "limit": 300
+}
+```
+
+读取该来源最近 `limit` 条事件（1–500，默认 200），按接收时间顺序回放，返回 `events`、`grouped`、`singles`、`messages`（单发 + 汇总 + 提醒的总数）和 `groups`。每组包含 `rule_id`、`rule_name`、成员事件类型与时间、`flushed_at`、`pending`（按配置推算的发出时间尚未到）、`reason`、渲染后的 `payload` 与 `notices`；渲染失败时对应 `error` 有值。
+
+`GET /api/aggregates/{id}` 返回 `state`、`event_count`、`opened_at`、`last_event_at`、`due_at`、`flush_reason`、`flushed_at`、`members`（`event_id`、`seq`、`event_type`、`created_at`）和 `deliveries`（汇总与提醒的投递 ID）。接收与投递记录带有 `aggregate_id`，未参与聚合时为 `null`。
 
 ## 列表、筛选和分页
 
@@ -240,6 +276,7 @@ webhook.signature_rejected / webhook.payload_rejected
 webhook.duplicate / webhook.id_conflict / webhook.accepted
 delivery.queued / delivery.started / delivery.succeeded
 delivery.retrying / delivery.failed / delivery.retried
+aggregate.opened / aggregate.updated / aggregate.flushed
 worker.recovered
 ```
 
@@ -249,7 +286,7 @@ worker.recovered
 
 | 状态码 | 含义 |
 | --- | --- |
-| `202` | 验签、解析成功且已持久化；可能匹配零条规则，不代表飞书已发送成功 |
+| `202` | 验签、解析成功且已持久化；返回 `deliveries`（新建投递数）和 `aggregates`（归入的聚合组 ID）。可能匹配零条规则，不代表飞书已发送成功 |
 | `200` | 已接收过完全相同的事件，不创建重复任务 |
 | `400` | 原始正文不是受支持的 Apple JSON 事件 |
 | `401` | 缺失或错误的签名 |

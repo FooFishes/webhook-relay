@@ -31,7 +31,7 @@ API、密钥服务、数据库操作、Provider 协议和 Worker 分开管理：
 | `src/store.rs` | SQLx 数据库池、资源访问、审计写入与密钥读取 |
 | `src/providers/` | 来源验签、事件标准化、目标消息准备与模板处理 |
 | `src/worker.rs` | 任务选择、限速、HTTP 投递、重试、恢复及结果落库 |
-| `src/aggregation/` | 事件聚合的纯逻辑：分组、Slot 归并、结束条件、汇总渲染与回放，尚未接入接收流程，见 [aggregation.md](aggregation.md) |
+| `src/aggregation/` | 事件聚合：分组、Slot 归并、结束条件、汇总渲染、回放，以及聚合组的持久化与到期发出，见 [aggregation.md](aggregation.md) |
 | `web/src/` | React + Kumo 控制台与管理 API 客户端 |
 
 ## 抽象边界
