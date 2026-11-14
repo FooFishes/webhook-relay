@@ -1,3 +1,4 @@
+pub mod aggregation;
 pub mod api;
 pub mod config;
 pub mod crypto;

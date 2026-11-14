@@ -1,0 +1,151 @@
+[
+  {
+    "id": "github.commit_pipeline",
+    "source_provider": "github",
+    "name": "提交流水线",
+    "description": "一次提交触发的推送、工作流、任务和部署合并为一条消息",
+    "options": {
+      "notify_start": "推送后立即提醒",
+      "notify_failure": "任务失败立即提醒"
+    },
+    "rule": {
+      "name": "提交流水线",
+      "group": {
+        "match": ["push", "workflow_run.*", "workflow_job.*", "check_run.*", "check_suite.*", "deployment.*", "deployment_status.*"],
+        "key": ["/after", "/workflow_run/head_sha", "/workflow_job/head_sha", "/check_suite/head_sha", "/check_run/head_sha", "/deployment/sha"]
+      },
+      "slots": {
+        "commit": {
+          "reduce": "first",
+          "from": [
+            {
+              "event": "push",
+              "map": {
+                "repo": "/repository/full_name",
+                "ref": "/ref",
+                "sha": "/after",
+                "message": "/head_commit/message",
+                "author": "/pusher/name",
+                "url": "/compare"
+              }
+            }
+          ]
+        },
+        "runs": {
+          "reduce": "keyed",
+          "final": ["completed"],
+          "from": [
+            {
+              "event": "workflow_run.*",
+              "key": "/workflow_run/id",
+              "map": {
+                "label": "/workflow_run/name",
+                "repo": "/repository/full_name",
+                "branch": "/workflow_run/head_branch",
+                "state": "/workflow_run/status",
+                "result": "/workflow_run/conclusion",
+                "url": "/workflow_run/html_url"
+              }
+            }
+          ]
+        },
+        "jobs": {
+          "reduce": "keyed",
+          "final": ["completed"],
+          "from": [
+            {
+              "event": "workflow_job.*",
+              "key": "/workflow_job/id",
+              "map": {
+                "label": "/workflow_job/name",
+                "state": "/workflow_job/status",
+                "result": "/workflow_job/conclusion",
+                "url": "/workflow_job/html_url"
+              }
+            },
+            {
+              "event": "check_run.*",
+              "key": "/check_run/id",
+              "when": { "pointer": "/check_run/app/slug", "not_in": ["github-actions"] },
+              "map": {
+                "label": "/check_run/name",
+                "state": "/check_run/status",
+                "result": "/check_run/conclusion",
+                "url": "/check_run/html_url"
+              }
+            }
+          ]
+        },
+        "deploys": {
+          "reduce": "keyed",
+          "final": ["success", "failure", "error", "inactive"],
+          "from": [
+            {
+              "event": "deployment_status.*",
+              "key": "/deployment/id",
+              "map": {
+                "label": "/deployment/environment",
+                "state": "/deployment_status/state",
+                "url": "/deployment_status/target_url"
+              }
+            }
+          ]
+        },
+        "result": { "reduce": "derive", "op": "worst", "of": ["jobs.result", "runs.result", "deploys.state"] }
+      },
+      "close": {
+        "when": { "slot": "runs", "all": { "state": "completed" } },
+        "settle": 20,
+        "pending": { "slot": "runs", "any": { "state": ["requested", "queued", "in_progress", "waiting", "pending"] } },
+        "idle": 90,
+        "max_wait": 7200,
+        "max_events": 200,
+        "notices": [
+          {
+            "id": "started",
+            "option": "notify_start",
+            "when": { "slot": "commit", "exists": true },
+            "container": {
+              "title": "{{ slots.commit.repo | default('', true) }} · {{ (slots.commit.ref | default('', true)) | replace('refs/heads/', '') }} 已推送",
+              "accent": "blue",
+              "blocks": [
+                { "id": "commit", "kind": "text", "bind": "commit", "text": "{{ item.message | default('', true) | first_line }}\n{{ item.author | default('', true) }} · {{ (item.sha | default('', true))[:7] }}" },
+                { "id": "compare", "kind": "link", "bind": "commit", "text": "{% if item.url %}查看提交{% endif %}", "url": "{{ item.url | default('', true) }}" }
+              ]
+            }
+          },
+          {
+            "id": "job_failed",
+            "option": "notify_failure",
+            "when": { "slot": "jobs", "any": { "result": ["failure", "timed_out", "startup_failure"] } },
+            "once_per_item": true,
+            "container": {
+              "title": "{% if slots.commit %}{{ slots.commit.repo | default('', true) }} · {% endif %}{{ item.label | default('任务', true) }} 失败",
+              "accent": "red",
+              "blocks": [
+                { "id": "commit", "kind": "text", "bind": "commit", "text": "{{ item.message | default('', true) | first_line }}" },
+                { "id": "job", "kind": "text", "text": "{{ item.result | result_icon }} {{ item.label | default('', true) }} · {{ item | duration }}" },
+                { "id": "open", "kind": "link", "text": "{% if item.url %}查看任务{% endif %}", "url": "{{ item.url | default('', true) }}" }
+              ]
+            }
+          }
+        ]
+      },
+      "container": {
+        "title": "{% if slots.commit %}{{ slots.commit.repo | default('', true) }} · {{ (slots.commit.ref | default('', true)) | replace('refs/heads/', '') }}{% elif slots.runs %}{{ slots.runs[0].repo | default('', true) }} · {{ slots.runs[0].branch | default('', true) }}{% else %}提交流水线{% endif %} {{ slots.result | result_icon }}",
+        "accent": {
+          "slot": "result",
+          "map": { "success": "green", "failure": "red", "error": "red", "timed_out": "red", "startup_failure": "red", "cancelled": "grey", "*": "blue" }
+        },
+        "blocks": [
+          { "id": "commit", "kind": "text", "bind": "commit", "text": "{{ item.message | default('', true) | first_line }}\n{{ item.author | default('', true) }} · {{ (item.sha | default('', true))[:7] }}" },
+          { "id": "jobs", "kind": "repeat", "bind": "jobs", "text": "{{ item.result | result_icon }} {{ item.label | default('', true) }} · {{ item | duration }}" },
+          { "id": "deploys", "kind": "repeat", "bind": "deploys", "text": "{{ item.state | result_icon }} {{ item.label | default('', true) }} · {{ item.state | default('', true) }}" },
+          { "id": "summary", "kind": "text", "style": "note", "text": "共 {{ group.event_count }} 条事件 · 耗时 {{ group.span | duration }}{% if group.flush_reason == 'max_wait' %} · 仍在进行{% endif %}" },
+          { "id": "run", "kind": "link", "bind": "runs", "text": "{% if item.url %}查看运行{% endif %}", "url": "{{ item.url | default('', true) }}" },
+          { "id": "compare", "kind": "link", "bind": "commit", "text": "{% if item.url %}查看提交{% endif %}", "url": "{{ item.url | default('', true) }}" }
+        ]
+      }
+    }
+  }
+]
