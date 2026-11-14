@@ -238,10 +238,19 @@ fn render_resolved(
     destination: &dyn DestinationAdapter,
 ) -> Result<Value> {
     // Render strings before building provider JSON so optional fields can disappear cleanly.
-    let mut rendered: Content = serde_json::from_value(template::render_value(
+    let rendered: Content = serde_json::from_value(template::render_value(
         &serde_json::to_value(content)?,
         event,
     )?)?;
+    finish(rendered, presentation, destination)
+}
+
+/// Turns rendered content into a validated destination payload.
+pub fn finish(
+    mut rendered: Content,
+    presentation: &Presentation,
+    destination: &dyn DestinationAdapter,
+) -> Result<Value> {
     rendered
         .blocks
         .retain(|block| !block.text.trim().is_empty());

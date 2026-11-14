@@ -26,10 +26,12 @@ pub fn render_for(
     Ok(result)
 }
 pub fn render_value(template: &Value, event: &RelayEvent) -> Result<Value> {
+    render_with(template, minijinja::context!(event => event))
+}
+pub fn render_with(template: &Value, context: minijinja::Value) -> Result<Value> {
     let mut env = environment();
     env.set_undefined_behavior(UndefinedBehavior::Strict);
     env.set_fuel(Some(20_000));
-    let context = minijinja::context!(event => event);
     fn walk(
         v: &Value,
         env: &Environment<'_>,
@@ -59,6 +61,12 @@ pub fn render_value(template: &Value, event: &RelayEvent) -> Result<Value> {
     }
     let result = walk(template, &env, &context, 0)?;
     Ok(result)
+}
+pub fn render_str(template: &str, context: minijinja::Value) -> Result<String> {
+    match render_with(&Value::String(template.to_owned()), context)? {
+        Value::String(output) => Ok(output),
+        _ => unreachable!("a string template renders to a string"),
+    }
 }
 pub fn validate_for(template: &Value, destination: &dyn DestinationAdapter) -> Result<()> {
     validate_value(template)?;
