@@ -13,6 +13,7 @@ export interface Config {
   payload_template?: unknown;
   event_templates?: EventTemplateMap;
   message_policy?: MessagePolicy;
+  aggregation?: AggregationConfig;
   max_attempts?: number;
   has_value?: boolean;
   value?: string;
@@ -52,12 +53,14 @@ export interface RecordRow {
   http_status?: number;
   provider_code?: number;
   error?: string;
+  aggregate_id?: string | null;
 }
 export interface Meta {
   public_url: string;
   default_template: unknown;
   message_presets?: MessagePreset[];
   pair_presets?: PairPreset[];
+  aggregation_presets?: AggregationPreset[];
   source_providers: SourceProvider[];
   destination_providers: DestinationProvider[];
 }
@@ -248,4 +251,118 @@ export interface PairPreset {
   source_provider: string;
   destination_provider: string;
   events: Record<string, MessageOverride>;
+}
+
+export type JsonValue =
+  string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export interface AggregationBinding {
+  event: string;
+  key?: string;
+  when?: { pointer: string; in?: JsonValue[]; not_in?: JsonValue[] };
+  map?: Record<string, string>;
+}
+export type AggregationSlot =
+  | { reduce: "first" | "last" | "count"; from: AggregationBinding[] }
+  | { reduce: "keyed"; from: AggregationBinding[]; final?: JsonValue[] }
+  | { reduce: "append"; from: AggregationBinding[]; limit?: number }
+  | { reduce: "derive"; op: "worst"; of: string[] };
+export type PredicateTest = "all" | "any" | "none" | "exists";
+export interface AggregationPredicate {
+  slot: string;
+  all?: Record<string, JsonValue>;
+  any?: Record<string, JsonValue>;
+  none?: Record<string, JsonValue>;
+  exists?: boolean;
+}
+export interface ContainerBlock {
+  id: string;
+  kind: "text" | "link" | "repeat";
+  label?: string;
+  bind?: string;
+  text: string;
+  url?: string;
+  limit?: number;
+  style?: string;
+}
+export interface AggregationContainer {
+  title: string;
+  style?: string;
+  accent?: string | { slot: string; map: Record<string, string> };
+  blocks: ContainerBlock[];
+}
+export interface AggregationNotice {
+  id: string;
+  option?: string;
+  when: AggregationPredicate;
+  once_per_item?: boolean;
+  container: AggregationContainer;
+}
+export interface AggregationRule {
+  id: string;
+  name: string;
+  group: { match: string[]; key: string[] };
+  slots: Record<string, AggregationSlot>;
+  close: {
+    when?: AggregationPredicate;
+    settle?: number;
+    pending?: AggregationPredicate;
+    idle?: number;
+    max_wait: number;
+    max_events?: number;
+    notices?: AggregationNotice[];
+  };
+  container: AggregationContainer;
+}
+export interface AggregationPresetRef {
+  preset: string;
+  options?: Record<string, boolean>;
+}
+export interface AggregationConfig {
+  rules: (AggregationPresetRef | AggregationRule)[];
+}
+export interface AggregationPreset {
+  id: string;
+  source_provider: string;
+  name: string;
+  description: string;
+  options: Record<string, string>;
+  rule: Omit<AggregationRule, "id">;
+}
+export interface ReplayGroup {
+  rule_id: string;
+  rule_name: string;
+  events: { event_type: string; at: number }[];
+  opened_at: number;
+  flushed_at: number;
+  pending: boolean;
+  reason: "settled" | "idle" | "max_wait" | "max_events";
+  payload: unknown;
+  error: string | null;
+  notices: { at: number; id: string; payload: unknown; error: string | null }[];
+}
+export interface ReplayResult {
+  events: number;
+  grouped: number;
+  singles: number;
+  messages: number;
+  groups: ReplayGroup[];
+}
+export interface AggregateRecord {
+  id: string;
+  route_id: string;
+  rule_id: string;
+  state: "open" | "flushed";
+  event_count: number;
+  opened_at: number;
+  last_event_at: number;
+  due_at: number;
+  flush_reason: ReplayGroup["reason"] | null;
+  flushed_at: number | null;
+  members: {
+    event_id: string;
+    seq: number;
+    event_type: string;
+    created_at: number;
+  }[];
+  deliveries: string[];
 }

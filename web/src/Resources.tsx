@@ -29,6 +29,7 @@ import { MessageComposer } from "./MessageComposer";
 import { object } from "./message-model";
 import type { MessageObject } from "./message-model";
 import { MessageStudio } from "./MessageStudio";
+import { AggregationEditor } from "./AggregationEditor";
 import { builtinPolicy } from "./message-policy";
 import { EventFilter } from "./EventFilter";
 import { PreviewDialog } from "./PreviewDialog";
@@ -133,6 +134,7 @@ export function Resources({
       if (sourceChanged) {
         delete next.event_templates;
         delete next.message_policy;
+        delete next.aggregation;
       }
       return next;
     });
@@ -522,6 +524,13 @@ export function Resources({
               >
                 消息模板
               </button>
+              <button
+                type="button"
+                className={routeSection === "aggregation" ? "selected" : ""}
+                onClick={() => setRouteSection("aggregation")}
+              >
+                消息聚合
+              </button>
             </div>
           )}
           <form
@@ -536,7 +545,7 @@ export function Resources({
               hidden={
                 kind === "routes" &&
                 supportsPolicy &&
-                routeSection === "templates"
+                routeSection !== "connection"
               }
             >
               <Input
@@ -545,7 +554,7 @@ export function Resources({
                   !(
                     kind === "routes" &&
                     supportsPolicy &&
-                    routeSection === "templates"
+                    routeSection !== "connection"
                   )
                 }
                 maxLength={120}
@@ -595,7 +604,7 @@ export function Resources({
             )}
             {kind === "routes" && (
               <>
-                <div hidden={supportsPolicy && routeSection === "templates"}>
+                <div hidden={supportsPolicy && routeSection !== "connection"}>
                   <div className="form-columns">
                     {pick("事件来源", "source_id", data.sources)}
                     {pick("通知目标", "destination_id", data.destinations)}
@@ -617,6 +626,21 @@ export function Resources({
                         onClick={() => setRouteSection("templates")}
                       >
                         编辑模板
+                      </Button>
+                    </div>
+                  )}
+                  {supportsPolicy && (
+                    <div className="route-template-summary">
+                      <p>
+                        {config.aggregation?.rules.length
+                          ? `${config.aggregation.rules.length} 条聚合规则`
+                          : "事件逐条发送"}
+                      </p>
+                      <Button
+                        type="button"
+                        onClick={() => setRouteSection("aggregation")}
+                      >
+                        设置聚合
                       </Button>
                     </div>
                   )}
@@ -698,9 +722,24 @@ export function Resources({
                     </>
                   )}
                 </section>
+                {supportsPolicy && (
+                  <section hidden={routeSection !== "aggregation"}>
+                    <AggregationEditor
+                      api={api}
+                      value={config.aggregation}
+                      onChange={(value) => change("aggregation", value)}
+                      sourceId={config.source_id}
+                      source={sourceProvider!}
+                      target={targetProvider!}
+                      presets={meta.aggregation_presets || []}
+                      eventTypes={eventTypes}
+                      onEventTypesChange={setEventTypes}
+                    />
+                  </section>
+                )}
                 <section
                   className="editor-section"
-                  hidden={supportsPolicy && routeSection === "templates"}
+                  hidden={supportsPolicy && routeSection !== "connection"}
                 >
                   <h2 className="mb-4">投递设置</h2>
                   <Input
@@ -721,7 +760,7 @@ export function Resources({
               !(
                 kind === "routes" &&
                 supportsPolicy &&
-                routeSection === "templates"
+                routeSection !== "connection"
               ) && (
                 <Switch
                   label="启用此配置"
