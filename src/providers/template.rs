@@ -175,5 +175,36 @@ fn environment() -> Environment<'static> {
             minijinja::Value::from_serialize(raw.0.pointer(&pointer))
         },
     );
+    env.add_filter("first_line", |s: String| {
+        s.lines().next().unwrap_or("").to_owned()
+    });
+    env.add_filter("duration", |v: minijinja::value::ViaDeserialize<Value>| {
+        // An aggregated item measures from its first to its last observed event.
+        let seconds = match &v.0 {
+            Value::Number(n) => n.as_i64(),
+            Value::Object(o) => o["_last_seen"]
+                .as_i64()
+                .zip(o["_first_seen"].as_i64())
+                .map(|(last, first)| last - first),
+            _ => None,
+        };
+        match seconds {
+            Some(s) if s < 60 => format!("{s}s"),
+            Some(s) if s < 3600 => format!("{}m{:02}s", s / 60, s % 60),
+            Some(s) => format!("{}h{:02}m", s / 3600, s % 3600 / 60),
+            None => String::new(),
+        }
+    });
+    env.add_filter(
+        "result_icon",
+        |v: minijinja::value::ViaDeserialize<Value>| match v.0.as_str().unwrap_or("") {
+            "success" => "✅",
+            "failure" | "error" | "timed_out" | "startup_failure" => "❌",
+            "cancelled" => "⏹️",
+            "skipped" | "neutral" | "inactive" => "➖",
+            "action_required" | "stale" => "⚠️",
+            _ => "⏳",
+        },
+    );
     env
 }
