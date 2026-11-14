@@ -8,6 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import type { Api } from "./api";
 import type {
+  AggregateRecord,
   Kind,
   RecordRow,
   Resource,
@@ -18,6 +19,7 @@ import type {
 import { formatTime } from "./types";
 
 import { statusNames, eventName, errorName } from "./presentation";
+import { reasonLabels } from "./aggregation-model";
 function Status({ status }: { status: string }) {
   return (
     <Badge
@@ -108,6 +110,13 @@ export function Records({
     queryFn: () => api<RecordRow[]>(`/deliveries/${selected!.id}/attempts`),
     enabled: kind === "deliveries" && !!selected,
     refetchInterval: selected ? 3000 : false,
+  });
+  const aggregate = useQuery({
+    queryKey: ["aggregate", selected?.aggregate_id],
+    queryFn: () =>
+      api<AggregateRecord>(`/aggregates/${selected!.aggregate_id}`),
+    enabled: kind !== "audit" && !!selected?.aggregate_id,
+    refetchInterval: (q) => (q.state.data?.state === "open" ? 3000 : false),
   });
   const retry = useMutation({
     mutationFn: () => api(`/deliveries/${retryTarget!.id}/retry`, "POST"),
@@ -516,6 +525,32 @@ export function Records({
                 </Button>
               )}
             </>
+          )}
+          {aggregate.data && (
+            <section className="mt-5 grid gap-3">
+              <h3>
+                {kind === "events" ? "已归入聚合" : "汇总自"}{" "}
+                {aggregate.data.event_count} 条事件
+              </h3>
+              <p className="text-kumo-subtle">
+                {aggregate.data.state === "open"
+                  ? `等待发出 · 预计 ${formatTime(aggregate.data.due_at)}`
+                  : `${aggregate.data.flush_reason ? reasonLabels[aggregate.data.flush_reason] : "已发出"} · ${formatTime(aggregate.data.flushed_at || aggregate.data.due_at)}`}
+              </p>
+              <details className="aggregate-members">
+                <summary>成员事件</summary>
+                <ol>
+                  {aggregate.data.members.map((m) => (
+                    <li key={m.event_id}>
+                      <span>{eventName(m.event_type, eventNames)}</span>
+                      <span className="text-kumo-subtle">
+                        {formatTime(m.created_at)}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            </section>
           )}
           {kind === "deliveries" && (
             <section className="mt-5">
