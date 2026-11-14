@@ -297,7 +297,7 @@ def run():
                     connection.execute("INSERT INTO events SELECT ?,source_id,?,event_type,payload,body_sha256,? FROM events LIMIT 1",
                                        ('history-'+str(index), 'provider-history-'+str(index), stamp-(172800 if index == 0 else 0)))
                 for index, state in enumerate(['pending', 'retrying', 'sending']):
-                    connection.execute("INSERT INTO deliveries SELECT ?,?,route_id,destination_id,snapshot,?,attempts,max_attempts,?,created_at,updated_at,last_error FROM deliveries WHERE id=?",
+                    connection.execute("INSERT INTO deliveries SELECT ?,?,route_id,destination_id,snapshot,?,attempts,max_attempts,?,created_at,updated_at,last_error,aggregate_id FROM deliveries WHERE id=?",
                                        ('queue-'+str(index), 'history-'+str(index), state, stamp+3600, recovered['id']))
                 connection.execute("UPDATE deliveries SET updated_at=? WHERE id=(SELECT id FROM deliveries WHERE status='failed' LIMIT 1)",(stamp-172800,))
             overview = request('/api/overview')[1]
@@ -470,6 +470,55 @@ def run():
             check('GitHub redelivery with the same delivery ID is deduplicated', send_github('pull_request', closed, delivery=delivery)[1].get('duplicate'))
             check('GitHub actions outside the route filter create no task', send_github('pull_request', {**closed, 'action': 'opened'})[1]['deliveries'] == 0)
             check('GitHub payloads above the admin API limit are accepted', send_github('pull_request', {**closed, 'padding': 'x' * (400 * 1024)})[0] == 202)
+            # Aggregation: a custom copy of the commit pipeline preset with short timers.
+            pipeline = json.loads((ROOT / 'tests/fixtures/commit_pipeline.json').read_text())
+            preset = next(p for p in meta['aggregation_presets'] if p['id'] == 'github.commit_pipeline')
+            fast = {**preset['rule'], 'id': 'fast_pipeline',
+                    'close': {**preset['rule']['close'], 'settle': 1, 'idle': 2, 'max_wait': 30, 'notices': []}}
+            broken = json.loads(json.dumps(fast)); broken['container']['blocks'][0]['bind'] = 'missing'
+            check('Aggregation rules with unknown slots are rejected', request('/api/resources/routes', 'POST', {'name': 'x', 'config': {
+                'source_id': gh_source['id'], 'destination_id': dest['id'], 'event_types': [], 'max_attempts': 2, 'enabled': True,
+                'aggregation': {'rules': [broken]}}})[0] == 400)
+            agg_route = create('routes', 'GitHub 提交流水线', {'source_id': gh_source['id'], 'destination_id': dest['id'], 'event_types': [],
+                                                          'max_attempts': 2, 'enabled': True, 'aggregation': {'rules': [fast]}})
+
+            def send_fixture(row, sha=None):
+                raw = json.loads(json.dumps(row['raw']).replace('6dcb09b5b57875f334f61aebed695e2e4193db5e', sha) if sha else json.dumps(row['raw']))
+                return send_github(row['event_type'].split('.')[0], raw)[1]
+            results = [send_fixture(row) for row in pipeline]
+            ping, rest = results[0], results[1:]
+            check('Events outside the group are still delivered one by one', ping['aggregates'] == [] and ping['deliveries'] >= 1)
+            groups = {a for r in rest for a in r['aggregates']}
+            check('All 35 pipeline events join one group without single deliveries',
+                  len(rest) == 35 and len(groups) == 1 and all(r['deliveries'] == 0 or r['event_id'] == ping['event_id'] for r in rest), groups)
+            group_id = groups.pop()
+            summary = wait_for(lambda: [d for d in deliveries() if d.get('aggregate_id') == group_id and d['status'] == 'succeeded'], timeout=10)
+            with LOCK:
+                body = json.dumps(next(m['body'] for m in reversed(MESSAGES) if 'octo-org/hello-world · main' in json.dumps(m['body'], ensure_ascii=False)), ensure_ascii=False)
+            check('One summary reaches Feishu with every job and the event count',
+                  len(summary) == 1 and '✅ test' in body and '✅ deploy' in body and '共 35 条事件' in body and '"green"' in body)
+            detail = request('/api/aggregates/' + group_id)[1]
+            check('Aggregate detail lists members, reason and the summary delivery',
+                  detail['state'] == 'flushed' and detail['flush_reason'] == 'settled' and len(detail['members']) == 35 and detail['deliveries'] == [summary[0]['id']])
+            replay = request('/api/aggregation/replay', 'POST', {'source_id': gh_source['id'], 'destination_provider': 'feishu',
+                                                                  'aggregation': {'rules': [fast]}, 'limit': 500})[1]
+            replayed = [g for g in replay['groups'] if len(g['events']) == 35]
+            check('Replay reproduces the stored pipeline as one group', len(replayed) == 1 and replayed[0]['reason'] == 'settled' and replayed[0]['payload'])
+            # An open group survives a restart and is sent by the new process.
+            pushed = send_fixture(pipeline[1], sha='1' * 40)
+            process.terminate(); process.wait(timeout=5)
+            process = start()
+            wait_for(lambda: request('/api/aggregates/' + pushed['aggregates'][0])[1]['state'] == 'flushed', timeout=10)
+            check('A group opened before a restart is flushed after it by idle timeout',
+                  request('/api/aggregates/' + pushed['aggregates'][0])[1]['flush_reason'] == 'idle')
+            update(agg_route, enabled=False)
+            notify = create('routes', 'GitHub 推送提醒', {'source_id': gh_source['id'], 'destination_id': dest['id'], 'event_types': ['push'], 'max_attempts': 2,
+                                                       'enabled': True, 'aggregation': {'rules': [{'preset': 'github.commit_pipeline', 'options': {'notify_start': True}}]}})
+            started = send_fixture(pipeline[1], sha='2' * 40)
+            notices = wait_for(lambda: [d for d in deliveries() if d.get('aggregate_id') == started['aggregates'][0] and d['status'] == 'succeeded'], timeout=10)
+            check('A preset notice is sent immediately while the group stays open',
+                  len(notices) == 1 and request('/api/aggregates/' + started['aggregates'][0])[1]['state'] == 'open')
+            check('A route with an open group cannot be deleted', request('/api/resources/routes/' + notify['id'], 'DELETE')[0] == 409)
             process.terminate(); process.wait(timeout=5)
             env['RELAY_MASTER_KEY'] = base64.b64encode(secrets.token_bytes(32)).decode()
             invalid = subprocess.run([str(ROOT/'target/debug/webhook-relay')],cwd=ROOT,env=env,stdout=log,stderr=log,timeout=5)
